@@ -1,0 +1,209 @@
+<!--
+Copyright DC3IT
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<!--Modified from tutorial at https://www.w3schools.com/graphics/canvas_clock.asp-->
+</head>
+<body>
+
+<select id="ddlHour">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+</select>
+<select id="ddlMinute">
+<option value="60">00</option>
+<!--<option value="1">01</option>
+<option value="2">02</option>
+<option value="3">03</option>
+<option value="4">04</option>-->
+<option value="5">05</option>
+<!--<option value="6">06</option>
+<option value="7">07</option>
+<option value="8">08</option>
+<option value="9">09</option>-->
+<option>10</option>
+<!--<option>11</option>
+<option>12</option>
+<option>13</option>
+<option>14</option>-->
+<option>15</option>
+<!--<option>16</option>
+<option>17</option>
+<option>18</option>
+<option>19</option>-->
+<option>20</option>
+<!--<option>21</option>
+<option>22</option>
+<option>23</option>
+<option>24</option>-->
+<option>25</option>
+<!--<option>26</option>
+<option>27</option>
+<option>28</option>
+<option>29</option>-->
+<option>30</option>
+<!--<option>31</option>
+<option>32</option>
+<option>33</option>
+<option>34</option>-->
+<option>35</option>
+<!--<option>36</option>
+<option>37</option>
+<option>38</option>
+<option>39</option>-->
+<option>40</option>
+<!--<option>41</option>
+<option>42</option>
+<option>43</option>
+<option>44</option>-->
+<option>45</option>
+<!--<option>46</option>
+<option>47</option>
+<option>48</option>
+<option>49</option>-->
+<option>50</option>
+<!--<option>51</option>
+<option>52</option>
+<option>53</option>
+<option>54</option>-->
+<option>55</option>
+<!--<option>56</option>
+<option>57</option>
+<option>58</option>
+<option>59</option>-->
+</select>
+<button onclick="drawClock()">Tell the time</button>
+<br/>
+<canvas id="canvas" width="400" height="400"
+style="background-color:#333">
+</canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius = radius * 0.90;
+drawClock();
+
+function drawClock() {
+  drawFace(ctx, radius);
+  drawNumbers(ctx, radius);
+  drawTime(ctx, radius);
+  resize();
+}
+
+function drawFace(ctx, radius) {
+  var grad;
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, 2*Math.PI);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+  grad.addColorStop(0, '#333');
+  grad.addColorStop(0.5, 'white');
+  grad.addColorStop(1, '#333');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = radius*0.1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+  ctx.fillStyle = '#333';
+  ctx.fill();
+}
+
+function drawNumbers(ctx, radius) {
+  var ang;
+  var num;
+  ctx.font = radius*0.15 + "px arial";
+  ctx.textBaseline="middle";
+  ctx.textAlign="center";
+  for(num = 1; num < 13; num++){
+    ang = num * Math.PI / 6;
+    ctx.rotate(ang);
+    ctx.translate(0, -radius*0.85);
+    ctx.rotate(-ang);
+    ctx.fillText(num.toString(), 0, 0);
+    ctx.rotate(ang);
+    ctx.translate(0, radius*0.85);
+    ctx.rotate(-ang);
+  }
+}
+
+function drawTime(ctx, radius){
+    var now = new Date();
+    var hour = document.getElementById("ddlHour").value;
+    //now.getHours();
+    var minute = document.getElementById("ddlMinute").value;
+    if (minute == 60) {
+    minute = 0;
+    }
+    //now.getMinutes();
+    var second = 0; //now.getSeconds();
+    //hour
+    hour=hour%12;
+    hour=(hour*Math.PI/6)+
+    (minute*Math.PI/(6*60));+
+    (second*Math.PI/(360*60));
+    drawHand(ctx, hour, radius*0.5, radius*0.05);
+    //minute
+    minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+    drawHand(ctx, minute, radius*0.8, radius*0.05);
+    // second
+    //second=(second*Math.PI/30);
+    //drawHand(ctx, second, radius*0.9, radius*0.02);
+}
+
+function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0,0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+
+// http://www.emanueleferonato.com/2018/02/16/how-to-scale-your-html5-games-if-your-framework-does-not-feature-a-scale-manager-or-if-you-do-not-use-any-framework/
+function resize() {
+    var canvas = document.querySelector("canvas");
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var windowRatio = windowWidth / windowHeight;
+    //var gameRatio = game.config.width / game.config.height;
+    //if(windowRatio < gameRatio){
+        canvas.style.width = windowWidth + "px";
+        canvas.style.height = windowHeight + "px"; // (windowWidth / gameRatio) + "px";
+    //}
+    //else{
+    //    canvas.style.width = (windowHeight * gameRatio) + "px";
+    //    canvas.style.height = windowHeight + "px";
+    //}
+}
+
+window.onload = function(){
+    resize();
+    window.addEventListener("resize", resize, false);
+}
+</script>
+
+</body>
+</html>
