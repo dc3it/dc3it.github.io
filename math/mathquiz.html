@@ -1,0 +1,607 @@
+<!--
+Copyright DC3IT 2018
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<title>Math Quiz</title>
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+	<style type="text/css">
+		#tbl{display: table; width: 100%;}
+		#tblRow{display: table-row;}
+		@media (min-width: 1200px)
+		{
+			body{font-size: 72pt;}
+			input{font-size: 42pt;width:150px;}
+			#number2{padding-left: 40px;}
+			#separator{padding-left: 40px;}
+			#tblLCell{display: table-cell; width: 40%;}
+			#number1{padding-left: 122px;}
+			#tblCCell{display: table-cell; width: 20%;}
+			#tblRCell{display: table-cell; width: 40%;}
+		}
+		/* all ipad landscape */
+		@media (min-width: 980px) and (max-width: 1199px)
+		{
+			body{font-size: 72pt;}
+			input{font-size: 32pt;width:125px;}
+			#number1{padding-left: 142px;}
+			#number2{padding-left: 68px;}
+			#separator{padding-left: 68px;}
+			#tblLCell{display: table-cell; width: 35%;}
+			#tblCCell{display: table-cell; width: 30%;}
+			#tblRCell{display: table-cell; width: 35%;}
+		}
+		/* all ipad portrait */
+		@media (min-width: 768px) and (max-width: 979px)
+		{
+			body{font-size: 72pt;}
+			input{font-size: 32pt;width:125px;}
+			#number1{padding-left: 142px;}
+			#number2{padding-left: 68px;}
+			#separator{padding-left: 68px;}
+			#tblLCell{display: table-cell; width: 30%;}
+			#tblCCell{display: table-cell; width: 40%;}
+			#tblRCell{display: table-cell; width: 30%;}
+		}
+		/* all iphones landscape */
+		@media (min-width: 480px) and (max-width: 767px)
+		{
+			body{font-size: 48pt;}
+			input{font-size: 28pt;width:110px;}
+			#number1{padding-left: 120px;}
+			#number2{padding-left: 68px;}
+			#separator{padding-left: 68px;}
+			#tblLCell{display: table-cell; width: 30%;}
+			#tblCCell{display: table-cell; width: 40%;}
+			#tblRCell{display: table-cell; width: 30%;}
+		}
+		/* all iphone6 portrait */
+		@media (min-width: 375px) and (max-width: 479px)
+		{
+			body{font-size: 48pt;}
+			input{font-size: 28pt;width:150px;}
+			#number1{padding-left: 70px;}
+			#number2{padding-left: 18px;}
+			#separator{padding-left: 18px;}
+			#tblLCell{display: table-cell; width: 25%;}
+			#tblCCell{display: table-cell; width: 50%;}
+			#tblRCell{display: table-cell; width: 25%;}
+		}
+		/* iphone5,4,ipods portrait */
+		@media (min-width: 320px) and (max-width: 374px)
+		{
+			body{font-size: 32pt;}
+			input{font-size: 24pt;width:110px;}
+			#number1{padding-left: 55px;}
+			#number2{padding-left: 18px;}
+			#separator{padding-left: 18px;}
+			#tblLCell{display: table-cell; width: 30%;}
+			#tblCCell{display: table-cell; width: 40%;}
+			#tblRCell{display: table-cell; width: 30%;}
+		}
+		
+    /* https://codepen.io/stiffi/pen/ysbCd */
+		.btn{
+      display:inline-block;
+      min-width:14px;
+      height:14px;
+      line-height: 16px;
+      margin:0 5px 5px 0;
+      background:#eee;
+      color:#666; /* Icon Color */
+      font-size: 10pt;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius:5px;
+      padding:10px;
+    }
+    .btn > .label{
+      display:block;
+      padding-left:10px;
+      line-height: 14px;
+      float:right;
+      cursor:pointer;
+    }
+    
+    .icon{
+      float:left;
+      width:14px;
+      height:14px;
+      position:relative;
+      display:block;
+    }
+    .icon:before,
+    .icon:after{
+      position:absolute;
+      content:"";
+      display:block;
+    }
+    
+    /* Gear */
+    .icon-gear:before{
+      width:14px;
+      height:14px;
+      box-shadow:0 0 0 4px inset;
+      border-radius:16px;
+      border:1px dashed;
+      top:-1px;
+      left:-1px;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 50px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        font-family: arial;
+    }
+    
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+    
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }
+    
+    @keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }
+    
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+        font-size: 32px;
+    }
+    
+    .modal-body {
+      padding: 2px 16px;
+      font-size: 20px;
+    }
+    
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+        font-size: 20px;
+    }
+		#tblCCell {
+		  text-align: right;
+		}
+	</style>
+</head>
+<body id="bdy">
+	<div id="tbl">
+		<div id="tblRow">
+			<div id="tblLCell"> <a id="myBtn" class="btn"><span class="icon icon-gear"></span></a></div>
+			<div id="tblCCell">
+				<div id="number1"></div>
+				<div id="number2">+ </div>
+				<div id="separator">-----</div>
+				<div id="btnAns">
+				    <input id="ans0" type="number" autofocus style="text-align: center"/>
+				<div><input id="checkAnswer" type="button" value="&#10004;" /></div>
+				<input id="correctAnswer" type="hidden" value="" />
+				</div>
+				<br/>
+			</div>
+			<div id="tblRCell"> </div>
+		</div>
+	</div>
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+  
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <div>Math Settings</div>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div><input type="radio" value="Add" name="mathType" />Add</div>
+          <div><input type="radio" value="Subtract" name="mathType" />Subtract</div>
+          <div><input type="radio" value="Multiply" name="mathType" />Multiply</div>
+          <div><input type="radio" value="Divide" name="mathType" />Divide</div>
+        </div>
+        <div style="padding-bottom: 5px">
+          <label for="topMinNum">Top Number Minimum:</label>
+          <input id="topMinNum" type="number" style="font-size: 20px; width: 100px" value="0"/>
+          <label for="topMaxNum">Top Number Maximum:</label>
+          <input id="topMaxNum" type="number" style="font-size: 20px; width: 100px" value="0"/>
+
+          <!--<label>Minimum number:</label>-->
+          <!--<input id="minNum" type="number" style="font-size: 20px" value="0"/>-->
+        </div>
+        <div>
+          <label for="bottomMinNum">Bottom Number Minimum:</label>
+          <input id="bottomMinNum" type="number" style="font-size: 20px; width: 100px" value="0"/>
+          <label for="bottomMaxNum">Bottom Number Maximum:</label>
+          <input id="bottomMaxNum" type="number" style="font-size: 20px; width: 100px" value="0"/>
+
+          <!--<label>Maximum number:</label>-->
+          <!--<input id="maxNum" type="number" style="font-size: 20px" value="10"/>-->
+        </div>
+        <button id="saveToLocalStorage" style="border-radius: 5px;font-size:20px">Save</button>
+      </div>
+      <div class="modal-footer">
+        <div> <a href="/learn/telltime/telltime.html">tell time</a></div>
+        <div> <a href="/learn/math/MathTables.html">math table</a></div>
+        <div> <a href="/learn/math/math.html">math</a></div>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript">
+"use strict";
+//private and incognito modes nuke ability to use local storage
+function storageAvailable(type) {
+    try {
+        var storage = window[type],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there is something already stored
+            storage.length !== 0;
+    }
+}
+
+//main
+function myMath() {
+        //setup event listeners
+        //checkAnswer();
+        //triggerButtonClickOnEnter();
+        
+        let intNum1; //use for top number
+        let intNum2; //use for bottom number
+        let intAns; //computed answer
+        let intRanBtn; //random number used for setting button with correct answwer
+        let intWrgAns; //deliberate wrong answer
+        let blnNum1Greater; //flag for numerator denominator determination
+        //local storage values
+        let lsTopMinNum;
+        let lsTopMaxNum;
+        let lsBottomMinNum;
+        let lsBottomMaxNum;
+    
+        //reset
+        document.getElementById("ans0").value = "";
+        document.getElementById("ans0").focus();
+        document.getElementById("bdy").style.backgroundColor = "white";
+    
+        if (storageAvailable('localStorage')) {
+            //alert("local storage test true");
+            //get from local storage the min and max values for the equations
+            lsTopMinNum = parseInt(localStorage.getItem("topMinNum"));
+            lsTopMaxNum = parseInt(localStorage.getItem("topMaxNum"));
+            lsBottomMinNum = parseInt(localStorage.getItem("bottomMinNum"));
+            lsBottomMaxNum = parseInt(localStorage.getItem("bottomMaxNum"));
+            if (isNaN(lsTopMinNum)) {
+                lsTopMinNum = 0;
+                localStorage.setItem("topMinNum", 0);
+            }
+            if (isNaN(lsTopMaxNum)) {
+                lsTopMaxNum = 10;
+                localStorage.setItem("topMaxNum", 10);
+            }
+            if (isNaN(lsBottomMinNum)) {
+                lsBottomMinNum = 0;
+                localStorage.setItem("bottomMinNum", 0);
+            }
+            if (isNaN(lsBottomMaxNum)) {
+                lsBottomMaxNum = 10;
+                localStorage.setItem("bottomMaxNum", 10);
+            }
+        } else {
+            lsTopMinNum = parseInt(document.getElementById("topMinNum").value);
+            lsTopMaxNum = parseInt(document.getElementById("topMaxNum").value);
+            lsBottomMinNum = parseInt(document.getElementById("bottomMinNum").value);
+            lsBottomMaxNum = parseInt(document.getElementById("bottomMaxNum").value);
+            if (isNaN(lsTopMinNum)) {
+                lsTopMinNum = 0;
+                document.getElementById("topMinNum").value = 0;
+            }
+            if (isNaN(lsTopMaxNum)) {
+                lsTopMaxNum = 10;
+                document.getElementById("topMaxNum").value = 10;
+            }
+            if (isNaN(lsBottomMinNum)) {
+                lsBottomMinNum = 0;
+                document.getElementById("bottomMinNum").value = 0;
+            }
+            if (isNaN(lsBottomMaxNum)) {
+                lsBottomMaxNum = 10;
+                document.getElementById("bottomMaxNum").value = 10;
+            }
+    
+        } //end local storage
+    
+        //generate random numbers inclusive of min and max as set by user
+        let intTopMin = Math.ceil(lsTopMinNum);
+        let intTopMax = Math.floor(lsTopMaxNum);
+        intNum1 = Math.floor(Math.random() * (intTopMax - intTopMin + 1)) + intTopMin;
+    
+        let intBottomMin = Math.ceil(lsBottomMinNum);
+        let intBottomMax = Math.floor(lsBottomMaxNum);
+        intNum2 = Math.floor(Math.random() * (intBottomMax - intBottomMin + 1)) + intBottomMin;
+    
+    
+        //set flag numerator denominator is larger - helps determine top or bottom number for equation
+        if (intNum1 > intNum2) {
+            blnNum1Greater = true;
+        }
+        else {
+            blnNum1Greater = false;
+        }
+    
+        //determine the type of math to perform
+        let strMathType;
+        let aryMathType;
+        if (storageAvailable('localStorage')) {
+            strMathType = localStorage.getItem("mathType");
+        }
+        else {
+            aryMathType = document.getElementsByName("mathType");
+            let j;
+            for (j = 0; j < aryMathType.length; j++) {
+                if (aryMathType[j].checked === true) {
+                    strMathType = aryMathType[j].value;
+                    break;
+                }
+            }
+            if (strMathType === undefined) {
+                strMathType = "Add";
+                document.querySelector("input[value=Add]").checked = true;
+            }
+        }
+    
+        if ((strMathType === "Add") || (strMathType === null)) {
+            intAns = intNum1 + intNum2; //compute answer
+            document.getElementById("number1").textContent = intNum1; //set top number in html div
+            document.getElementById("number2").innerHTML = '&plus;  ' + intNum2; //set bottom number in html div
+        }
+        else if (strMathType === "Subtract") {
+            //add logic to determine if intNum1 > intNum2
+            if (blnNum1Greater === true) {
+                intAns = intNum1 - intNum2;
+                document.getElementById("number1").textContent = intNum1; //set top number in html div
+                document.getElementById("number2").innerHTML = '&minus;  ' + intNum2; //set bottom number in html div
+            }
+            else {
+                intAns = intNum2 - intNum1;
+                document.getElementById("number1").textContent = intNum2; //set top number in html div
+                document.getElementById("number2").innerHTML = '&minus;  ' + intNum1; //set bottom number in html div
+            }
+        }
+        else if (strMathType === "Multiply") {
+            intAns = intNum1 * intNum2;
+            document.getElementById("number1").textContent = intNum1; //set top number in html div
+            document.getElementById("number2").innerHTML = '&times;  ' + intNum2; //set bottom number in html div
+        }
+        else {
+            //TODO:: make sure to only have division that returns a whole number
+            // if (intNum1 % intNum2 == 0) {} don't show decimals
+            if (blnNum1Greater === true) {
+                intAns = intNum1 / intNum2;
+                document.getElementById("number1").textContent = intNum1; //set top number in html div
+                document.getElementById("number2").innerHTML = '&divide;  ' + intNum2; //set bottom number in html div
+            }
+            else {
+                //if (intNum2 % intNum1 == 0) {} don't show decimals
+                intAns = intNum2 / intNum1;
+                document.getElementById("number1").textContent = intNum2; //set top number in html div
+                document.getElementById("number2").innerHTML = '&divide;  ' + intNum1; //set bottom number in html div
+            }
+        }
+    
+        //store answer in hidden
+        document.getElementById("correctAnswer").value = intAns;
+} //end math
+    
+    
+function triggerButtonClickOnEnter() {
+    // Get the input field
+    var input = document.getElementById("ans0");
+
+    // Execute a function when the user releases a key on the keyboard
+    input.addEventListener("keyup", function(event) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Trigger the button element with a click
+            document.getElementById("checkAnswer").click();
+        }
+    });
+}
+
+    
+   
+function checkAnswer() {
+    //check answer
+    document.getElementById("checkAnswer").addEventListener("click", function() {
+       if (document.getElementById("ans0").value == document.getElementById("correctAnswer").value) {
+    		document.getElementById("bdy").style.backgroundColor = "green";
+    		setTimeout(function(){myMath()}, 1000);
+       } else {
+           document.getElementById("bdy").style.backgroundColor = "red";
+           document.getElementById("ans0").focus();
+       }
+	});
+}
+
+function setUpModal() {
+      //modal
+      // Get the modal
+      let modal = document.getElementById('myModal');
+      
+      // Get the button that opens the modal
+      let btn = document.getElementById("myBtn");
+      
+      // Get the <span> element that closes the modal
+      let span = document.getElementsByClassName("close")[0];
+      
+      // When the user clicks the button, open the modal
+      btn.onclick = function() {
+          modal.style.display = "block";
+    	  
+    	  if (storageAvailable('localStorage')) {
+      	  //set modal radio button value
+      	  var lsMathTypeValue = localStorage.getItem("mathType");
+      	  
+      	  if (lsMathTypeValue !== null) {
+      	    document.querySelector("input[value=" + lsMathTypeValue + "]").checked = true;
+      	  } else {
+      	    localStorage.setItem("mathType", "Add");
+      	    document.querySelector("input[value=Add]").checked = true;
+      	  }
+
+      	  document.getElementById("topMinNum").value = localStorage.getItem("topMinNum");
+      	  document.getElementById("topMaxNum").value = localStorage.getItem("topMaxNum");
+      	  document.getElementById("bottomMinNum").value = localStorage.getItem("bottomMinNum");
+      	  document.getElementById("bottomMaxNum").value = localStorage.getItem("bottomMaxNum");
+    	  }
+      }
+      
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+          modal.style.display = "none";
+          myMath();
+      }
+      
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = "none";
+              myMath();
+          }
+      }
+
+      // when the user clicks save, store values in local storage
+      document.getElementById("saveToLocalStorage").onclick = function() {
+           
+          if (storageAvailable('localStorage')) {
+            //determine which radio button is checked
+            let mathType = document.getElementsByName("mathType");
+            let i;
+            for (i = 0; i < mathType.length; i++) {
+              if (mathType[i].checked === true) {
+                localStorage.setItem("mathType", mathType[i].value);
+                break;
+              }
+            }
+             
+            //handle min/max
+            let intTopMinNum;
+            let intTopMaxNum;
+            let intBottomMinNum;
+            let intBottomMaxNum;
+            
+            intTopMinNum = parseInt(document.getElementById("topMinNum").value);
+            intTopMaxNum = parseInt(document.getElementById("topMaxNum").value);
+            intBottomMinNum = parseInt(document.getElementById("bottomMinNum").value);
+            intBottomMaxNum = parseInt(document.getElementById("bottomMaxNum").value);
+            
+            if ((intTopMinNum === "") || (isNaN(intTopMinNum))) {
+              intTopMinNum = 0;
+            }
+            if ((intTopMaxNum === "") || (isNaN(intTopMaxNum)))  {
+              intTopMaxNum = 10;
+            }
+
+            if ((intBottomMinNum === "") || (isNaN(intBottomMinNum))) {
+              intBottomMinNum = 0;
+            }
+            if ((intBottomMaxNum === "") || (isNaN(intBottomMaxNum)))  {
+              intBottomMaxNum = 10;
+            }
+             
+            if (intTopMaxNum < intTopMinNum) {
+              alert('Top Maximum number must be greater than Top Minimum number!');
+            } else {
+              localStorage.setItem("topMinNum", intTopMinNum);
+              localStorage.setItem("topMaxNum", intTopMaxNum);
+            }
+            if (intBottomMaxNum < intBottomMinNum) {
+              alert('Bottom Maximum number must be greater than Bottom Minimum number!');
+            } else {
+              localStorage.setItem("bottomMinNum", intBottomMinNum);
+              localStorage.setItem("bottomMaxNum", intBottomMaxNum);
+            }
+
+          }
+          modal.style.display = "none";
+          myMath();
+      }
+}
+
+
+window.onload = function(){
+    setUpModal();
+    checkAnswer();
+    triggerButtonClickOnEnter();
+    //call main method
+    myMath();
+}
+    	
+</script>
+
+</body>
+</html>
