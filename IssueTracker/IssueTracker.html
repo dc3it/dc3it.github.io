@@ -1,0 +1,1710 @@
+<!--
+    Copyright 2022
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.3.0/css/searchBuilder.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/css/shepherd.min.css"
+        integrity="sha512-g7F1lXNWWNdbCy2Qk6XTRx5FJ9U1w1rOmFo3/cIJApqtPBBd4GYGxV/MLnM0CVtVyWqIwnpSVIWZACMEkKO/CQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.23.0/pivot.min.css"
+        integrity="sha512-BDStKWno6Ga+5cOFT9BUnl9erQFzfj+Qmr5MDnuGqTQ/QYDO1LPdonnF6V6lBO6JI13wg29/XmPsufxmCJ8TvQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body,
+        textarea {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        div {
+            font-size: 16px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;
+            /* Mozilla, since 1999 */
+            white-space: -pre-wrap;
+            /* Opera 4-6 */
+            white-space: -o-pre-wrap;
+            /* Opera 7 */
+            word-wrap: break-word;
+            /* Internet Explorer 5.5+ */
+        }
+
+        /* https://alligator.io/html/dialog-element/ */
+        dialog {
+            background-color: #cfdff5;
+            color: #000000;
+            text-align: center;
+            border: none;
+            padding: 2rem;
+            border-radius: 6px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 0, 0, 0.25);
+            max-width: 90vw;
+        }
+
+        dialog[open] {
+            animation: appear .15s cubic-bezier(0, 1.8, 1, 1.8);
+        }
+
+        dialog::backdrop {
+            background: linear-gradient(45deg, rgba(112, 117, 116, 0.5), rgba(85, 110, 156, 0.5));
+        }
+
+        dialog .actions {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateX(-3rem);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .btn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 110px;
+        }
+
+        input[type=file]::file-selector-button {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 125px;
+            /* border: 2px solid #4CAF50;
+            padding: 1em 1em;
+            border-radius: .2em;
+            color: white;
+            background-color: #4CAF50;
+            transition: 1s;
+            font-size: 16px; */
+        }
+
+        /* input[type=file]::file-selector-button:hover {
+            background-color: #81ecec;
+            border: 2px solid #00cec9;
+        } */
+
+        .toast {
+            background-color: green;
+            z-index: 10;
+            height: 75px;
+            float: right;
+            margin: -35px;
+        }
+
+        .toast>.swal-text {
+            color: #fff;
+        }
+
+        .actions {
+            float: right;
+        }
+
+        #closeSettings,
+        #closeEdit {
+            border: none;
+            background: transparent;
+        }
+
+        .shepWalk {
+            background-color: rgb(209, 219, 238);
+        }
+
+        .shepherd-header {
+            background-color: #b0c4de;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            padding: 5px;
+            width: 60%;
+        }
+
+        .settingsRow {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            padding: 5px;
+            width: 90%;
+        }
+
+        .rowComments {
+            display: grid;
+            grid-template-columns: 100%;
+            padding: 10px;
+            width: 90%;
+        }
+
+        .addEditRow {
+            display: grid;
+            grid-template-columns: 30% 70%;
+            padding: 5px;
+            width: 80%;
+        }
+
+        .addEditColumn {
+            text-align: left;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .column {
+            text-align: left;
+        }
+
+        .settingsHelp {
+            width: 60%;
+        }
+
+        .modalSettingsTxtControls {
+            margin: 0px;
+            width: 350px;
+            height: 30px;
+            vertical-align: middle;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .modalSettingsBtn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 135px;
+        }
+
+        .settingsDDL {
+            padding-bottom: 2px;
+        }
+
+        #tblComments {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: left;
+            margin-top: 1em;
+        }
+
+        #tblComments tr td:first-child {
+            width: 100px;
+            text-align: center;
+        }
+
+        #txbDescription {
+            width: 100%;
+        }
+
+        /* https://www.w3schools.com/howto/howto_css_switch.asp */
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* Style inputs with type="text", select elements and textareas */
+        .addEditColumn>input[type=text],
+        .addEditColumn>select,
+        #txbDescription {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: grid; grid-template-rows: 1fr; grid-template-columns: 1.5fr 4fr 1fr; gap: 0px; height: 10%; 
+        position: -webkit-sticky; position: sticky; top: 0; background-color: #ffffff; z-index: 1">
+        <div>
+            <h1>Issue Tracker
+                <button type="button" id="configSettingsHelp"
+                    style="background-color: transparent; border: 0; vertical-align: top"><i
+                        class="fas fa-question-circle"></i></button>
+            </h1>
+        </div>
+        <div style="margin: auto; padding:.10em;">
+            <button type="button" id="addIssue" class="btn">Add
+            </button>
+            <button type="button" id="editIssue" class="btn">Edit
+            </button>
+            <button type="button" id="deleteIssue" class="btn">Delete
+            </button>
+            <button type="button" id="clearIssue" class="btn">Clear
+            </button>
+            <button type="button" id="downloadIssue" class="btn">Save to File
+            </button>
+            <button class="btn" id="chooseFile">
+                <label>
+                    <input type="file" id="openFile" style="display: none;" />
+                    <a style="font-weight:normal">Choose File</a>
+                </label>
+            </button>
+            <span id="fileSelectedFromChooseFileButton" style="font-size: smaller;"></span>
+        </div>
+        <div><button type="button" id="openSettings"
+                style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button></div>
+    </div>
+    <div>
+        <span id="fileSave2FileButton"></span>
+    </div>
+    <div>
+        <div>
+            <!-- stores all rows -->
+            <textarea id="changesJSON" rows="10"
+                style="margin: 0px; width: 1050px; height: 100px; display:none"></textarea>
+        </div>
+        <!-- apply rows to table -->
+        <div style="background-color: #ffffff;">
+            <div style="padding: 1em">
+                <table id="myTable"></table>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span>Powered by</span>        
+        <a href="https://dc3it.github.io" target="_blank"><img src="https://dc3it.github.io/images/DC3ITFAVICON.png" height="45px" width="45px"
+            style="vertical-align: middle" /></a>
+    </div>    
+    <!-- settings modal -->
+    <dialog class="my-modal" id="modalSettings">
+        <div class="actions">
+            <button type="button" id="closeSettings">❌</button>
+        </div>
+        <div style="text-align: left">
+            <h3>⚙️ Settings</h3>
+            <p style="font-size:smaller">Please click the red X in the upper right
+                to close the modal.</p>
+            <p style="font-size: smaller;">Make sure to use the | (pipe) symbol to separate the values.</p>
+            <span style="font-weight: bold">Created By</span>
+            <div class="settingsDDL">
+                <textarea id="dataListCreatedBy" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListCreatedBy" class="modalSettingsBtn">Add
+                    CreatedBy</button>
+            </div>
+            <span style="font-weight: bold">Updated By</span>
+            <div class="settingsDDL">
+                <textarea id="dataListUpdatedBy" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListUpdatedBy" class="modalSettingsBtn">Add
+                    UpdatedBy</button>
+            </div>
+            <span style="font-weight: bold">Projects</span>
+            <div class="settingsDDL">
+                <textarea id="dataListProjects" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListProjects" class="modalSettingsBtn">Add
+                    Projects</button>
+            </div>
+            <span style="font-weight: bold">Categories</span>
+            <div class="settingsDDL">
+                <textarea id="dataListCategories" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListCategories" class="modalSettingsBtn">Add
+                    Categories</button>
+            </div>
+            <span style="font-weight: bold">Priorities</span>
+            <div class="settingsDDL">
+                <textarea id="dataListPriorities" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListPriorities" class="modalSettingsBtn">Add
+                    Priorities</button>
+            </div>
+            <span style="font-weight: bold">Statuses</span>
+            <div class="settingsDDL">
+                <textarea id="dataListStatuses" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListStatuses" class="modalSettingsBtn">Add
+                    Statuses</button>
+            </div>
+            <span style="font-weight: bold">Assignees</span>
+            <div class="settingsDDL">
+                <textarea id="dataListAssignees" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListAssignees" class="modalSettingsBtn">Add
+                    Assignees</button>
+            </div>
+        </div>
+        <hr />
+        <div class="settingsRow">
+            <div class="column">
+                <h3>Turn off Guide Me</h3>
+            </div>
+            <div class="column" style="margin: auto">
+                <label class="switch"><input type='checkbox' id='doNotShowTour'><span
+                        class="slider round"></span></label>
+            </div>
+        </div>
+        <div class="settingsRow">
+            <div class="column">
+                <h3>Hide Filters</h3>
+            </div>
+            <div class="column" style="margin: auto">
+                <label class="switch"><input type='checkbox' id='doNotShowFilters'><span
+                        class="slider round"></span></label>
+            </div>
+        </div>
+        <div class="settingsRow">
+            <div class="column">
+                <h3>Hide Search Builder</h3>
+            </div>
+            <div class="column" style="margin: auto">
+                <label class="switch"><input type='checkbox' id='doNotShowSearchBuilder'><span
+                        class="slider round"></span></label>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <div class="column">
+                <h3>Select Priority Color</h3>
+            </div>
+        </div>
+        <div>
+            <div class="column" style="margin: auto">
+                <label for="lowColorPicker">Low
+                    <input type="color" id="lowColorPicker" name="lowColor" value="#FFFFFF"></label>
+                <label for="mediumColorPicker">Medium
+                    <input type="color" id="mediumColorPicker" name="mediumColor" value="#FFFF77"></label>
+                <label for="highColorPicker">High
+                    <input type="color" id="highColorPicker" name="highColor" value="#FFA585"></label>
+                <label for="showStopperColorPicker">Showstopper
+                    <input type="color" id="showStopperColorPicker" name="showStopperColor" value="#FA5858"></label>
+            </div>
+        </div>
+    </dialog>
+    <!-- edit row modal -->
+    <dialog id="modalAddEdit" class="my-modal" style="width: 30%">
+        <div class="actions">
+            <button type="button" id="closeEdit">❌</button>
+        </div>
+        <header class="dialog-header" id="dialogHeader">
+        </header>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbID">ID: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbID" disabled />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbDescription">Description: </label>
+            </div>
+            <div class="addEditColumn">
+                <textarea id="txbDescription" maxlength="120"></textarea>
+                <span id="remainingDescCount" style="font-size:x-small">Characters remaining: <span
+                        id="descCount">120</span></span>
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbCreatedBy">Created By: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbCreatedBy" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbUpdatedBy">Updated By: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbUpdatedBy" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbProject">Project: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbProject" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbCategory">Category: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbCategory" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbPriority">Priority: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbPriority" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbStatus">Status: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbStatus" />
+            </div>
+        </div>
+        <div class="addEditRow">
+            <div class="addEditColumn">
+                <label for="txbAssignedTo">Assigned To: </label>
+            </div>
+            <div class="addEditColumn">
+                <input type="text" id="txbAssignedTo" />
+            </div>
+        </div>
+        <div class="rowComments">
+            <div class="column">
+                <label for="txbComments">Comments: </label>
+                <div id="txbComments" style="background-color: #ffffff;">
+                </div>
+            </div>
+        </div>
+        <div style="padding-top: 10%">
+            <button type="button" id="btnSave" class="btn">Save</button>
+            <button type="button" id="btnCancel" class="btn">Cancel</button>
+        </div>
+        <div id="dvReadOnlyComments">
+            <table id="tblComments"></table>
+        </div>
+    </dialog>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- datatables.net is based on jQuery and requires various bolt ons for additional functionality MIT License -->
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
+    <!-- <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script> -->
+    <!-- shepherd js is MIT licensed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/js/shepherd.min.js"
+        integrity="sha512-PW9R1HcNuXvRsX9Ibbjzki4sp5pqAl6GLNhkNeAA1jRfVWGXg+i9eRN9VC4r/i/W7WaA8f1/ejqRTR7pgr+R+Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- sweet alert is MIT licensed and a nice popup -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- quill is MIT licensed and a nice rich editor -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        // #region *** quill editor ***
+        // Description: set up global quill editor
+        // Created on: 2022.05.01
+        // Modified on:
+        // ***        
+        let quill = new Quill('#txbComments', {
+            theme: 'snow'
+        });
+        // #endregion
+
+        // #region *** opensource MIT walkme - shepherdjs ***
+        // Description: handles creating a walkme concept for new users
+        // Created on: 2022.03.20
+        // Modified on:
+        //  2022.05.16 added steps for Edit Delete Choose file
+        //  2022.07.03 added steps for Save to File
+        // ***
+        const tour = new Shepherd.Tour({
+            defaultStepOptions: {
+                cancelIcon: {
+                    enabled: true
+                },
+                classes: 'shepWalk',
+                scrollTo: { behavior: 'smooth', block: 'center' },
+                useModalOverlay: true,
+                when: {
+                    show() {
+                        const currentStepElement = tour.currentStep.el;
+                        const header = currentStepElement.querySelector('.shepherd-header');
+                        const progress = document.createElement('span');
+                        progress.style['margin-right'] = '15px';
+                        progress.style['font-size'] = '9px';
+                        progress.innerText = `${tour.steps.indexOf(tour.currentStep) + 1}/${tour.steps.length}`;
+                        header.insertBefore(progress, currentStepElement.querySelector('.shepherd-cancel-icon'));
+                        const footer = currentStepElement.querySelector('.shepherd-footer');
+                        const progressBar = document.createElement('progress');
+                        progressBar.style['margin-right'] = '50px';
+                        progressBar.style['margin-top'] = '10px';
+                        progressBar.max = tour.steps.length;
+                        progressBar.value = tour.steps.indexOf(tour.currentStep) + 1;
+                        footer.insertBefore(progressBar, currentStepElement.querySelector('.shepherd-button'));
+                    }
+                }
+            }
+        });
+        tour.addStep({
+            title: 'Welcome!',
+            text: `This tool helps to generate and track issues. It is MIT licensed.`,
+            attachTo: {
+                element: '#configSettingsHelp',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'creating'
+        });
+        tour.addStep({
+            title: 'Add',
+            text: `To add an Issue, please fill in the relevant fields and click Save.`,
+            attachTo: {
+                element: '#addIssue',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'addIssue'
+        });
+        tour.addStep({
+            title: 'Edit',
+            text: `Click to select a row from the table and then click edit to open a modal form where the values from that row can be modified and changes saved.`,
+            attachTo: {
+                element: '#editIssue',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'editIssue'
+        });
+        tour.addStep({
+            title: 'Delete',
+            text: `Click to select a row from the table and then click delete to remove the row from the table and local storage.`,
+            attachTo: {
+                element: '#deleteIssue',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'deleteIssue'
+        });
+        tour.addStep({
+            title: 'Clear',
+            text: `Click clear to remove all issues from the table and local storage. Please <b>NOTE</b> use the Copy, CSV, and/or Save to File buttons to save the issues to more persistent file based storage.`,
+            attachTo: {
+                element: '#clearIssue',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'clearIssue'
+        });
+        tour.addStep({
+            title: 'Save to File',
+            text: `Click Save to File button to save all the rows with comments to a JSON formatted file and allow for persistent data storage to a desired location on your device. Please <b>NOTE</b> all issues are stored in the browser's local storage. This means you can close and reopen the app and the issues will persist. However, if you clear the local storage, then the issues will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the issues to more persistent file based storage. <b>To save issues with COMMENTS please use the Save to File button</b>`,
+            attachTo: {
+                element: '#downloadIssue',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'downloadIssues'
+        });
+        tour.addStep({
+            title: 'Choose File',
+            text: `Click choose file to select a JSON file that was created by the Save to File button. The Save to File button saves all the rows to a JSON formatted file and allows for persistent data storage to a desired location on your device.`,
+            attachTo: {
+                element: '#chooseFile',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'chooseIssues'
+        });
+        tour.addStep({
+            title: 'Settings',
+            text: `To modify the settings, click the gear ⚙️ ICON in the upper right.`,
+            attachTo: {
+                element: '#openSettings',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'settings'
+        });
+        tour.addStep({
+            title: 'Filtering and Sorting',
+            text: `Issues can be filtered based on the Search box and the Search Pane. Each column is sortable.`,
+            attachTo: {
+                element: '#myTable_filter',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'filterIssues'
+        });
+
+        // tour.start();
+        // #endregion
+
+        // #region *** settings event listeners ***
+        // Description: handles button event clicks
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.05.18 refactor date into reusable function
+        //      2022.06.21 add dropdown reset click handlers
+        // ***
+        // settings buttons
+        document.querySelector("#configSettingsHelp").addEventListener("click", () => {
+            swal({
+                title: "Settings Help",
+                text: "Use this tool to track issues. The information is saved in the browser's local storage. If you clear the cache and storage, then the entries will be deleted. Prior to clearing the browser cache, please use the Copy, CSV, and/or Save to File buttons to save the issues to more persistent file based storage. Brought 2 u by 1 who is a fry short of a happy meal 🍟 \n\n Copyright 2022\n\n Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+                className: "settingsHelp",
+                icon: "info"
+            });
+        });
+        document.querySelector("#addDataListCreatedBy").addEventListener("click", () => {
+            updateDataList("#dataListCreatedBy", "createdByDataList", "txbCreatedBy");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListUpdatedBy").addEventListener("click", () => {
+            updateDataList("#dataListUpdatedBy", "updatedByDataList", "txbUpdatedBy");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListProjects").addEventListener("click", () => {
+            updateDataList("#dataListProjects", "projectDataList", "txbProject");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListCategories").addEventListener("click", () => {
+            updateDataList("#dataListCategories", "categoryDataList", "txbCategory");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListPriorities").addEventListener("click", () => {
+            updateDataList("#dataListPriorities", "priorityDataList", "txbPriority");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListStatuses").addEventListener("click", () => {
+            updateDataList("#dataListStatuses", "statusDataList", "txbStatus");
+            toastMsg("DataList values updated!");
+        });
+        document.querySelector("#addDataListAssignees").addEventListener("click", () => {
+            updateDataList("#dataListAssignees", "assigneeDataList", "txbAssignedTo");
+            toastMsg("DataList values updated!");
+        });
+        //character counter for description field
+        document.querySelector("#txbDescription").addEventListener("input", event => {
+            const target = event.currentTarget;
+            const maxLength = target.getAttribute("maxlength");
+            const currentLength = target.value.length;
+            if (currentLength >= maxLength) {
+                document.querySelector("#descCount").innerHTML = "0";
+            }
+            document.querySelector("#descCount").innerHTML = maxLength - currentLength;
+        });
+        //disable esc key on settings modal because of need to reload the page for the show/hide on datatables
+        //there might be another way, but too much of a lift at present
+        document.querySelector("#modalSettings").addEventListener('cancel', (event) => {
+            event.preventDefault();
+        });
+        //color picker handlers to set local storage
+        document.querySelector("#lowColorPicker").addEventListener("change", () => {
+            localStorage.setItem("lowColorPicker", document.querySelector("#lowColorPicker").value);
+        });
+        document.querySelector("#mediumColorPicker").addEventListener("change", () => {
+            localStorage.setItem("mediumColorPicker", document.querySelector("#mediumColorPicker").value);
+        });
+        document.querySelector("#highColorPicker").addEventListener("change", () => {
+            localStorage.setItem("highColorPicker", document.querySelector("#highColorPicker").value);
+        });
+        document.querySelector("#showStopperColorPicker").addEventListener("change", () => {
+            localStorage.setItem("showStopperColorPicker", document.querySelector("#showStopperColorPicker").value);
+        });
+        // #endregion
+
+        // #region *** action button event listeners ***
+        // Description: handles button event clicks
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.05.18 refactor date into reusable function
+        //      2022.06.21 add dropdown reset click handlers
+        // ***
+        // #region *** add button ***
+        document.querySelector("#addIssue").addEventListener("click", () => {
+            //reset the comments table object
+            if (document.querySelector('#tblComments tbody')) {
+                $('#tblComments').DataTable().clear();
+                $('#tblComments').DataTable().destroy();
+                $('#tblComments + tbody').empty();
+            }
+            addEditModal("add");
+            document.querySelector("#txbID").parentNode.parentNode.style.display = "none";
+            document.querySelector("#txbDescription").value = "";
+            document.querySelector("#txbCreatedBy").disabled = false;
+            document.querySelector("#txbCreatedBy").value = "";
+            document.querySelector("#txbUpdatedBy").value = "";
+            document.querySelector("#txbUpdatedBy").parentNode.parentNode.style.display = "none";
+            document.querySelector("#txbProject").value = "";
+            document.querySelector("#txbCategory").value = "";
+            document.querySelector("#txbPriority").value = "";
+            document.querySelector("#txbStatus").value = "";
+            document.querySelector("#txbAssignedTo").value = "";
+            document.querySelector("#txbComments").value = "";
+            quill.root.innerHTML = "";
+            if (document.querySelector("#tblComments")) {
+                document.querySelector("#tblComments").innerHTML = "";
+            }
+        });
+        // #endregion
+
+        // #region *** clear all button ***
+        document.querySelector("#clearIssue").addEventListener("click", () => {
+            swal({
+                title: "Clear ALL Issues and Settings",
+                text: "Are you sure you want to clear all issues and settings from local storage? Have you backed the issues up to an external file using the Save to File button?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    //reset localstorage and the textarea
+                    localStorage.clear();
+                    document.querySelector("#changesJSON").value = "";
+                    swal("Issues have been cleared!", {
+                        icon: "success"
+                    });
+                    //TODO: need to wrap this with some conditional logic because erroring out or even remove? why is this here?
+                    //i think because it was still appearing on edit even though cleared out - so just need a conditional if
+                    //to make sure because when there is no firing of the edit and nothing set in the dom this table object does not exist
+                    //look to make a reusable helper function because same code also in the file elsewhere - find it!
+                    //and throws an error
+                    if (document.querySelector('#myTable tbody')) {
+                        $('#myTable').DataTable().clear();
+                        $('#myTable').DataTable().destroy();
+                        $('#myTable + tbody').empty();
+
+                    }
+                    location.reload();
+                }
+            });
+        });
+        // #endregion
+
+        // #region *** delete button ***
+        document.querySelector('#deleteIssue').addEventListener("click", () => {
+            if (localStorage.getItem("UsrIssue")) {
+                if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
+                    swal({
+                        title: "Delete issue",
+                        text: "Are you sure you want to delete this issue?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            deleteRow();
+                            dt();
+                        }
+                    });
+                } else {
+                    swal("Please select a row to delete", {
+                        icon: "error"
+                    });
+                }
+            } else {
+                swal("Please select a row to delete", {
+                    icon: "error"
+                });
+            }
+        });
+        // #endregion
+
+        // #region *** edit button ***
+        document.querySelector('#editIssue').addEventListener("click", () => {
+            if (localStorage.getItem("UsrIssue")) {
+                //check if datatable has rows
+                if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
+
+                    //reset the comments table object
+                    if (document.querySelector('#tblComments tbody')) {
+                        $('#tblComments').DataTable().clear();
+                        $('#tblComments').DataTable().destroy();
+                        $('#tblComments + tbody').empty();
+                    }
+
+                    //get the selected row
+                    let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+                    addEditModal("edit");
+                    document.querySelector("#txbID").parentNode.parentNode.style.display = "grid";
+
+                    document.querySelector("#txbCreatedBy").disabled = true;
+                    document.querySelector("#txbUpdatedBy").parentNode.parentNode.style.display = "grid";
+                    //populate modal with values for editing 
+                    document.querySelector("#txbID").value = dataRow[0][0];
+                    document.querySelector("#txbDescription").value = dataRow[0][1];
+                    document.querySelector("#txbUpdatedBy").value = dataRow[0][9];
+                    document.querySelector("#txbProject").value = dataRow[0][2];
+                    document.querySelector("#txbCategory").value = dataRow[0][3];
+                    document.querySelector("#txbPriority").value = dataRow[0][4];
+                    document.querySelector("#txbStatus").value = dataRow[0][5];
+                    document.querySelector("#txbAssignedTo").value = dataRow[0][6];
+                    document.querySelector("#txbCreatedBy").value = dataRow[0][7];
+                    document.querySelector("#tblComments").innerHTML = "";
+
+                    //reset comment because full history needs to be displayed below
+                    quill.root.innerHTML = "";
+                    //process the comments
+                    //clean up string to make it parseable into JSON                    
+                    let commentsJSON = "[" + dataRow[0][10].replace("Comments :", "").replace(/:/g, '.').replace(/'/g, '"').replace(/&quot;/g, "").replace(/https./g, "https:") + "]";
+                    let cleanCommentJSON = JSON.parse(commentsJSON);
+                    let commentRow = "";
+                    for (let i = 0; i < cleanCommentJSON.length; i++) {
+                        //test for comment placeholder
+                        if (cleanCommentJSON[i][1].indexOf("No_Comment_Added") == -1) {
+                            commentRow += `<tr><td>${cleanCommentJSON[i][0]}</td><td>${cleanCommentJSON[i][1]}</td></tr>`;
+                        }
+                    }
+                    //output the comments
+                    document.querySelector("#tblComments").insertAdjacentHTML("afterBegin", `<thead><tr><th>Date Added</th><th>Comment</th></tr></thead><tbody>${commentRow}</tbody>`);
+                    $('#tblComments').DataTable();
+                } else {
+                    swal("Please select a row to edit", {
+                        icon: "error"
+                    });
+                }
+            } else {
+                swal("Please select a row to edit", {
+                    icon: "error"
+                });
+            }
+        });
+        // #endregion
+
+        // #region *** save to file button ***
+        document.querySelector("#downloadIssue").addEventListener("click", () => {
+            if (document.querySelector("#changesJSON").value != "") {
+                swal("Please enter a filename - no extension necessary", {
+                    content: "input",
+                    icon: "info"
+                })
+                    .then((value) => {
+                        //validate filename
+                        if (value.match(/^[\w]+/g)) {
+                            //TODO: need more work here to prep the json - work with it as a string
+                            //need to add the settings from local storage to the json
+                            //then need to update the choose button code to parse out both and populate local storage
+                            let issueString = document.querySelector("#changesJSON").value;
+                            issueString = issueString.slice(0, issueString.lastIndexOf(","));
+                            let formattedJSON = `{ "Settings": [ {"lowColorPicker": "${localStorage.getItem('lowColorPicker')}"},{"mediumColorPicker": "${localStorage.getItem('mediumColorPicker')}"},{"highColorPicker": "${localStorage.getItem('highColorPicker')}"},{"showStopperColorPicker": "${localStorage.getItem('showStopperColorPicker')}"},{"createdByDataList": "${localStorage.getItem('createdByDataList')}"},{"updatedByDataList": "${localStorage.getItem('updatedByDataList')}"},{"projectDataList": "${localStorage.getItem('projectDataList')}"},{"categoryDataList": "${localStorage.getItem('categoryDataList')}"},{"priorityDataList": "${localStorage.getItem('priorityDataList')}"},{"statusDataList": "${localStorage.getItem('statusDataList')}"},{"assigneeDataList": "${localStorage.getItem('assigneeDataList')}"},{"doNotShowTour": "${localStorage.getItem('doNotShowTour')}"},{"doNotShowFilters": "${localStorage.getItem('doNotShowFilters')}"},{"doNotShowSearchBuilder": "${localStorage.getItem('doNotShowSearchBuilder')}"}],"Issues": [ ${issueString} ] }`;
+                            // console.log(formattedJSON);
+                            download(`${value}.json`, formattedJSON);
+                            localStorage.setItem("fileLastSaved", computeDate());
+                            checkLocalStorage();
+                        } else {
+                            swal("Please try again and enter a filename - no extension necessary", {
+                                icon: "error"
+                            });
+                        }
+                    });
+            } else {
+                swal("There are no issues to download", {
+                    icon: "error"
+                });
+            }
+        });
+        // #endregion
+
+        // #region *** choose file - process uploaded json file *** 
+        document.querySelector("#openFile").addEventListener("change", () => {
+            const selectedFile = document.querySelector("#openFile").files[0];
+            const reader = new FileReader();
+            localStorage.setItem("file2Process", selectedFile.name);
+            let jsonData = "";
+            let jsonDataObject = {};
+            let issueData = "";
+            reader.addEventListener("load", () => {
+                //set local storage as the reload with trigger main and that will load the rows
+                //TODO: after getting the save updated to add in the settings values
+                //then will need to set things up here as well - look for reusable function to help
+                //create object to get values from
+                jsonData = reader.result;
+                jsonDataObject = JSON.parse(jsonData);
+                localStorage.setItem('lowColorPicker', jsonDataObject.Settings[0].lowColorPicker);
+                localStorage.setItem('mediumColorPicker', jsonDataObject.Settings[1].mediumColorPicker);
+                localStorage.setItem('highColorPicker', jsonDataObject.Settings[2].highColorPicker);
+                localStorage.setItem('showStopperColorPicker', jsonDataObject.Settings[3].showStopperColorPicker);
+                localStorage.setItem('createdByDataList', jsonDataObject.Settings[4].createdByDataList);
+                localStorage.setItem('updatedByDataList', jsonDataObject.Settings[5].updatedByDataList);
+                localStorage.setItem('projectDataList', jsonDataObject.Settings[6].projectDataList);
+                localStorage.setItem('categoryDataList', jsonDataObject.Settings[7].categoryDataList);
+                localStorage.setItem('priorityDataList', jsonDataObject.Settings[8].priorityDataList);
+                localStorage.setItem('statusDataList', jsonDataObject.Settings[9].statusDataList);
+                localStorage.setItem('assigneeDataList', jsonDataObject.Settings[10].assigneeDataList);
+                localStorage.setItem('doNotShowTour', jsonDataObject.Settings[11].doNotShowTour);
+                localStorage.setItem('doNotShowFilters', jsonDataObject.Settings[12].doNotShowFilters);
+                localStorage.setItem('doNotShowSearchBuilder', jsonDataObject.Settings[13].doNotShowSearchBuilder);
+                //need to loop through object 2 construct JSON
+                for (let i = 0; i < jsonDataObject.Issues.length; i++) {
+                    issueData += `${JSON.stringify(jsonDataObject.Issues[i])},`;
+                }
+                localStorage.setItem("UsrIssue", issueData);
+                location.reload();
+            }, false);
+            reader.readAsText(selectedFile);
+
+        });
+        // #endregion
+
+        // #endregion
+
+        // #region *** reset datalist controls ***
+        // Description: handles datalist dropdown resets
+        // Created on: 2022.06.21
+        // Modified on:
+        // ***
+        // reset txbCategory dropdown
+        document.querySelector("#txbCategory").addEventListener("click", () => {
+            document.querySelector("#txbCategory").value = "";
+        });
+        // reset txbPriority dropdown
+        document.querySelector("#txbPriority").addEventListener("click", () => {
+            document.querySelector("#txbPriority").value = "";
+        });
+        // reset txbStatus dropdown
+        document.querySelector("#txbStatus").addEventListener("click", () => {
+            document.querySelector("#txbStatus").value = "";
+        });
+        // reset txbProject dropdown
+        document.querySelector("#txbProject").addEventListener("click", () => {
+            document.querySelector("#txbProject").value = "";
+        });
+        // reset txbUpdatedBy dropdown
+        document.querySelector("#txbUpdatedBy").addEventListener("click", () => {
+            document.querySelector("#txbUpdatedBy").value = "";
+        });
+        // reset txbAssignedTo dropdown
+        document.querySelector("#txbAssignedTo").addEventListener("click", () => {
+            document.querySelector("#txbAssignedTo").value = "";
+        });
+        // reset txbCreatedBy dropdown
+        document.querySelector("#txbCreatedBy").addEventListener("click", () => {
+            document.querySelector("#txbCreatedBy").value = "";
+        });
+        // #endregion
+
+        // #region *** settings modal ***
+        //settings gear icon open
+        document.querySelector("#openSettings").addEventListener("click", () => {
+            document.querySelector(".my-modal").showModal();
+        });
+        //settings modal close
+        document.querySelector('#closeSettings').addEventListener("click", () => {
+            document.querySelector('.my-modal').close();
+            location.reload();
+        });
+        // #endregion
+
+        // #region *** add/edit modal ***
+        //close button
+        document.querySelector('#closeEdit').addEventListener("click", () => {
+            document.querySelector('#modalAddEdit').close();
+        });
+        //cancel button
+        document.querySelector("#btnCancel").addEventListener("click", () => {
+            document.querySelector("#modalAddEdit").close();
+        });
+
+        //save button
+        document.querySelector("#btnSave").addEventListener("click", () => {
+            //determine whether add or edit
+            if (document.querySelector("#dialogHeader>h1").innerHTML == "Add Entry") {
+                buildRows("add");
+                addRows();
+                dt();
+                toastMsg("Issue Added!");
+            } else {
+                //get the selected row
+                let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+                //need to check to see if changes were made in the form and make an entry in the comment
+                let addChange2Comment = "";
+                addChange2Comment = dataRow[0][10];
+                //if original does not equal current then need to make a comment
+                if (document.querySelector("#txbDescription").value != dataRow[0][1]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Description changed <strong>from</strong> ${dataRow[0][1]} <strong>to</strong> ${document.querySelector("#txbDescription").value}']`;
+                }
+                if (document.querySelector("#txbUpdatedBy").value != dataRow[0][9]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Updated By changed <strong>from</strong> ${dataRow[0][9]} <strong>to</strong> ${document.querySelector("#txbUpdatedBy").value}']`;
+                }
+                if (document.querySelector("#txbProject").value != dataRow[0][2]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Project changed <strong>from</strong> ${dataRow[0][2]} <strong>to</strong> ${document.querySelector("#txbProject").value}']`;
+                }
+                if (document.querySelector("#txbCategory").value != dataRow[0][3]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Category changed <strong>from</strong> ${dataRow[0][3]} <strong>to</strong> ${document.querySelector("#txbCategory").value}']`;
+                }
+                if (document.querySelector("#txbPriority").value != dataRow[0][4]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Priority changed <strong>from</strong> ${dataRow[0][4]} <strong>to</strong> ${document.querySelector("#txbPriority").value}']`;
+                }
+                if (document.querySelector("#txbStatus").value != dataRow[0][5]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Status changed <strong>from</strong> ${dataRow[0][5]} <strong>to</strong> ${document.querySelector("#txbStatus").value}']`;
+                }
+                if (document.querySelector("#txbAssignedTo").value != dataRow[0][6]) {
+                    addChange2Comment += `,['${computeDate()}', '📃 Assigned To changed <strong>from</strong> ${dataRow[0][6]} <strong>to</strong> ${document.querySelector("#txbAssignedTo").value}']`;
+                }
+                if (quill.root.textContent != "") {
+                    addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
+                }
+
+                //close the modal 
+                document.querySelector("#modalAddEdit").close();
+                //remove row for edit
+                deleteRow();
+                buildRows("edit", addChange2Comment);
+                addRows();
+                dt();
+                toastMsg("Issue Updated!");
+            }
+        });
+        // #endregion
+
+        // #region *** Settings Switches Set LocalStorage ***
+        // walk me - guide me
+        document.querySelector("#doNotShowTour").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowTour");
+        });
+        // datatables filters
+        document.querySelector("#doNotShowFilters").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowFilters");
+        });
+        // datatables search builder
+        document.querySelector("#doNotShowSearchBuilder").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowSearchBuilder");
+        });
+        const setLocalStorageValuesForSettings = (lsKeyName) => {
+            if (localStorage.getItem(lsKeyName)) {
+                if (document.querySelector(`#${lsKeyName}`).checked == true) {
+                    localStorage.setItem(lsKeyName, "true");
+                } else {
+                    localStorage.setItem(lsKeyName, "false");
+                }
+            } else {
+                localStorage.setItem(lsKeyName, "true");
+            }
+        }
+        // #endregion
+
+        // #region *** download json file ***
+        //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server/18197341#18197341
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none'; //could have link be visible and allow right click to save to a different location if so desired
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        // #endregion
+
+        // #region *** modal routine ***
+        // Description: handles add / edit modal form
+        // Params:
+        //      actionType: add or edit for form type config
+        // Created on: 2022.05.30
+        // Modified on:
+        // ***
+        const addEditModal = (actionType) => {
+            if (actionType == "add") {
+                document.getElementById("dialogHeader").innerHTML = "<h1>Add Entry</h1>";
+            } else {
+                document.getElementById("dialogHeader").innerHTML = "<h1>Edit Entry</h1>";
+            }
+            //show the form
+            document.querySelector("#modalAddEdit").showModal();
+        };
+        // #endregion
+
+        // #region *** helper functions ***
+        // Description: resuable misc functions
+        // Created on: 2022.05.18
+        // Modified on: 
+        //  2022.06.13 added computeDate and todaysDateClean
+        // ***
+        const computeDate = () => {
+            const d = new Date();
+            let isoDateTime = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+            return isoDateTime;
+        }
+        const todaysDate = (isoDT) => {
+            return (isoDT.slice(0, -1).replace("T", " "));
+        }
+        const todaysDateClean = (isoDT) => {
+            return (isoDT.slice(0, isoDT.indexOf("T")));
+        }
+        // #endregion
+
+        // #region *** build rows ***
+        // Description: handles concatenating the rows together and storing in hidden textarea
+        // Params: 
+        //      addOrEdit: create Row from different form controls
+        // Created on: 2022.01.27
+        // Modified on: 
+        //      2022.04.28 refactor to handle JSON
+        //      2022.03.10 added date added column
+        //      2022.05.18 refactor date into reusable function add parameter addOrEdit
+        //      2022.06.14 add comments parameter and update comment to handle additions
+        // ***            
+        const buildRows = (addOrEdit, add2Comments) => {
+            //create json from add form controls or edit form controls
+            if (addOrEdit !== "edit") {
+                if (quill.root.textContent == "") {
+                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${document.querySelector("#txbDescription").value}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                } else {
+                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${document.querySelector("#txbDescription").value}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']" ],`;
+                }
+            } else {
+                //need to add logic to see if there is a difference in the value from the data versus that current
+                //selection because will want to update the comment with that information
+                //need to pass in the data as an optional param for edit
+                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbID").value}", "${document.querySelector("#txbDescription").value}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbUpdatedBy").value}", "${add2Comments}" ], `;
+            }
+            //console.log("build rows - changesJSON value: " + document.querySelector("#changesJSON").value);
+        }
+        // #endregion
+
+        // #region *** add row ***
+        // Description: handles inserting new row into DOM/table and overwriting local storage with all rows
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.04.28 refactor to support JSON approach
+        // ***
+        const addRows = () => {
+            if (document.querySelector("#changesJSON").value.length > 0) {
+                localStorage.setItem("UsrIssue", document.querySelector("#changesJSON").value);
+            }
+            // console.log("addRows - changesJSON value: " + document.querySelector("#changesJSON").value);
+        };
+        // #endregion
+
+        // #region *** delete row ***
+        // Description: handles deleting a higlighted row
+        // Created on: 2022.05.18
+        // Modified on: 
+        //      2022.06.21 compare ids to determine what should be removed
+        //      2022.07.02 removed string array based approach and went with object
+        // ***
+        const deleteRow = () => {
+            let updatedRows = "";
+            //get the selected row
+            let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+            //extract row ID
+            let rowID = dataRow[0][0];
+            //get rows from local storage
+            let newResults = localStorage.getItem("UsrIssue");
+            newResults = `[ ${newResults.slice(0, newResults.lastIndexOf(","))} ]`;
+            newResults = JSON.parse(newResults);
+            //find matching row and remove
+            for (let i = 0; i < newResults.length; i++) {
+                //test to see if rows match if not retain value
+                if (rowID !== newResults[i][0]) {
+                    updatedRows += `${JSON.stringify(newResults[i])},`;
+                }
+            }
+            document.querySelector("#changesJSON").value = updatedRows;
+            localStorage.setItem("UsrIssue", updatedRows);
+            //console.log("deleteRow - ls value: " + updatedRows);
+        }
+        // #endregion
+
+        // #region *** update datalist ***
+        // Description: handles updating the datalist
+        // Params: 
+        //      elemValuesID: values for DL
+        //      dlID: new DL ID
+        //      inputID: existing input ID
+        // Created on: 2022.03.18
+        // Modified on:
+        // ***
+        const updateDataList = (elemValuesID, dlID, inputID) => {
+            //remove existing dataList - don't want dupes
+            if (document.querySelector(`#${dlID}`)) {
+                document.querySelector(`#${dlID}`).remove();
+            }
+            //declare array
+            let newList = [];
+            //break up the list into array to loop through and create dataList
+            newList = document.querySelector(`${elemValuesID}`).value.split("|");
+            let newDataList = document.createElement('datalist');
+            newDataList.id = `${dlID}`;
+            document.body.appendChild(newDataList);
+            for (let i = 0; i < newList.length; i++) {
+                var newDataListOption = document.createElement("option");
+                newDataListOption.value = newList[i];
+                newDataList.appendChild(newDataListOption);
+            }
+            //set list attribute values
+            document.querySelector(`#${inputID}`).setAttribute('list', `${dlID}`);
+            //set local storage for datalist values
+            localStorage.setItem(dlID, document.querySelector(`${elemValuesID}`).value);
+        };
+        // #endregion
+
+        // #region *** toast message ***
+        // Description: handles formatting toast message with sweetalert
+        // Created on: 2022.03.19
+        // Modified on:
+        // ***
+        const toastMsg = (msg) => {
+            swal(msg, {
+                timer: 1000,
+                buttons: false,
+                className: "toast"
+            });
+        };
+        // #endregion
+
+        // #region *** destroy datatable and regen ***
+        // Description: handles clearing datatable from DOM and recreate when adding row otherwise errors will arise
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.01.27 added more settings for search pane, search builder, state save
+        //      2022.05.11 added check for datatable row existence
+        // ***
+        const dt = () => {
+            //test to see if the datatable has any rows
+            if (document.querySelector('#myTable tbody')) {
+                $('#myTable').DataTable().clear();
+                $('#myTable').DataTable().destroy();
+                $('#myTable + tbody').empty();
+                // addRows();
+            }
+            //get the data
+            let json = localStorage.getItem("UsrIssue");
+            json = json.substring(0, json.lastIndexOf(","));
+            //let jsonData = json;
+            let jsonData = `[ ${json} ] `;
+            //console.log("dt step - ls value: " + jsonData);
+            let domSettings = "lBfrtip"; //dom: P - search panes | Q - condition builder | l - Entry Length
+            //modify dom to account for settings
+            if (localStorage.getItem("doNotShowSearchBuilder") !== "true") {
+                domSettings = `Q${domSettings}`;
+            }
+            if (localStorage.getItem("doNotShowFilters") !== "true") {
+                domSettings = `P${domSettings}`;
+            }
+
+            //color picker assignment
+            let lowPriorityColor = localStorage.getItem("lowColorPicker");
+            let mediumPriorityColor = localStorage.getItem("mediumColorPicker");
+            let highPriorityColor = localStorage.getItem("highColorPicker");
+            let showStopperPriorityColor = localStorage.getItem("showStopperColorPicker");
+
+            //make sure there is data - using a string still
+            if (jsonData.indexOf(",") > 0) {
+                jsonData = JSON.parse(jsonData); //convert to JSON
+
+                $('#myTable').DataTable({
+                    dom: domSettings,
+                    searchPanes: {
+                        layout: 'columns-6'
+                    },
+                    buttons: [
+                        // {
+                        //     extend: 'searchPanes',
+                        //     config: {
+                        //         cascadePanes: true
+                        //     }
+                        // }, 
+                        'copy', 'csv'
+                    ],
+                    stateSave: true,
+                    select: true,
+                    data: jsonData,
+                    columns: [
+                        { title: "ID" },
+                        { title: "Description" },
+                        { title: "Project" },
+                        { title: "Category" },
+                        { title: "Priority" },
+                        { title: "Status" },
+                        { title: "Assigned To" },
+                        { title: "Created By" },
+                        { title: "Date Updated" },
+                        { title: "Updated By" }
+                    ], columnDefs: [
+                        {
+                            searchPanes: {
+                                show: true
+                            },
+                            targets: [1, 2, 3, 4, 5, 6]
+                        },
+                        {
+                            searchPanes: {
+                                show: false
+                            },
+                            targets: [0]
+                        }
+                    ],
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "createdRow": function (row, data, index) {
+                        switch (data[4]) {
+                            case 'High':
+                                $(row).css('background-color', highPriorityColor);
+                                break;
+                            case 'Medium':
+                                $(row).css('background-color', mediumPriorityColor);
+                                break;
+                            case 'Low':
+                                $(row).css('background-color', lowPriorityColor);
+                                break;
+                            case 'Showstopper':
+                                $(row).css('background-color', showStopperPriorityColor);
+                                break;
+                        }
+                    }
+                }).draw();
+            }
+        };
+        // #endregion
+
+        // #region *** local storage ***
+        // Description: handles processing local storage values
+        // Created on: 2022.06.29 refactor to separate routine
+        // Modified on:
+        // ***        
+        const checkLocalStorage = () => {
+            // *** generate dt ***
+            if (localStorage.getItem("UsrIssue")) {
+                //if localstorage has rows, then overwrite hidden textarea to build table
+                document.querySelector("#changesJSON").value = localStorage.getItem("UsrIssue");
+                //pull in rows (if any) and gen table
+                addRows();
+                dt();
+            }
+
+            // *** get files info ***
+            // source filename info
+            if (localStorage.getItem("file2Process")) {
+                //set filename on page
+                document.querySelector("#fileSelectedFromChooseFileButton").textContent = `${localStorage.getItem("file2Process")}`;
+            } else {
+                document.querySelector("#fileSelectedFromChooseFileButton").textContent = "No issues file selected.";
+            }
+            //last saved
+            if (localStorage.getItem("fileLastSaved")) {
+                //set filename on page
+                document.querySelector("#fileSave2FileButton").textContent = `Issues last saved: ${localStorage.getItem("fileLastSaved")}. Please check Downloads folder for most current version.`;
+            } else {
+                document.querySelector("#fileSave2FileButton").textContent = "Issues have not been saved to a file.";
+            }
+
+            // *** settings - toggle switches ***
+            // walk me - tour - guide me
+            if (localStorage.getItem("doNotShowTour") == "true") {
+                document.querySelector("#doNotShowTour").checked = true;
+            } else {
+                document.querySelector("#doNotShowTour").checked = false;
+                tour.start();
+            }
+            // datatables search filters
+            if (localStorage.getItem("doNotShowFilters") == "true") {
+                document.querySelector("#doNotShowFilters").checked = true;
+            } else {
+                document.querySelector("#doNotShowFilters").checked = false;
+            }
+            // datatables search builder
+            if (localStorage.getItem("doNotShowSearchBuilder") == "true") {
+                document.querySelector("#doNotShowSearchBuilder").checked = true;
+            } else {
+                document.querySelector("#doNotShowSearchBuilder").checked = false;
+            }
+
+            // *** settings - priority colors ***
+            if (localStorage.getItem("lowColorPicker")) {
+                document.querySelector("#lowColorPicker").value = localStorage.getItem("lowColorPicker");
+            } else {
+                localStorage.setItem("lowColorPicker", document.querySelector("#lowColorPicker").value);
+            }
+            if (localStorage.getItem("mediumColorPicker")) {
+                document.querySelector("#mediumColorPicker").value = localStorage.getItem("mediumColorPicker");
+            } else {
+                localStorage.setItem("mediumColorPicker", document.querySelector("#mediumColorPicker").value);
+            }
+            if (localStorage.getItem("highColorPicker")) {
+                document.querySelector("#highColorPicker").value = localStorage.getItem("highColorPicker");
+            } else {
+                localStorage.setItem("highColorPicker", document.querySelector("#highColorPicker").value);
+            }
+            if (localStorage.getItem("showStopperColorPicker")) {
+                document.querySelector("#showStopperColorPicker").value = localStorage.getItem("showStopperColorPicker");
+            } else {
+                localStorage.setItem("showStopperColorPicker", document.querySelector("#showStopperColorPicker").value);
+            }
+        }
+        // #endregion
+
+        // #region *** page ready ***
+        // Description: handles pure JS document.ready event when page first loads/painted
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.05.03 added show tour logic
+        // ***            
+        window.addEventListener('DOMContentLoaded', (event) => {
+
+            // *** settings - datalist ***
+            const dlValues = [
+                { namedDataList: "createdByDataList", dataListControl: "#dataListCreatedBy", inputControl: "txbCreatedBy", controlValue: "Create User 1|Create User 2|Create User 3" },
+                { namedDataList: "updatedByDataList", dataListControl: "#dataListUpdatedBy", inputControl: "txbUpdatedBy", controlValue: "Update User 1|Update User 2|Update User 3" },
+                { namedDataList: "projectDataList", dataListControl: "#dataListProjects", inputControl: "txbProject", controlValue: "Project 1|Project 2|Project 3" },
+                { namedDataList: "categoryDataList", dataListControl: "#dataListCategories", inputControl: "txbCategory", controlValue: "Action Item|Enhancement|Follow Up|Issue Fix|New Development|Question|Request|Task" },
+                { namedDataList: "priorityDataList", dataListControl: "#dataListPriorities", inputControl: "txbPriority", controlValue: "Low|Medium|High|Showstopper" },
+                { namedDataList: "statusDataList", dataListControl: "#dataListStatuses", inputControl: "txbStatus", controlValue: "New|In Progress|Complete|On hold|Past Due" },
+                { namedDataList: "assigneeDataList", dataListControl: "#dataListAssignees", inputControl: "txbAssignedTo", controlValue: "Assignee 1|Assignee 2|Assignee 3" }
+            ];
+            //loop through array of objects to construct the datalists
+            for (let i = 0; i < dlValues.length; i++) {
+                if (localStorage.getItem(dlValues[i].namedDataList)) {
+                    document.querySelector(dlValues[i].dataListControl).value = localStorage.getItem(dlValues[i].namedDataList);
+                    updateDataList(dlValues[i].dataListControl, dlValues[i].namedDataList, dlValues[i].inputControl);
+                    document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
+                } else {
+                    document.querySelector(dlValues[i].dataListControl).value = dlValues[i].controlValue;
+                    updateDataList(dlValues[i].dataListControl, dlValues[i].namedDataList, dlValues[i].inputControl);
+                    document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
+                }
+            }
+
+            //handle local storage
+            checkLocalStorage();
+
+        });
+        // #endregion
+    </script>
+
+</body>
+
+</html>
