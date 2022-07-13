@@ -1,5 +1,5 @@
 <!--
-    Copyright 2022
+    Copyright 2022 DC3IT
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -23,7 +23,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.3.0/css/searchBuilder.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css" />
-    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css" /> -->
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.4/css/fixedHeader.dataTables.min.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/css/shepherd.min.css"
         integrity="sha512-g7F1lXNWWNdbCy2Qk6XTRx5FJ9U1w1rOmFo3/cIJApqtPBBd4GYGxV/MLnM0CVtVyWqIwnpSVIWZACMEkKO/CQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -35,6 +35,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         body,
         textarea {
             font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* eForm */
+        #ctl00_MainContent_ctl00_btnSave,
+        #ctl00_MainContent_ctl01_btnSaveBottom {
+            border: none;
+            font-size: 1.60em;
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            margin: 2px 2px;
+            cursor: pointer;
+        }
+
+        /* eForm */
+        #ctl00_MainContent_ctl00_spanRelatedDocuments,
+        #ctl00_MainContent_ctl01_spanRelatedDocumentsBottom {
+            font-size: .5em;
         }
 
         div {
@@ -387,11 +405,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             </div>
         </div>
     </div>
+    <!-- <div style="text-align: center;">
+        <span>Powered by</span>
+        <img src="https://www.slalom.com/themes/custom/slalom/favicon.ico" height="25px" width="25px"
+            style="vertical-align: middle" />
+    </div> -->
     <div style="text-align: center;">
-        <span>Powered by</span>        
-        <a href="https://dc3it.github.io" target="_blank"><img src="https://dc3it.github.io/images/DC3ITFAVICON.png" height="45px" width="45px"
-            style="vertical-align: middle" /></a>
-    </div>    
+        <span>Powered by</span>
+        <a href="https://dc3it.github.io" target="_blank"><img src="https://dc3it.github.io/images/DC3ITFAVICON.png"
+                height="45px" width="45px" style="vertical-align: middle" /></a>
+    </div>
     <!-- settings modal -->
     <dialog class="my-modal" id="modalSettings">
         <div class="actions">
@@ -598,6 +621,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <script src="https://cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>
     <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <!-- <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script> -->
     <!-- shepherd js is MIT licensed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/js/shepherd.min.js"
@@ -998,11 +1022,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     swal("Issues have been cleared!", {
                         icon: "success"
                     });
-                    //TODO: need to wrap this with some conditional logic because erroring out or even remove? why is this here?
-                    //i think because it was still appearing on edit even though cleared out - so just need a conditional if
-                    //to make sure because when there is no firing of the edit and nothing set in the dom this table object does not exist
-                    //look to make a reusable helper function because same code also in the file elsewhere - find it!
-                    //and throws an error
+
                     if (document.querySelector('#myTable tbody')) {
                         $('#myTable').DataTable().clear();
                         $('#myTable').DataTable().destroy();
@@ -1079,8 +1099,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     //reset comment because full history needs to be displayed below
                     quill.root.innerHTML = "";
                     //process the comments
-                    //clean up string to make it parseable into JSON                    
-                    let commentsJSON = "[" + dataRow[0][10].replace("Comments :", "").replace(/:/g, '.').replace(/'/g, '"').replace(/&quot;/g, "").replace(/https./g, "https:") + "]";
+                    //clean up string to make it parseable into JSON - removed the replace on the colon as it was breaking teams links                   
+                    let commentsJSON = "[" + dataRow[0][10].replace("Comments :", "").replace(/'/g, '"').replace(/&quot;/g, "") + "]";
                     let cleanCommentJSON = JSON.parse(commentsJSON);
                     let commentRow = "";
                     for (let i = 0; i < cleanCommentJSON.length; i++) {
@@ -1115,9 +1135,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     .then((value) => {
                         //validate filename
                         if (value.match(/^[\w]+/g)) {
-                            //TODO: need more work here to prep the json - work with it as a string
-                            //need to add the settings from local storage to the json
-                            //then need to update the choose button code to parse out both and populate local storage
                             let issueString = document.querySelector("#changesJSON").value;
                             issueString = issueString.slice(0, issueString.lastIndexOf(","));
                             let formattedJSON = `{ "Settings": [ {"lowColorPicker": "${localStorage.getItem('lowColorPicker')}"},{"mediumColorPicker": "${localStorage.getItem('mediumColorPicker')}"},{"highColorPicker": "${localStorage.getItem('highColorPicker')}"},{"showStopperColorPicker": "${localStorage.getItem('showStopperColorPicker')}"},{"createdByDataList": "${localStorage.getItem('createdByDataList')}"},{"updatedByDataList": "${localStorage.getItem('updatedByDataList')}"},{"projectDataList": "${localStorage.getItem('projectDataList')}"},{"categoryDataList": "${localStorage.getItem('categoryDataList')}"},{"priorityDataList": "${localStorage.getItem('priorityDataList')}"},{"statusDataList": "${localStorage.getItem('statusDataList')}"},{"assigneeDataList": "${localStorage.getItem('assigneeDataList')}"},{"doNotShowTour": "${localStorage.getItem('doNotShowTour')}"},{"doNotShowFilters": "${localStorage.getItem('doNotShowFilters')}"},{"doNotShowSearchBuilder": "${localStorage.getItem('doNotShowSearchBuilder')}"}],"Issues": [ ${issueString} ] }`;
@@ -1149,8 +1166,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             let issueData = "";
             reader.addEventListener("load", () => {
                 //set local storage as the reload with trigger main and that will load the rows
-                //TODO: after getting the save updated to add in the settings values
-                //then will need to set things up here as well - look for reusable function to help
                 //create object to get values from
                 jsonData = reader.result;
                 jsonDataObject = JSON.parse(jsonData);
@@ -1278,6 +1293,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 if (quill.root.textContent != "") {
                     addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
                 }
+                // else {
+                //     addChange2Comment += `,['${computeDate()}', '📝 No Comment Entered by User']`;
+                // }
 
                 //close the modal 
                 document.querySelector("#modalAddEdit").close();
