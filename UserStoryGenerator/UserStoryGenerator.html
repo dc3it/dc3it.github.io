@@ -601,30 +601,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             id: 'creating'
         });
         tour.addStep({
-            title: 'Dropdown / Autocomplete / Datalist Settings',
-            text: `To modify the dropdown / autocomplete / picklist / datalist choices and this guided tour, click the gear ⚙️ ICON in the upper right.`,
-            attachTo: {
-                element: '#openSettings',
-                on: 'bottom'
-            },
-            buttons: [
-                {
-                    action() {
-                        return this.back();
-                    },
-                    classes: 'shepherd-button-secondary',
-                    text: 'Back'
-                },
-                {
-                    action() {
-                        return this.next();
-                    },
-                    text: 'Next'
-                }
-            ],
-            id: 'settings'
-        });
-        tour.addStep({
             title: 'Add',
             text: `To add a User Story, select the category and user, fill in the action and benefit descriptions, and click Add. The category and user lists offer autocomplete, dropdown, and overwrite functionality. Please <b>NOTE</b> all stories are stored in the browser's local storage. This means you can close and reopen the app and the stories will persist. However, if you clear the local storage, then the stories will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage.`,
             attachTo: {
@@ -721,10 +697,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             id: 'clearStories'
         });
         tour.addStep({
+            title: 'Save to File',
+            text: `Click Save to File button to save all the rows to a JSON formatted file and allow for persistent data storage to a desired location on your device. Please <b>NOTE</b> all issues are stored in the browser's local storage. This means you can close and reopen the app and the issues will persist. However, if you clear the local storage, then the issues will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the issues to more persistent file based storage. <b>To save issues to a file please use the Save to File button</b>`,
+            attachTo: {
+                element: '#downloadStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'downloadStories'
+        });        
+        tour.addStep({
             title: 'Choose File',
             text: `Click choose file to select a JSON file that was created by the Save to File button. The Save to File button saves all the rows to a JSON formatted file and allows for persistent data storage to a desired location.`,
             attachTo: {
-                element: '#openFile',
+                element: '#chooseFile',
                 on: 'bottom'
             },
             buttons: [
@@ -744,6 +744,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             ],
             id: 'chooseStories'
         });
+        tour.addStep({
+            title: 'Dropdown / Autocomplete / Datalist Settings',
+            text: `To modify the dropdown / autocomplete / picklist / datalist choices and this guided tour, click the gear ⚙️ ICON in the upper right.`,
+            attachTo: {
+                element: '#openSettings',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'settings'
+        });        
         tour.addStep({
             title: 'Filtering and Sorting',
             text: `Stories can be filtered based on the Search box, the Custom Search Builder button, and the Search Pane. Each column is sortable. Multi column sorting is not enabled.`,
