@@ -879,7 +879,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }).then((willDelete) => {
                 if (willDelete) {
                     //reset localstorage and the textarea
-                    localStorage.setItem("UsrStry", "");
+                    localStorage.clear();
                     document.querySelector("#changesJSON").value = "";
                     swal("Stories have been cleared!", {
                         icon: "success"
