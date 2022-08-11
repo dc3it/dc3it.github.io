@@ -24,6 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.4/css/fixedHeader.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.5.6/css/colReorder.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/css/shepherd.min.css"
         integrity="sha512-g7F1lXNWWNdbCy2Qk6XTRx5FJ9U1w1rOmFo3/cIJApqtPBBd4GYGxV/MLnM0CVtVyWqIwnpSVIWZACMEkKO/CQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -370,13 +371,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <a style="font-weight:normal">Choose File</a>
                 </label>
             </button>
-            <span id="fileSelectedFromChooseFileButton" style="font-size: smaller;"></span>
+            <span id="fileSelectedFromChooseFileButtonIssue" style="font-size: smaller;"></span>
         </div>
-        <div><button type="button" id="openSettings"
-                style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button></div>
+        <div>
+            <button type="button" id="openSettings"
+                style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button>
+        </div>
     </div>
     <div>
-        <span id="fileSave2FileButton"></span>
+        <span id="fileSave2FileButtonIssue"></span>
     </div>
     <div>
         <div>
@@ -408,44 +411,44 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             <p style="font-size: smaller;">Make sure to use the | (pipe) symbol to separate the values.</p>
             <span style="font-weight: bold">Created By</span>
             <div class="settingsDDL">
-                <textarea id="dataListCreatedBy" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListCreatedBy" class="modalSettingsBtn">Add
+                <textarea id="dataListCreatedByIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListCreatedByIssue" class="modalSettingsBtn">Add
                     CreatedBy</button>
             </div>
             <span style="font-weight: bold">Updated By</span>
             <div class="settingsDDL">
-                <textarea id="dataListUpdatedBy" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListUpdatedBy" class="modalSettingsBtn">Add
+                <textarea id="dataListUpdatedByIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListUpdatedByIssue" class="modalSettingsBtn">Add
                     UpdatedBy</button>
             </div>
             <span style="font-weight: bold">Projects</span>
             <div class="settingsDDL">
-                <textarea id="dataListProjects" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListProjects" class="modalSettingsBtn">Add
+                <textarea id="dataListProjectsIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListProjectsIssue" class="modalSettingsBtn">Add
                     Projects</button>
             </div>
             <span style="font-weight: bold">Categories</span>
             <div class="settingsDDL">
-                <textarea id="dataListCategories" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListCategories" class="modalSettingsBtn">Add
+                <textarea id="dataListCategoriesIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListCategoriesIssue" class="modalSettingsBtn">Add
                     Categories</button>
             </div>
             <span style="font-weight: bold">Priorities</span>
             <div class="settingsDDL">
-                <textarea id="dataListPriorities" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListPriorities" class="modalSettingsBtn">Add
+                <textarea id="dataListPrioritiesIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListPrioritiesIssue" class="modalSettingsBtn">Add
                     Priorities</button>
             </div>
             <span style="font-weight: bold">Statuses</span>
             <div class="settingsDDL">
-                <textarea id="dataListStatuses" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListStatuses" class="modalSettingsBtn">Add
+                <textarea id="dataListStatusesIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListStatusesIssue" class="modalSettingsBtn">Add
                     Statuses</button>
             </div>
             <span style="font-weight: bold">Assignees</span>
             <div class="settingsDDL">
-                <textarea id="dataListAssignees" class="modalSettingsTxtControls" rows="10"></textarea>
-                <button type="button" id="addDataListAssignees" class="modalSettingsBtn">Add
+                <textarea id="dataListAssigneesIssue" class="modalSettingsTxtControls" rows="10"></textarea>
+                <button type="button" id="addDataListAssigneesIssue" class="modalSettingsBtn">Add
                     Assignees</button>
             </div>
         </div>
@@ -455,7 +458,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <h3>Turn off Guide Me</h3>
             </div>
             <div class="column" style="margin: auto">
-                <label class="switch"><input type="checkbox" id="doNotShowTour"><span
+                <label class="switch"><input type="checkbox" id="doNotShowTourIssue"><span
                         class="slider round"></span></label>
             </div>
         </div>
@@ -464,7 +467,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <h3>Hide Filters</h3>
             </div>
             <div class="column" style="margin: auto">
-                <label class="switch"><input type='checkbox' id='doNotShowFilters'><span
+                <label class="switch"><input type='checkbox' id='doNotShowFiltersIssue'><span
                         class="slider round"></span></label>
             </div>
         </div>
@@ -473,7 +476,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <h3>Hide Search Builder</h3>
             </div>
             <div class="column" style="margin: auto">
-                <label class="switch"><input type='checkbox' id='doNotShowSearchBuilder'><span
+                <label class="switch"><input type='checkbox' id='doNotShowSearchBuilderIssue'><span
                         class="slider round"></span></label>
             </div>
         </div>
@@ -485,20 +488,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         </div>
         <div>
             <div class="column" style="margin: auto">
-                <label for="lowColorPicker">Low
-                    <input type="color" id="lowColorPicker" name="lowColor" value="#FFFFFF"></label>
-                <label for="mediumColorPicker">Medium
-                    <input type="color" id="mediumColorPicker" name="mediumColor" value="#FFFF77"></label>
-                <label for="highColorPicker">High
-                    <input type="color" id="highColorPicker" name="highColor" value="#FFA585"></label>
-                <label for="showStopperColorPicker">Showstopper
-                    <input type="color" id="showStopperColorPicker" name="showStopperColor" value="#FA5858"></label>
+                <label for="lowColorPickerIssue">Low
+                    <input type="color" id="lowColorPickerIssue" name="lowColor" value="#FFFFFF"></label>
+                <label for="mediumColorPickerIssue">Medium
+                    <input type="color" id="mediumColorPickerIssue" name="mediumColor" value="#FFFF77"></label>
+                <label for="highColorPickerIssue">High
+                    <input type="color" id="highColorPickerIssue" name="highColor" value="#FFA585"></label>
+                <label for="showStopperColorPickerIssue">Showstopper
+                    <input type="color" id="showStopperColorPickerIssue" name="showStopperColor"
+                        value="#FA5858"></label>
             </div>
         </div>
         <hr />
         <div>
             <div class="column">
-                <h3>Import User Stories</h3>
+                <h3>Import From CSV</h3>
+                <p>CSV must be in the following order</p>
+                <p>[Description, Project, Category, Priority, Status, AssignedTo, CreatedBy, UpdatedBy, Comment]</p>
+                <p>First ROW should be the HEADER row and NOT data.</p>
+                <!-- <button type="button" id="" class="modalSettingsBtn">Import Data from CSV</button> -->
+                <button class="btn" id="importCsvData">
+                    <label>
+                        <input type="file" id="openCsvDataFile" style="display: none;" />
+                        <a style="font-weight:normal">Choose File</a>
+                    </label>
+                </button>
+                <span id="fileSelectedFromimportCsvDataFileButtonIssue" style="font-size: smaller;"></span> 
+                <div style="padding-bottom: 250px"></div>               
             </div>
         </div>
         <div>
@@ -609,11 +625,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.colVis.min.js"></script>
     <script src="https://cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>
     <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/fixedheader/3.2.4/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/colreorder/1.5.6/js/dataTables.colReorder.min.js"></script>
     <!-- shepherd js is MIT licensed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/js/shepherd.min.js"
         integrity="sha512-PW9R1HcNuXvRsX9Ibbjzki4sp5pqAl6GLNhkNeAA1jRfVWGXg+i9eRN9VC4r/i/W7WaA8f1/ejqRTR7pgr+R+Q=="
@@ -631,6 +649,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // *** 
         let quill = new Quill('#txbComments', { theme: 'snow' });
         let quillDesc = new Quill('#txbDescription', { theme: 'snow' });
+        // #endregion
+
+        // #region *** original col order ***
+        // Description: set up global original Layout - need this for figuring out when col reorder takes place
+        // Created on: 2022.07.25
+        // Modified on:
+        // ***         
+        const origColOrder = {
+            "0": "txbID",
+            "1": "txbDescription",
+            "2": "txbProject",
+            "3": "txbCategory",
+            "4": "txbPriority",
+            "5": "txbStatus",
+            "6": "txbAssignedTo",
+            "7": "txbCreatedBy",
+            "8": "txbDateUpdated",
+            "9": "txbUpdatedBy",
+            "11": "CustomCol1",
+            "12": "CustomCol2",
+            "13": "CustomCol3",
+            "14": "CustomCol4",
+            "15": "CustomCol5",
+            "16": "CustomCol6",
+            "17": "CustomCol7"
+        };
         // #endregion
 
         // #region *** opensource MIT walkme - shepherdjs ***
@@ -902,32 +946,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 icon: "info"
             });
         });
-        document.querySelector("#addDataListCreatedBy").addEventListener("click", () => {
-            updateDataList("#dataListCreatedBy", "createdByDataList", "txbCreatedBy");
+        document.querySelector("#addDataListCreatedByIssue").addEventListener("click", () => {
+            updateDataList("#dataListCreatedByIssue", "createdByDataListIssue", "txbCreatedBy");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListUpdatedBy").addEventListener("click", () => {
-            updateDataList("#dataListUpdatedBy", "updatedByDataList", "txbUpdatedBy");
+        document.querySelector("#addDataListUpdatedByIssue").addEventListener("click", () => {
+            updateDataList("#dataListUpdatedByIssue", "updatedByDataListIssue", "txbUpdatedBy");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListProjects").addEventListener("click", () => {
-            updateDataList("#dataListProjects", "projectDataList", "txbProject");
+        document.querySelector("#addDataListProjectsIssue").addEventListener("click", () => {
+            updateDataList("#dataListProjectsIssue", "projectDataListIssue", "txbProject");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListCategories").addEventListener("click", () => {
-            updateDataList("#dataListCategories", "categoryDataList", "txbCategory");
+        document.querySelector("#addDataListCategoriesIssue").addEventListener("click", () => {
+            updateDataList("#dataListCategoriesIssue", "categoryDataListIssue", "txbCategory");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListPriorities").addEventListener("click", () => {
-            updateDataList("#dataListPriorities", "priorityDataList", "txbPriority");
+        document.querySelector("#addDataListPrioritiesIssue").addEventListener("click", () => {
+            updateDataList("#dataListPrioritiesIssue", "priorityDataListIssue", "txbPriority");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListStatuses").addEventListener("click", () => {
-            updateDataList("#dataListStatuses", "statusDataList", "txbStatus");
+        document.querySelector("#addDataListStatusesIssue").addEventListener("click", () => {
+            updateDataList("#dataListStatusesIssue", "statusDataListIssue", "txbStatus");
             toastMsg("DataList values updated!");
         });
-        document.querySelector("#addDataListAssignees").addEventListener("click", () => {
-            updateDataList("#dataListAssignees", "assigneeDataList", "txbAssignedTo");
+        document.querySelector("#addDataListAssigneesIssue").addEventListener("click", () => {
+            updateDataList("#dataListAssigneesIssue", "assigneeDataListIssue", "txbAssignedTo");
             toastMsg("DataList values updated!");
         });
         //disable esc key on settings modal because of need to reload the page for the show/hide on datatables
@@ -935,17 +979,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             event.preventDefault();
         });
         //color picker handlers to set local storage
-        document.querySelector("#lowColorPicker").addEventListener("change", () => {
-            localStorage.setItem("lowColorPicker", document.querySelector("#lowColorPicker").value);
+        document.querySelector("#lowColorPickerIssue").addEventListener("change", () => {
+            localStorage.setItem("lowColorPickerIssue", document.querySelector("#lowColorPickerIssue").value);
         });
-        document.querySelector("#mediumColorPicker").addEventListener("change", () => {
-            localStorage.setItem("mediumColorPicker", document.querySelector("#mediumColorPicker").value);
+        document.querySelector("#mediumColorPickerIssue").addEventListener("change", () => {
+            localStorage.setItem("mediumColorPickerIssue", document.querySelector("#mediumColorPickerIssue").value);
         });
-        document.querySelector("#highColorPicker").addEventListener("change", () => {
-            localStorage.setItem("highColorPicker", document.querySelector("#highColorPicker").value);
+        document.querySelector("#highColorPickerIssue").addEventListener("change", () => {
+            localStorage.setItem("highColorPickerIssue", document.querySelector("#highColorPickerIssue").value);
         });
-        document.querySelector("#showStopperColorPicker").addEventListener("change", () => {
-            localStorage.setItem("showStopperColorPicker", document.querySelector("#showStopperColorPicker").value);
+        document.querySelector("#showStopperColorPickerIssue").addEventListener("change", () => {
+            localStorage.setItem("showStopperColorPickerIssue", document.querySelector("#showStopperColorPickerIssue").value);
         });
         //settings gear icon open
         document.querySelector("#openSettings").addEventListener("click", () => {
@@ -957,16 +1001,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             location.reload();
         });
         // walk me - guide me
-        document.querySelector("#doNotShowTour").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowTour");
+        document.querySelector("#doNotShowTourIssue").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowTourIssue");
         });
         // datatables filters
-        document.querySelector("#doNotShowFilters").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowFilters");
+        document.querySelector("#doNotShowFiltersIssue").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowFiltersIssue");
         });
         // datatables search builder
-        document.querySelector("#doNotShowSearchBuilder").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowSearchBuilder");
+        document.querySelector("#doNotShowSearchBuilderIssue").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowSearchBuilderIssue");
         });
         const setLocalStorageValuesForSettings = (lsKeyName) => {
             if (localStorage.getItem(lsKeyName)) {
@@ -1087,23 +1131,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
                     addEditModal("edit");
                     document.querySelector("#txbID").parentNode.parentNode.style.display = "grid";
-
                     document.querySelector("#txbCreatedBy").disabled = true;
                     document.querySelector("#txbUpdatedBy").parentNode.parentNode.style.display = "grid";
-                    //populate modal with values for editing 
-                    document.querySelector("#txbID").value = dataRow[0][0];
-                    quillDesc.root.innerHTML = dataRow[0][1];
-                    // document.querySelector("#txbDescription").value = dataRow[0][1];
-                    document.querySelector("#txbUpdatedBy").value = dataRow[0][9];
-                    document.querySelector("#txbProject").value = dataRow[0][2];
-                    document.querySelector("#txbCategory").value = dataRow[0][3];
-                    document.querySelector("#txbPriority").value = dataRow[0][4];
-                    document.querySelector("#txbStatus").value = dataRow[0][5];
-                    document.querySelector("#txbAssignedTo").value = dataRow[0][6];
-                    document.querySelector("#txbCreatedBy").value = dataRow[0][7];
-                    document.querySelector("#tblComments").innerHTML = "";
+
+                    //process column order coming from table as user may have moved columns
+                    columnOrder(dataRow, "loadEditForm");
 
                     //reset comment because full history needs to be displayed below
+                    document.querySelector("#tblComments").innerHTML = "";
                     quill.root.innerHTML = "";
                     //process the comments                 
                     let commentsJSON = "[" + dataRow[0][10].replace("Comments :", "").replace(/'/g, '"').replace(/&quot;/g, "") + "]";
@@ -1143,10 +1178,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         if (value.match(/^[\w]+/g)) {
                             let issueString = document.querySelector("#changesJSON").value;
                             issueString = issueString.slice(0, issueString.lastIndexOf(","));
-                            let formattedJSON = `{ "Settings": [ {"lowColorPicker": "${localStorage.getItem('lowColorPicker')}"},{"mediumColorPicker": "${localStorage.getItem('mediumColorPicker')}"},{"highColorPicker": "${localStorage.getItem('highColorPicker')}"},{"showStopperColorPicker": "${localStorage.getItem('showStopperColorPicker')}"},{"createdByDataList": "${localStorage.getItem('createdByDataList')}"},{"updatedByDataList": "${localStorage.getItem('updatedByDataList')}"},{"projectDataList": "${localStorage.getItem('projectDataList')}"},{"categoryDataList": "${localStorage.getItem('categoryDataList')}"},{"priorityDataList": "${localStorage.getItem('priorityDataList')}"},{"statusDataList": "${localStorage.getItem('statusDataList')}"},{"assigneeDataList": "${localStorage.getItem('assigneeDataList')}"},{"doNotShowTour": "${localStorage.getItem('doNotShowTour')}"},{"doNotShowFilters": "${localStorage.getItem('doNotShowFilters')}"},{"doNotShowSearchBuilder": "${localStorage.getItem('doNotShowSearchBuilder')}"}],"Issues": [ ${issueString} ] }`;
+                            let formattedJSON = `{ "Settings": [ {"lowColorPickerIssue": "${localStorage.getItem('lowColorPickerIssue')}"},{"mediumColorPickerIssue": "${localStorage.getItem('mediumColorPickerIssue')}"},{"highColorPickerIssue": "${localStorage.getItem('highColorPickerIssue')}"},{"showStopperColorPickerIssue": "${localStorage.getItem('showStopperColorPickerIssue')}"},{"createdByDataListIssue": "${localStorage.getItem('createdByDataListIssue')}"},{"updatedByDataListIssue": "${localStorage.getItem('updatedByDataListIssue')}"},{"projectDataListIssue": "${localStorage.getItem('projectDataListIssue')}"},{"categoryDataListIssue": "${localStorage.getItem('categoryDataListIssue')}"},{"priorityDataListIssue": "${localStorage.getItem('priorityDataListIssue')}"},{"statusDataListIssue": "${localStorage.getItem('statusDataListIssue')}"},{"assigneeDataListIssue": "${localStorage.getItem('assigneeDataListIssue')}"},{"doNotShowTourIssue": "${localStorage.getItem('doNotShowTourIssue')}"},{"doNotShowFiltersIssue": "${localStorage.getItem('doNotShowFiltersIssue')}"},{"doNotShowSearchBuilderIssue": "${localStorage.getItem('doNotShowSearchBuilderIssue')}"}],"Issues": [ ${issueString} ] }`;
                             // console.log(formattedJSON);
                             download(`${value}.json`, formattedJSON);
-                            localStorage.setItem("fileLastSaved", computeDate());
+                            localStorage.setItem("fileLastSavedIssue", computeDate());
                             checkLocalStorage();
                         } else {
                             swal("Please try again and enter a filename - no extension necessary", {
@@ -1166,7 +1201,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.querySelector("#openFile").addEventListener("change", () => {
             const selectedFile = document.querySelector("#openFile").files[0];
             const reader = new FileReader();
-            localStorage.setItem("file2Process", selectedFile.name);
+            localStorage.setItem("file2ProcessIssue", selectedFile.name);
             let jsonData = "";
             let jsonDataObject = {};
             let issueData = "";
@@ -1175,20 +1210,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 //create object to get values from
                 jsonData = reader.result;
                 jsonDataObject = JSON.parse(jsonData);
-                localStorage.setItem('lowColorPicker', jsonDataObject.Settings[0].lowColorPicker);
-                localStorage.setItem('mediumColorPicker', jsonDataObject.Settings[1].mediumColorPicker);
-                localStorage.setItem('highColorPicker', jsonDataObject.Settings[2].highColorPicker);
-                localStorage.setItem('showStopperColorPicker', jsonDataObject.Settings[3].showStopperColorPicker);
-                localStorage.setItem('createdByDataList', jsonDataObject.Settings[4].createdByDataList);
-                localStorage.setItem('updatedByDataList', jsonDataObject.Settings[5].updatedByDataList);
-                localStorage.setItem('projectDataList', jsonDataObject.Settings[6].projectDataList);
-                localStorage.setItem('categoryDataList', jsonDataObject.Settings[7].categoryDataList);
-                localStorage.setItem('priorityDataList', jsonDataObject.Settings[8].priorityDataList);
-                localStorage.setItem('statusDataList', jsonDataObject.Settings[9].statusDataList);
-                localStorage.setItem('assigneeDataList', jsonDataObject.Settings[10].assigneeDataList);
-                localStorage.setItem('doNotShowTour', jsonDataObject.Settings[11].doNotShowTour);
-                localStorage.setItem('doNotShowFilters', jsonDataObject.Settings[12].doNotShowFilters);
-                localStorage.setItem('doNotShowSearchBuilder', jsonDataObject.Settings[13].doNotShowSearchBuilder);
+                localStorage.setItem('lowColorPickerIssue', jsonDataObject.Settings[0].lowColorPickerIssue);
+                localStorage.setItem('mediumColorPickerIssue', jsonDataObject.Settings[1].mediumColorPickerIssue);
+                localStorage.setItem('highColorPickerIssue', jsonDataObject.Settings[2].highColorPickerIssue);
+                localStorage.setItem('showStopperColorPickerIssue', jsonDataObject.Settings[3].showStopperColorPickerIssue);
+                localStorage.setItem('createdByDataListIssue', jsonDataObject.Settings[4].createdByDataListIssue);
+                localStorage.setItem('updatedByDataListIssue', jsonDataObject.Settings[5].updatedByDataListIssue);
+                localStorage.setItem('projectDataListIssue', jsonDataObject.Settings[6].projectDataListIssue);
+                localStorage.setItem('categoryDataListIssue', jsonDataObject.Settings[7].categoryDataListIssue);
+                localStorage.setItem('priorityDataListIssue', jsonDataObject.Settings[8].priorityDataListIssue);
+                localStorage.setItem('statusDataListIssue', jsonDataObject.Settings[9].statusDataListIssue);
+                localStorage.setItem('assigneeDataListIssue', jsonDataObject.Settings[10].assigneeDataListIssue);
+                localStorage.setItem('doNotShowTourIssue', jsonDataObject.Settings[11].doNotShowTourIssue);
+                localStorage.setItem('doNotShowFiltersIssue', jsonDataObject.Settings[12].doNotShowFiltersIssue);
+                localStorage.setItem('doNotShowSearchBuilderIssue', jsonDataObject.Settings[13].doNotShowSearchBuilderIssue);
                 //need to loop through object 2 construct JSON
                 for (let i = 0; i < jsonDataObject.Issues.length; i++) {
                     issueData += `${JSON.stringify(jsonDataObject.Issues[i])},`;
@@ -1265,10 +1300,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 //need to check to see if changes were made in the form and make an entry in the comment
                 let addChange2Comment = "";
                 addChange2Comment = dataRow[0][10];
+
+                //TODO Need to determine the columns here to see what has changed in the order and proceed accordingly - reuse the code from above - turn into a helper function 
+                //process column order coming from table as user may have moved columns
+                columnOrder(dataRow, "compareEdits");
+                // need loop and test for description - consolidate the other if conditions - clean up #txb from id
+
                 //if original does not equal current then need to make a comment
-                if (quillDesc.root.innerHTML.replace(/\"/g, "") != dataRow[0][1]) {
+                if (quillDesc.root.innerHTML.replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "") != dataRow[0][1].replace(/(<([^>]+)>)/ig, "")) {
                     addChange2Comment += `,['${computeDate()}', '📃 Description changed <strong>from</strong> ${dataRow[0][1]} <strong>to</strong> ${quillDesc.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
                 }
+                // else {
+
+                //this block here is the same logic - could still have a loop and if description then handle differently - only
+                // need one if else
                 if (document.querySelector("#txbUpdatedBy").value != dataRow[0][9]) {
                     addChange2Comment += `,['${computeDate()}', '📃 Updated By changed <strong>from</strong> ${dataRow[0][9]} <strong>to</strong> ${document.querySelector("#txbUpdatedBy").value}']`;
                 }
@@ -1287,6 +1332,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 if (document.querySelector("#txbAssignedTo").value != dataRow[0][6]) {
                     addChange2Comment += `,['${computeDate()}', '📃 Assigned To changed <strong>from</strong> ${dataRow[0][6]} <strong>to</strong> ${document.querySelector("#txbAssignedTo").value}']`;
                 }
+                // }
+                //we are not tracking comment changes and just treat them as an add
                 if (quill.root.textContent != "") {
                     addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
                 }
@@ -1326,6 +1373,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Created on: 2022.05.18
         // Modified on: 
         //  2022.06.13 added computeDate and todaysDateClean
+        //  2022.07.25 addedd columnOrder
         // ***
         const computeDate = () => {
             const d = new Date();
@@ -1347,6 +1395,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
+        }
+        const columnOrder = (dataRow, processType) => {
+            let colOrderResults = [];
+            colOrderResults = $('#myTable').DataTable().colReorder.order(); //get current order of columns
+            for (let i = 0; i < colOrderResults.length; i++) {
+                let col = colOrderResults[i];
+                //ignore Date Updated
+                if (col !== 8) {
+                    if (processType == "loadEditForm") {
+                        //check for description
+                        if (col == 1) {
+                            quillDesc.root.innerHTML = dataRow[0][i];
+                        } else {
+                            document.querySelector(`#${origColOrder[col]}`).value = dataRow[0][i];
+                        }
+                    }
+                }
+            }
         }
         // #endregion
 
@@ -1485,23 +1551,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             //get the data
             let json = localStorage.getItem("UsrIssue");
             json = json.substring(0, json.lastIndexOf(","));
-            //let jsonData = json;
             let jsonData = `[ ${json} ] `;
             //console.log("dt step - ls value: " + jsonData);
             let domSettings = "lBfrtip"; //dom: P - search panes | Q - condition builder | l - Entry Length
             //modify dom to account for settings
-            if (localStorage.getItem("doNotShowSearchBuilder") !== "true") {
+            if (localStorage.getItem("doNotShowSearchBuilderIssue") !== "true") {
                 domSettings = `Q${domSettings}`;
             }
-            if (localStorage.getItem("doNotShowFilters") !== "true") {
+            if (localStorage.getItem("doNotShowFiltersIssue") !== "true") {
                 domSettings = `P${domSettings}`;
             }
 
             //color picker assignment
-            let lowPriorityColor = localStorage.getItem("lowColorPicker");
-            let mediumPriorityColor = localStorage.getItem("mediumColorPicker");
-            let highPriorityColor = localStorage.getItem("highColorPicker");
-            let showStopperPriorityColor = localStorage.getItem("showStopperColorPicker");
+            let lowPriorityColor = localStorage.getItem("lowColorPickerIssue");
+            let mediumPriorityColor = localStorage.getItem("mediumColorPickerIssue");
+            let highPriorityColor = localStorage.getItem("highColorPickerIssue");
+            let showStopperPriorityColor = localStorage.getItem("showStopperColorPickerIssue");
 
             //make sure there is data - using a string still
             if (jsonData.indexOf(",") > 0) {
@@ -1516,8 +1581,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         header: true
                     },
                     buttons: [
-                        'copy', 'csv'
+                        'copy', 'csv', 'colvis'
                     ],
+                    colReorder: true,
                     stateSave: true,
                     select: true,
                     data: jsonData,
@@ -1585,61 +1651,61 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             // *** get files info ***
             // source filename info
-            if (localStorage.getItem("file2Process")) {
+            if (localStorage.getItem("file2ProcessIssue")) {
                 //set filename on page
-                document.querySelector("#fileSelectedFromChooseFileButton").textContent = `${localStorage.getItem("file2Process")}`;
+                document.querySelector("#fileSelectedFromChooseFileButtonIssue").textContent = `${localStorage.getItem("file2ProcessIssue")}`;
             } else {
-                document.querySelector("#fileSelectedFromChooseFileButton").textContent = "No issues file selected.";
+                document.querySelector("#fileSelectedFromChooseFileButtonIssue").textContent = "No file selected.";
             }
             //last saved
-            if (localStorage.getItem("fileLastSaved")) {
+            if (localStorage.getItem("fileLastSavedIssue")) {
                 //set filename on page
-                document.querySelector("#fileSave2FileButton").textContent = `Issues last saved: ${localStorage.getItem("fileLastSaved")}. Please check Downloads folder for most current version.`;
+                document.querySelector("#fileSave2FileButtonIssue").textContent = `Issues last saved: ${localStorage.getItem("fileLastSavedIssue")}. Please check Downloads folder for most current version.`;
             } else {
-                document.querySelector("#fileSave2FileButton").textContent = "Issues have not been saved to a file.";
+                document.querySelector("#fileSave2FileButtonIssue").textContent = "Issues have not been saved to a file.";
             }
 
             // *** settings - toggle switches ***
             // walk me - tour - guide me
-            if (localStorage.getItem("doNotShowTour") == "true") {
-                document.querySelector("#doNotShowTour").checked = true;
+            if (localStorage.getItem("doNotShowTourIssue") == "true") {
+                document.querySelector("#doNotShowTourIssue").checked = true;
             } else {
-                document.querySelector("#doNotShowTour").checked = false;
+                document.querySelector("#doNotShowTourIssue").checked = false;
                 tour.start();
             }
             // datatables search filters
-            if (localStorage.getItem("doNotShowFilters") == "true") {
-                document.querySelector("#doNotShowFilters").checked = true;
+            if (localStorage.getItem("doNotShowFiltersIssue") == "true") {
+                document.querySelector("#doNotShowFiltersIssue").checked = true;
             } else {
-                document.querySelector("#doNotShowFilters").checked = false;
+                document.querySelector("#doNotShowFiltersIssue").checked = false;
             }
             // datatables search builder
-            if (localStorage.getItem("doNotShowSearchBuilder") == "true") {
-                document.querySelector("#doNotShowSearchBuilder").checked = true;
+            if (localStorage.getItem("doNotShowSearchBuilderIssue") == "true") {
+                document.querySelector("#doNotShowSearchBuilderIssue").checked = true;
             } else {
-                document.querySelector("#doNotShowSearchBuilder").checked = false;
+                document.querySelector("#doNotShowSearchBuilderIssue").checked = false;
             }
 
             // *** settings - priority colors ***
-            if (localStorage.getItem("lowColorPicker")) {
-                document.querySelector("#lowColorPicker").value = localStorage.getItem("lowColorPicker");
+            if (localStorage.getItem("lowColorPickerIssue")) {
+                document.querySelector("#lowColorPickerIssue").value = localStorage.getItem("lowColorPickerIssue");
             } else {
-                localStorage.setItem("lowColorPicker", document.querySelector("#lowColorPicker").value);
+                localStorage.setItem("lowColorPickerIssue", document.querySelector("#lowColorPickerIssue").value);
             }
-            if (localStorage.getItem("mediumColorPicker")) {
-                document.querySelector("#mediumColorPicker").value = localStorage.getItem("mediumColorPicker");
+            if (localStorage.getItem("mediumColorPickerIssue")) {
+                document.querySelector("#mediumColorPickerIssue").value = localStorage.getItem("mediumColorPickerIssue");
             } else {
-                localStorage.setItem("mediumColorPicker", document.querySelector("#mediumColorPicker").value);
+                localStorage.setItem("mediumColorPickerIssue", document.querySelector("#mediumColorPickerIssue").value);
             }
-            if (localStorage.getItem("highColorPicker")) {
-                document.querySelector("#highColorPicker").value = localStorage.getItem("highColorPicker");
+            if (localStorage.getItem("highColorPickerIssue")) {
+                document.querySelector("#highColorPickerIssue").value = localStorage.getItem("highColorPickerIssue");
             } else {
-                localStorage.setItem("highColorPicker", document.querySelector("#highColorPicker").value);
+                localStorage.setItem("highColorPickerIssue", document.querySelector("#highColorPickerIssue").value);
             }
-            if (localStorage.getItem("showStopperColorPicker")) {
-                document.querySelector("#showStopperColorPicker").value = localStorage.getItem("showStopperColorPicker");
+            if (localStorage.getItem("showStopperColorPickerIssue")) {
+                document.querySelector("#showStopperColorPickerIssue").value = localStorage.getItem("showStopperColorPickerIssue");
             } else {
-                localStorage.setItem("showStopperColorPicker", document.querySelector("#showStopperColorPicker").value);
+                localStorage.setItem("showStopperColorPickerIssue", document.querySelector("#showStopperColorPickerIssue").value);
             }
         }
         // #endregion
@@ -1648,19 +1714,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Description: handles pure JS document.ready event when page first loads/painted
         // Created on: 2022.01.27
         // Modified on:
-        //      2022.05.03 added show tour logic
         // ***            
         window.addEventListener('DOMContentLoaded', (event) => {
 
             // *** settings - datalist ***
             const dlValues = [
-                { namedDataList: "createdByDataList", dataListControl: "#dataListCreatedBy", inputControl: "txbCreatedBy", controlValue: "Create User 1|Create User 2|Create User 3" },
-                { namedDataList: "updatedByDataList", dataListControl: "#dataListUpdatedBy", inputControl: "txbUpdatedBy", controlValue: "Update User 1|Update User 2|Update User 3" },
-                { namedDataList: "projectDataList", dataListControl: "#dataListProjects", inputControl: "txbProject", controlValue: "Project 1|Project 2|Project 3" },
-                { namedDataList: "categoryDataList", dataListControl: "#dataListCategories", inputControl: "txbCategory", controlValue: "Action Item|Enhancement|Follow Up|Issue Fix|New Development|Question|Request|Task" },
-                { namedDataList: "priorityDataList", dataListControl: "#dataListPriorities", inputControl: "txbPriority", controlValue: "Low|Medium|High|Showstopper" },
-                { namedDataList: "statusDataList", dataListControl: "#dataListStatuses", inputControl: "txbStatus", controlValue: "New|In Progress|Complete|On hold|Past Due" },
-                { namedDataList: "assigneeDataList", dataListControl: "#dataListAssignees", inputControl: "txbAssignedTo", controlValue: "Assignee 1|Assignee 2|Assignee 3" }
+                { namedDataList: "createdByDataListIssue", dataListControl: "#dataListCreatedByIssue", inputControl: "txbCreatedBy", controlValue: "Create User 1|Create User 2|Create User 3" },
+                { namedDataList: "updatedByDataListIssue", dataListControl: "#dataListUpdatedByIssue", inputControl: "txbUpdatedBy", controlValue: "Update User 1|Update User 2|Update User 3" },
+                { namedDataList: "projectDataListIssue", dataListControl: "#dataListProjectsIssue", inputControl: "txbProject", controlValue: "Project 1|Project 2|Project 3" },
+                { namedDataList: "categoryDataListIssue", dataListControl: "#dataListCategoriesIssue", inputControl: "txbCategory", controlValue: "Action Item|Enhancement|Follow Up|Issue Fix|New Development|Question|Request|Task" },
+                { namedDataList: "priorityDataListIssue", dataListControl: "#dataListPrioritiesIssue", inputControl: "txbPriority", controlValue: "Low|Medium|High|Showstopper" },
+                { namedDataList: "statusDataListIssue", dataListControl: "#dataListStatusesIssue", inputControl: "txbStatus", controlValue: "New|In Progress|Complete|On hold|Past Due" },
+                { namedDataList: "assigneeDataListIssue", dataListControl: "#dataListAssigneesIssue", inputControl: "txbAssignedTo", controlValue: "Assignee 1|Assignee 2|Assignee 3" }
             ];
             //loop through array of objects to construct the datalists
             for (let i = 0; i < dlValues.length; i++) {
