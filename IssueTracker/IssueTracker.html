@@ -1208,20 +1208,31 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // #region *** save to file button ***
         document.querySelector("#downloadIssue").addEventListener("click", () => {
-            if (document.querySelector("#changesJSON").value != "") {
-                swal("Please enter a filename - no extension necessary", {
-                    content: "input",
-                    icon: "info"
-                })
-                    .then((value) => {
+            let fileNameLastSavedIssue = "";
+            if (localStorage.getItem("fileLastSavedIssue")) {
+                fileNameLastSavedIssue = localStorage.getItem("fileLastSavedIssue");
+                fileNameLastSavedIssue = fileNameLastSavedIssue.slice(0, fileNameLastSavedIssue.indexOf("|"));
+            }
+            if (document.querySelector("#fileSave2FileButtonIssue").innerHTML !== "")
+                if (document.querySelector("#changesITJSON").value != "") {
+                    swal("Please enter a filename - no extension necessary", {
+                        content: "input",
+                        icon: "info",
+                        content: {
+                            element: 'input',
+                            attributes: {
+                                defaultValue: fileNameLastSavedIssue
+                            }
+                        }
+                    }).then((value) => {
                         //validate filename
                         if (value.match(/^[\w]+/g)) {
-                            let issueString = document.querySelector("#changesJSON").value;
+                            let issueString = document.querySelector("#changesITJSON").value;
                             issueString = issueString.slice(0, issueString.lastIndexOf(","));
-                            let formattedJSON = `{ "Settings": [ {"lowColorPickerIssue": "${localStorage.getItem('lowColorPickerIssue')}"},{"mediumColorPickerIssue": "${localStorage.getItem('mediumColorPickerIssue')}"},{"highColorPickerIssue": "${localStorage.getItem('highColorPickerIssue')}"},{"showStopperColorPickerIssue": "${localStorage.getItem('showStopperColorPickerIssue')}"},{"createdByDataListIssue": "${localStorage.getItem('createdByDataListIssue')}"},{"updatedByDataListIssue": "${localStorage.getItem('updatedByDataListIssue')}"},{"projectDataListIssue": "${localStorage.getItem('projectDataListIssue')}"},{"categoryDataListIssue": "${localStorage.getItem('categoryDataListIssue')}"},{"priorityDataListIssue": "${localStorage.getItem('priorityDataListIssue')}"},{"statusDataListIssue": "${localStorage.getItem('statusDataListIssue')}"},{"assigneeDataListIssue": "${localStorage.getItem('assigneeDataListIssue')}"},{"doNotShowTourIssue": "${localStorage.getItem('doNotShowTourIssue')}"},{"doNotShowFiltersIssue": "${localStorage.getItem('doNotShowFiltersIssue')}"},{"doNotShowSearchBuilderIssue": "${localStorage.getItem('doNotShowSearchBuilderIssue')}"}],"Issues": [ ${issueString} ] }`;
+                            let formattedJSON = `${buildsettingsITJSON()},"Issues": [ ${issueString} ] }`;
                             // console.log(formattedJSON);
                             download(`${value}.json`, formattedJSON);
-                            localStorage.setItem("fileLastSavedIssue", computeDate());
+                            localStorage.setItem("fileLastSavedIssue", `${value} | ${computeDate()}`);
                             checkLocalStorage();
                         } else {
                             swal("Please try again and enter a filename - no extension necessary", {
@@ -1229,13 +1240,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                             });
                         }
                     });
-            } else {
-                swal("There are no issues to download", {
-                    icon: "error"
-                });
-            }
+                } else {
+                    swal("There are no issues to download", {
+                        icon: "error"
+                    });
+                }
         });
         // #endregion
+
 
         // #region *** choose file - process uploaded json file *** 
         document.querySelector("#openFile").addEventListener("change", () => {
