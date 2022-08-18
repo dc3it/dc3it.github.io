@@ -514,7 +514,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <p>CSV must be in the following order</p>
                 <p>[Description, Project, Category, Priority, Status, Assigned To, Created By, Comment]</p>
                 <p>First ROW should be the HEADER row and NOT data.</p>
-                <!-- <button type="button" id="" class="modalSettingsBtn">Import Data from CSV</button> -->
                 <button class="btn" id="importCsvData">
                     <label>
                         <input type="file" id="openCsvDataFile" style="display: none;" accept=".csv" />
@@ -1042,16 +1041,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 csvDataArray = csvData.split("\n");
                 //loop through each row and split into an array to extract values
                 for (let i = 1; i < csvDataArray.length; i++) {
-                    issueData = csvDataArray[i].replace(/"/g, "&quot;").replace(/'/g, "&apos;").trim().split(",");
-                    //alert("Description: " + issueData[0] + " Project: " + issueData[1] + " Category: " + issueData[2] + " Priority: " + issueData[3] + " Status: " + issueData[4] + " Assigned To: " + issueData[5] + " Created By: " + issueData[6] + " Comment: " + issueData[7]);
-                    // console.log(`[ "${todaysDate(computeDate())}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7]}]'" ],`);
+                    issueData = csvDataArray[i].replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "").trim().split(",");
                     let autoNum = `"${i}"`;
                     if (autoNum.length == 3) { autoNum = `00${i}` } else if (autoNum.length == 4) { autoNum = `0${i}` } else { autoNum = i }
-                    // buildRows("addCSV");
+                    //test if comments do not exist
                     if (issueData[7] == undefined) {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
                     } else {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7]}']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}']" ],`;
                     }
                 }
                 //add rows from CSV to local storage
@@ -1248,7 +1245,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         });
         // #endregion
 
-
         // #region *** choose file - process uploaded json file *** 
         document.querySelector("#openFile").addEventListener("change", () => {
             const selectedFile = document.querySelector("#openFile").files[0];
@@ -1359,7 +1355,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 // need loop and test for description - consolidate the other if conditions - clean up #txb from id
 
                 //if original does not equal current then need to make a comment
-                if (quillDesc.root.innerHTML.replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "") != dataRow[0][1].replace(/(<([^>]+)>)/ig, "")) {
+                if (quillDesc.root.innerHTML.replace(/\t/g, "").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "") != dataRow[0][1].replace(/(<([^>]+)>)/ig, "")) {
                     addChange2Comment += `,['${computeDate()}', '📃 Description changed <strong>from</strong> ${dataRow[0][1]} <strong>to</strong> ${quillDesc.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
                 }
                 // else {
@@ -1387,7 +1383,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 // }
                 //we are not tracking comment changes and just treat them as an add
                 if (quill.root.textContent != "") {
-                    addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
+                    addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/\t/g, "").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
                 }
 
                 //close the modal 
