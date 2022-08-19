@@ -639,7 +639,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         integrity="sha512-PW9R1HcNuXvRsX9Ibbjzki4sp5pqAl6GLNhkNeAA1jRfVWGXg+i9eRN9VC4r/i/W7WaA8f1/ejqRTR7pgr+R+Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- sweet alert is MIT licensed and a nice popup -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <!-- quill is MIT licensed and a nice rich editor -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script>
@@ -1046,9 +1046,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     if (autoNum.length == 3) { autoNum = `00${i}` } else if (autoNum.length == 4) { autoNum = `0${i}` } else { autoNum = i }
                     //test if comments do not exist
                     if (issueData[7] == undefined) {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
                     } else {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t","")}']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}']" ],`;
                     }
                 }
                 //add rows from CSV to local storage
@@ -1211,31 +1211,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 fileNameLastSavedIssue = fileNameLastSavedIssue.slice(0, fileNameLastSavedIssue.indexOf("|"));
             }
             if (document.querySelector("#fileSave2FileButtonIssue").innerHTML !== "")
-                if (document.querySelector("#changesITJSON").value != "") {
+                if (document.querySelector("#changesJSON").value != "") {
                     swal("Please enter a filename - no extension necessary", {
                         content: "input",
                         icon: "info",
                         content: {
                             element: 'input',
                             attributes: {
-                                defaultValue: fileNameLastSavedIssue
+                                value: fileNameLastSavedIssue
                             }
                         }
                     }).then((value) => {
-                        //validate filename
-                        if (value.match(/^[\w]+/g)) {
-                            let issueString = document.querySelector("#changesITJSON").value;
-                            issueString = issueString.slice(0, issueString.lastIndexOf(","));
-                            let formattedJSON = `${buildsettingsITJSON()},"Issues": [ ${issueString} ] }`;
-                            // console.log(formattedJSON);
-                            download(`${value}.json`, formattedJSON);
-                            localStorage.setItem("fileLastSavedIssue", `${value} | ${computeDate()}`);
-                            checkLocalStorage();
+                        let fileName2SaveIssue = ""
+                        if (value != "") {
+                            fileName2SaveIssue = value;
                         } else {
-                            swal("Please try again and enter a filename - no extension necessary", {
-                                icon: "error"
-                            });
+                            fileName2SaveIssue = fileNameLastSavedIssue;
                         }
+                        let issueString = document.querySelector("#changesJSON").value;
+                        issueString = issueString.slice(0, issueString.lastIndexOf(","));
+                        let formattedJSON = `{ "Settings": [ {"lowColorPickerIssue": "${localStorage.getItem('lowColorPickerIssue')}"},{"mediumColorPickerIssue": "${localStorage.getItem('mediumColorPickerIssue')}"},{"highColorPickerIssue": "${localStorage.getItem('highColorPickerIssue')}"},{"showStopperColorPickerIssue": "${localStorage.getItem('showStopperColorPickerIssue')}"},{"createdByDataListIssue": "${localStorage.getItem('createdByDataListIssue')}"},{"updatedByDataListIssue": "${localStorage.getItem('updatedByDataListIssue')}"},{"projectDataListIssue": "${localStorage.getItem('projectDataListIssue')}"},{"categoryDataListIssue": "${localStorage.getItem('categoryDataListIssue')}"},{"priorityDataListIssue": "${localStorage.getItem('priorityDataListIssue')}"},{"statusDataListIssue": "${localStorage.getItem('statusDataListIssue')}"},{"assigneeDataListIssue": "${localStorage.getItem('assigneeDataListIssue')}"},{"doNotShowTourIssue": "${localStorage.getItem('doNotShowTourIssue')}"},{"doNotShowFiltersIssue": "${localStorage.getItem('doNotShowFiltersIssue')}"},{"doNotShowSearchBuilderIssue": "${localStorage.getItem('doNotShowSearchBuilderIssue')}"}],"Issues": [ ${issueString} ] }`;
+                        download(`${fileName2SaveIssue}.json`, formattedJSON);
+                        localStorage.setItem("fileLastSavedIssue", `${fileName2SaveIssue} | ${computeDate()}`);
+                        checkLocalStorage();
                     });
                 } else {
                     swal("There are no issues to download", {
