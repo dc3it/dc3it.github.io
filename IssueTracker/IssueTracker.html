@@ -1208,7 +1208,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             let fileNameLastSavedIssue = "";
             if (localStorage.getItem("fileLastSavedIssue")) {
                 fileNameLastSavedIssue = localStorage.getItem("fileLastSavedIssue");
-                fileNameLastSavedIssue = fileNameLastSavedIssue.slice(0, fileNameLastSavedIssue.indexOf("|"));
+                fileNameLastSavedIssue = fileNameLastSavedIssue.slice(0, fileNameLastSavedIssue.indexOf("|")).trim();
             }
             if (document.querySelector("#fileSave2FileButtonIssue").innerHTML !== "")
                 if (document.querySelector("#changesJSON").value != "") {
@@ -1419,7 +1419,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Created on: 2022.05.18
         // Modified on: 
         //  2022.06.13 added computeDate and todaysDateClean
-        //  2022.07.25 addedd columnOrder
+        //  2022.07.25 added columnOrder
         // ***
         const computeDate = () => {
             const d = new Date();
@@ -1478,12 +1478,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             //create json from add form controls or edit form controls
             if (addOrEdit !== "edit") {
                 if (quill.root.textContent == "") {
-                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
                 } else {
-                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']" ],`;
+                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}']" ],`;
                 }
             } else {
-                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbID").value}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbUpdatedBy").value}", "${add2Comments}" ], `;
+                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbID").value}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbUpdatedBy").value}", "${add2Comments}" ], `;
             }
             //console.log("build rows - changesJSON value: " + document.querySelector("#changesJSON").value);
         }
