@@ -403,14 +403,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 </button>
                 <button class="btn" id="chooseFile">
                     <label>
-                        <input type="file" id="openFile" style="display: none;" />
+                        <input type="file" id="openFile" style="display: none;" accept=".json" />
                         <a style="font-weight:normal">Choose File</a>
                     </label>
                 </button>
                 <span id="fileSelectedFromChooseFileButtonUsr" style="font-size: smaller;"></span>
             </div>
             <!-- stores all rows -->
-            <textarea id="changesJSON" rows="10"
+            <textarea id="changesUsrStryJSON" rows="10"
                 style="margin: 0px; width: 1050px; height: 100px; display:none"></textarea>
         </div>
         <!-- apply rows to table -->
@@ -719,7 +719,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
             ],
             id: 'downloadStories'
-        });        
+        });
         tour.addStep({
             title: 'Choose File',
             text: `Click choose file to select a JSON file that was created by the Save to File button. The Save to File button saves all the rows to a JSON formatted file and allows for persistent data storage to a desired location.`,
@@ -767,7 +767,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
             ],
             id: 'settings'
-        });        
+        });
         tour.addStep({
             title: 'Filtering and Sorting',
             text: `Stories can be filtered based on the Search box, the Custom Search Builder button, and the Search Pane. Each column is sortable. Multi column sorting is not enabled.`,
@@ -880,7 +880,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 if (willDelete) {
                     //reset localstorage and the textarea
                     localStorage.clear();
-                    document.querySelector("#changesJSON").value = "";
+                    document.querySelector("#changesUsrStryJSON").value = "";
                     swal("Stories have been cleared!", {
                         icon: "success"
                     });
@@ -945,7 +945,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // #region *** save to file button ***
         document.querySelector("#downloadStory").addEventListener("click", () => {
-            if (document.querySelector("#changesJSON").value != "") {
+            if (document.querySelector("#changesUsrStryJSON").value != "") {
                 swal("Please enter a filename - no extension necessary", {
                     content: "input",
                     icon: "info"
@@ -953,7 +953,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     .then((value) => {
                         //validate filename
                         if (value.match(/^[\w]+/g)) {
-                            let storyString = document.querySelector("#changesJSON").value;
+                            let storyString = document.querySelector("#changesUsrStryJSON").value;
                             storyString = storyString.slice(0, storyString.lastIndexOf(","));
                             let formattedJSON = `{ "Settings": [ {"categoryDataListUsr": "${localStorage.getItem('categoryDataListUsr')}"},{"userDataListUsr": "${localStorage.getItem('userDataListUsr')}"},{"doNotShowTourUsr": "${localStorage.getItem('doNotShowTourUsr')}"},{"doNotShowFiltersUsr": "${localStorage.getItem('doNotShowFiltersUsr')}"},{"doNotShowSearchBuilderUsr": "${localStorage.getItem('doNotShowSearchBuilderUsr')}"}],"Stories": [ ${storyString} ] }`;
                             // console.log(formattedJSON);
@@ -1098,9 +1098,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const buildRows = (addOrEdit) => {
             //create json from add form controls or edit form controls
             if (addOrEdit !== "edit") {
-                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
             } else {
-                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
             }
         }
         // #endregion
@@ -1112,8 +1112,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //      2022.04.28 refactor to support JSON approach
         // ***
         const addRows = () => {
-            if (document.querySelector("#changesJSON").value.length > 0) {
-                localStorage.setItem("UsrStry", document.querySelector("#changesJSON").value);
+            if (document.querySelector("#changesUsrStryJSON").value.length > 0) {
+                localStorage.setItem("UsrStry", document.querySelector("#changesUsrStryJSON").value);
             }
         };
         // #endregion
@@ -1142,7 +1142,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     updatedRows += `${JSON.stringify(newResults[i])},`;
                 }
             }
-            document.querySelector("#changesJSON").value = updatedRows;
+            document.querySelector("#changesUsrStryJSON").value = updatedRows;
             localStorage.setItem("UsrStry", updatedRows);
             //console.log("deleteRow - ls value: " + updatedRows);
         }
@@ -1233,19 +1233,47 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         layout: 'columns-2'
                     },
                     buttons: [
-                        'copy', 'csv'
-                        // ,
-                        // {
-                        //     text: 'Save to File',
-                        //     action: function (e, dt, button, config) {
-                        //         var data = dt.buttons.exportData();
+                        'copy', 'csv',
+                        {
+                            //datatables.net/reference/button/csv
+                            extend: 'csv',
+                            filename: 'CSV4IssueTracker',
+                            text: 'Issue Tracker CSV',
+                            customize: function (csv, btnConfigObj, dtAPI) {
+                                //Split the csv to get the rows
+                                let split_csv = csv.split("\n");
+                                //Remove the row one to personnalize the headers
+                                split_csv[0] = '"Description","Project","Category","Priority","Status","Comment"';
 
-                        //         $.fn.dataTable.fileSave(
-                        //             new Blob([JSON.stringify(data)]),
-                        //             'UserStories.json'
-                        //         );
-                        //     }
-                        // }
+                                for (let i = 1; i < split_csv.length; i++) {
+                                    //Split on quotes and comma to get each cell
+                                    let csv_cell_array = split_csv[i].split('","');
+                                    //Remove replace the two quotes which are left at the beginning and the end (first and last cell)
+                                    csv_cell_array[0] = csv_cell_array[0].replace(/"/g, '');
+                                    csv_cell_array[5] = csv_cell_array[5].replace(/"/g, '');
+                                    let category = csv_cell_array[0];
+                                    let user = csv_cell_array[1];
+                                    let action = csv_cell_array[2].replaceAll(",", "").replaceAll('"', "");
+                                    let benefit = csv_cell_array[3].replaceAll(",", "").replaceAll('"', "");
+                                    //reset description
+                                    csv_cell_array[0] = `<b>As a</b> ${user} <b>I want to</b> ${action} <b>so that</b> ${benefit}`;
+                                    csv_cell_array[1] = `Enter Project`; //project
+                                    csv_cell_array[3] = `Low`; //priority
+                                    csv_cell_array[4] = `New`; //status
+                                    //comment
+                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}`;
+                                    //category
+                                    csv_cell_array[2] = `${category} :: ${user}`;
+                                    //Join the table on the quotes and comma; add back the quotes at the beginning and end
+                                    csv_cell_array_quotes = '"' + csv_cell_array.join('","') + '"';
+                                    //Insert the new row into the rows array at the previous index
+                                    split_csv[i] = csv_cell_array_quotes;
+                                }
+                                //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
+                                csv = split_csv.join("\n");
+                                return csv;
+                            },
+                        }
                     ],
                     stateSave: true,
                     select: true,
@@ -1278,15 +1306,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Modified on:
         // ***        
         const checkLocalStorage = () => {
-            // *** generate dt ***
-            if (localStorage.getItem("UsrStry")) {
-                //if localstorage has rows, then overwrite hidden textarea to build table
-                document.querySelector("#changesJSON").value = localStorage.getItem("UsrStry");
-                //pull in rows (if any) and gen table
-                addRows();
-                dt();
-            }
-
             // *** get files info ***
             // source filename info
             if (localStorage.getItem("file2ProcessUsr")) {
@@ -1323,6 +1342,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             } else {
                 document.querySelector("#doNotShowSearchBuilderUsr").checked = false;
             }
+
+            // *** generate dt ***
+            if (localStorage.getItem("UsrStry")) {
+                //if localstorage has rows, then overwrite hidden textarea to build table
+                document.querySelector("#changesUsrStryJSON").value = localStorage.getItem("UsrStry");
+                //pull in rows (if any) and gen table
+                addRows();
+                dt();
+            }
         }
         // #endregion
 
@@ -1333,6 +1361,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //      2022.07.21 added refactored code and update dlValues
         // ***            
         window.addEventListener('DOMContentLoaded', (event) => {
+
+            //handle local storage
+            checkLocalStorage();
 
             // *** settings - datalist ***
             const dlValues = [
@@ -1353,10 +1384,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
                 }
             }
-
-            //handle local storage
-            checkLocalStorage();
-
         });
         // #endregion
     </script>
