@@ -40,25 +40,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             background-repeat: no-repeat;
             background-position: top;
             background-size: contain;
-            /* background-size: cover; */
-        }
-
-        /* eForm */
-        #ctl00_MainContent_ctl00_btnSave,
-        #ctl00_MainContent_ctl01_btnSaveBottom {
-            border: none;
-            font-size: 1.60em;
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            margin: 2px 2px;
-            cursor: pointer;
-        }
-
-        /* eForm */
-        #ctl00_MainContent_ctl00_spanRelatedDocuments,
-        #ctl00_MainContent_ctl01_spanRelatedDocumentsBottom {
-            font-size: .5em;
         }
 
         div {
@@ -170,19 +151,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             margin-left: auto;
             margin-right: auto;
             width: 125px;
-            /* border: 2px solid #4CAF50;
-            padding: 1em 1em;
-            border-radius: .2em;
-            color: white;
-            background-color: #4CAF50;
-            transition: 1s;
-            font-size: 16px; */
         }
-
-        /* input[type=file]::file-selector-button:hover {
-            background-color: #81ecec;
-            border: 2px solid #00cec9;
-        } */
 
         .toast {
             background-color: green;
@@ -698,7 +667,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         });
         tour.addStep({
             title: 'Save to File',
-            text: `Click Save to File button to save all the rows to a JSON formatted file and allow for persistent data storage to a desired location on your device. Please <b>NOTE</b> all issues are stored in the browser's local storage. This means you can close and reopen the app and the issues will persist. However, if you clear the local storage, then the issues will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the issues to more persistent file based storage. <b>To save issues to a file please use the Save to File button</b>`,
+            text: `Click Save to File button to save all the rows to a JSON formatted file and allow for persistent data storage to a desired location on your device. Please <b>NOTE</b> all stories are stored in the browser's local storage. This means you can close and reopen the app and the stories will persist. However, if you clear the local storage, then the stories will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage. <b>To save stories to a file please use the Save to File button</b>`,
             attachTo: {
                 element: '#downloadStory',
                 on: 'bottom'
