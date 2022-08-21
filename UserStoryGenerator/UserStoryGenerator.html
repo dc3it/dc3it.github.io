@@ -366,7 +366,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button>
     </h1>
     <div>
-        <span id="fileSave2FileButtonUsr"></span>
+        <span id="fileSave2FileButtonUsrStry"></span>
     </div>
     <div style="background-color: #ffffff">
         <div class="header" id="myHeader"
@@ -407,7 +407,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         <a style="font-weight:normal">Choose File</a>
                     </label>
                 </button>
-                <span id="fileSelectedFromChooseFileButtonUsr" style="font-size: smaller;"></span>
+                <span id="fileSelectedFromChooseFileButtonUsrStry" style="font-size: smaller;"></span>
             </div>
             <!-- stores all rows -->
             <textarea id="changesUsrStryJSON" rows="10"
@@ -437,13 +437,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             <p>When first starting the app CLM examples are provided.</p>
             <span style="font-weight: bold">Enter Categories</span>
             <div class="settingsDDL">
-                <textarea id="dataListCategoriesUsr" rows="10" class="modalSettingsTxtAreaControls"></textarea>
-                <button type="button" id="addDataListCategoriesUsr" class="settingsBtn">Add Categories</button>
+                <textarea id="dataListCategoriesUsrStry" rows="10" class="modalSettingsTxtAreaControls"></textarea>
+                <button type="button" id="addDataListCategoriesUsrStry" class="settingsBtn">Add Categories</button>
             </div>
             <span style="font-weight: bold">Enter Users</span>
             <div class="settingsDDL">
-                <textarea id="dataListUsersUsr" rows="10" class="modalSettingsTxtAreaControls"></textarea>
-                <button type="button" id="addDataListUsersUsr" class="settingsBtn">Add
+                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls"></textarea>
+                <button type="button" id="addDataListUsersUsrStry" class="settingsBtn">Add
                     Users</button>
             </div>
             <hr />
@@ -452,7 +452,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <h3>Turn off Guide Me</h3>
                 </div>
                 <div class="column" style="margin: auto">
-                    <label class="switch"><input type="checkbox" id="doNotShowTourUsr"><span
+                    <label class="switch"><input type="checkbox" id="doNotShowTourUsrStry"><span
                             class="slider round"></span></label>
                 </div>
             </div>
@@ -461,7 +461,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <h3>Hide Filters</h3>
                 </div>
                 <div class="column" style="margin: auto">
-                    <label class="switch"><input type="checkbox" id="doNotShowFiltersUsr"><span
+                    <label class="switch"><input type="checkbox" id="doNotShowFiltersUsrStry"><span
                             class="slider round"></span></label>
                 </div>
             </div>
@@ -470,7 +470,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <h3>Hide Search Builder</h3>
                 </div>
                 <div class="column" style="margin: auto">
-                    <label class="switch"><input type="checkbox" id="doNotShowSearchBuilderUsr"><span
+                    <label class="switch"><input type="checkbox" id="doNotShowSearchBuilderUsrStry"><span
                             class="slider round"></span></label>
                 </div>
             </div>
@@ -808,12 +808,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 icon: "info"
             });
         });
-        document.querySelector("#addDataListCategoriesUsr").addEventListener("click", () => {
-            updateDataList("#dataListCategoriesUsr", "categoryDataListUsr", "category");
+        document.querySelector("#addDataListCategoriesUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListCategoriesUsrStry", "categoryDataListUsrStry", "category");
             toastMsg("Category DataList values updated!");
         });
-        document.querySelector("#addDataListUsersUsr").addEventListener("click", () => {
-            updateDataList("#dataListUsersUsr", "userDataListUsr", "user");
+        document.querySelector("#addDataListUsersUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListUsersUsrStry", "userDataListUsrStry", "user");
             toastMsg("User DataList values updated!");
         });
         //disable esc key on settings modal because of need to reload the page for the show/hide on datatables
@@ -830,16 +830,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             location.reload();
         });
         // walk me - guide me
-        document.querySelector("#doNotShowTourUsr").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowTourUsr");
+        document.querySelector("#doNotShowTourUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowTourUsrStry");
         });
         // datatables filters
-        document.querySelector("#doNotShowFiltersUsr").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowFiltersUsr");
+        document.querySelector("#doNotShowFiltersUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowFiltersUsrStry");
         });
         // datatables search builder
-        document.querySelector("#doNotShowSearchBuilderUsr").addEventListener("click", () => {
-            setLocalStorageValuesForSettings("doNotShowSearchBuilderUsr");
+        document.querySelector("#doNotShowSearchBuilderUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowSearchBuilderUsrStry");
         });
         const setLocalStorageValuesForSettings = (lsKeyName) => {
             if (localStorage.getItem(lsKeyName)) {
@@ -945,32 +945,41 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // #region *** save to file button ***
         document.querySelector("#downloadStory").addEventListener("click", () => {
-            if (document.querySelector("#changesUsrStryJSON").value != "") {
-                swal("Please enter a filename - no extension necessary", {
-                    content: "input",
-                    icon: "info"
-                })
-                    .then((value) => {
-                        //validate filename
-                        if (value.match(/^[\w]+/g)) {
-                            let storyString = document.querySelector("#changesUsrStryJSON").value;
-                            storyString = storyString.slice(0, storyString.lastIndexOf(","));
-                            let formattedJSON = `{ "Settings": [ {"categoryDataListUsr": "${localStorage.getItem('categoryDataListUsr')}"},{"userDataListUsr": "${localStorage.getItem('userDataListUsr')}"},{"doNotShowTourUsr": "${localStorage.getItem('doNotShowTourUsr')}"},{"doNotShowFiltersUsr": "${localStorage.getItem('doNotShowFiltersUsr')}"},{"doNotShowSearchBuilderUsr": "${localStorage.getItem('doNotShowSearchBuilderUsr')}"}],"Stories": [ ${storyString} ] }`;
-                            // console.log(formattedJSON);
-                            download(`${value}.json`, formattedJSON);
-                            localStorage.setItem("fileLastSavedUsr", computeDate());
-                            checkLocalStorage();
-                        } else {
-                            swal("Please try again and enter a filename - no extension necessary", {
-                                icon: "error"
-                            });
-                        }
-                    });
-            } else {
-                swal("There are no issues to download", {
-                    icon: "error"
-                });
+            let fileNameLastSavedUsrStry = "";
+            if (localStorage.getItem("fileLastSavedUsrStry")) {
+                fileNameLastSavedUsrStry = localStorage.getItem("fileLastSavedUsrStry");
+                fileNameLastSavedUsrStry = fileNameLastSavedUsrStry.slice(0, fileNameLastSavedUsrStry.indexOf("|")).trim();
             }
+            if (document.querySelector("#fileSave2FileButtonUsrStry").innerHTML !== "")
+                if (document.querySelector("#changesUsrStryJSON").value != "") {
+                    swal("Please enter a filename - no extension necessary", {
+                        content: "input",
+                        icon: "info",
+                        content: {
+                            element: 'input',
+                            attributes: {
+                                value: fileNameLastSavedUsrStry
+                            }
+                        }
+                    }).then((value) => {
+                        let fileName2SaveUsrStry = ""
+                        if (value != "") {
+                            fileName2SaveUsrStry = value;
+                        } else {
+                            fileName2SaveUsrStry = fileNameLastSavedUsrStry;
+                        }
+                        let usrStryString = document.querySelector("#changesUsrStryJSON").value;
+                        usrStryString = usrStryString.slice(0, usrStryString.lastIndexOf(","));
+                        let formattedUsrStryJSON = `{ "Settings": [ {"lowColorPickerUsrStry": "${localStorage.getItem('lowColorPickerUsrStry')}"},{"mediumColorPickerUsrStry": "${localStorage.getItem('mediumColorPickerUsrStry')}"},{"highColorPickerUsrStry": "${localStorage.getItem('highColorPickerUsrStry')}"},{"showStopperColorPickerUsrStry": "${localStorage.getItem('showStopperColorPickerUsrStry')}"},{"createdByDataListUsrStry": "${localStorage.getItem('createdByDataListUsrStry')}"},{"updatedByDataListUsrStry": "${localStorage.getItem('updatedByDataListUsrStry')}"},{"projectDataListUsrStry": "${localStorage.getItem('projectDataListUsrStry')}"},{"categoryDataListUsrStry": "${localStorage.getItem('categoryDataListUsrStry')}"},{"priorityDataListUsrStry": "${localStorage.getItem('priorityDataListUsrStry')}"},{"statusDataListUsrStry": "${localStorage.getItem('statusDataListUsrStry')}"},{"assigneeDataListUsrStry": "${localStorage.getItem('assigneeDataListUsrStry')}"},{"doNotShowTourUsrStry": "${localStorage.getItem('doNotShowTourUsrStry')}"},{"doNotShowFiltersUsrStry": "${localStorage.getItem('doNotShowFiltersUsrStry')}"},{"doNotShowSearchBuilderUsrStry": "${localStorage.getItem('doNotShowSearchBuilderUsrStry')}"}],"Stories": [ ${usrStryString} ] }`;
+                        download(`${fileName2SaveUsrStry}.json`, formattedUsrStryJSON);
+                        localStorage.setItem("fileLastSavedUsrStry", `${fileName2SaveUsrStry} | ${computeDate()}`);
+                        checkLocalStorage();
+                    });
+                } else {
+                    swal("There are no stories to download", {
+                        icon: "error"
+                    });
+                }            
         });
         // #endregion
 
@@ -979,7 +988,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             {
                 const selectedFile = document.querySelector("#openFile").files[0];
                 const reader = new FileReader();
-                localStorage.setItem("file2ProcessUsr", selectedFile.name);
+                localStorage.setItem("file2ProcessUsrStry", selectedFile.name);
                 let lines = ""; //remove
                 let jsonData = "";
                 let jsonDataObject = {};
@@ -989,11 +998,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     //create object to get values from
                     jsonData = reader.result;
                     jsonDataObject = JSON.parse(jsonData);
-                    localStorage.setItem('categoryDataListUsr', jsonDataObject.Settings[0].categoryDataListUsr);
-                    localStorage.setItem('userDataListUsr', jsonDataObject.Settings[1].userDataListUsr);
-                    localStorage.setItem('doNotShowTourUsr', jsonDataObject.Settings[2].doNotShowTourUsr);
-                    localStorage.setItem('doNotShowFiltersUsr', jsonDataObject.Settings[3].doNotShowFiltersUsr);
-                    localStorage.setItem('doNotShowSearchBuilderUsr', jsonDataObject.Settings[4].doNotShowSearchBuilderUsr);
+                    localStorage.setItem('categoryDataListUsrStry', jsonDataObject.Settings[0].categoryDataListUsrStry);
+                    localStorage.setItem('userDataListUsrStry', jsonDataObject.Settings[1].userDataListUsrStry);
+                    localStorage.setItem('doNotShowTourUsrStry', jsonDataObject.Settings[2].doNotShowTourUsrStry);
+                    localStorage.setItem('doNotShowFiltersUsrStry', jsonDataObject.Settings[3].doNotShowFiltersUsrStry);
+                    localStorage.setItem('doNotShowSearchBuilderUsrStry', jsonDataObject.Settings[4].doNotShowSearchBuilderUsrStry);
                     //need to loop through object 2 construct JSON
                     for (let i = 0; i < jsonDataObject.Stories.length; i++) {
                         storyData += `${JSON.stringify(jsonDataObject.Stories[i])},`;
@@ -1216,10 +1225,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             //console.log("dt step - ls value: " + jsonData);
             let domSettings = "lBfrtip"; //dom: P - search panes | Q - condition builder | l - Entry Length
             //modify dom to account for settings
-            if (localStorage.getItem("doNotShowSearchBuilderUsr") !== "true") {
+            if (localStorage.getItem("doNotShowSearchBuilderUsrStry") !== "true") {
                 domSettings = `Q${domSettings}`;
             }
-            if (localStorage.getItem("doNotShowFiltersUsr") !== "true") {
+            if (localStorage.getItem("doNotShowFiltersUsrStry") !== "true") {
                 domSettings = `P${domSettings}`;
             }
 
@@ -1308,39 +1317,39 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const checkLocalStorage = () => {
             // *** get files info ***
             // source filename info
-            if (localStorage.getItem("file2ProcessUsr")) {
+            if (localStorage.getItem("file2ProcessUsrStry")) {
                 //set filename on page
-                document.querySelector("#fileSelectedFromChooseFileButtonUsr").textContent = `${localStorage.getItem("file2ProcessUsr")}`;
+                document.querySelector("#fileSelectedFromChooseFileButtonUsrStry").textContent = `${localStorage.getItem("file2ProcessUsrStry")}`;
             } else {
-                document.querySelector("#fileSelectedFromChooseFileButtonUsr").textContent = "No file selected.";
+                document.querySelector("#fileSelectedFromChooseFileButtonUsrStry").textContent = "No file selected.";
             }
             //last saved
-            if (localStorage.getItem("fileLastSavedUsr")) {
+            if (localStorage.getItem("fileLastSavedUsrStry")) {
                 //set filename on page
-                document.querySelector("#fileSave2FileButtonUsr").textContent = `Stories last saved: ${localStorage.getItem("fileLastSavedUsr")}. Please check Downloads folder for most current version.`;
+                document.querySelector("#fileSave2FileButtonUsrStry").textContent = `Stories last saved: ${localStorage.getItem("fileLastSavedUsrStry")}. Please check Downloads folder for most current version.`;
             } else {
-                document.querySelector("#fileSave2FileButtonUsr").textContent = "Stories have not been saved to a file.";
+                document.querySelector("#fileSave2FileButtonUsrStry").textContent = "Stories have not been saved to a file.";
             }
 
             // *** settings - toggle switches ***
             // walk me - tour - guide me
-            if (localStorage.getItem("doNotShowTourUsr") == "true") {
-                document.querySelector("#doNotShowTourUsr").checked = true;
+            if (localStorage.getItem("doNotShowTourUsrStry") == "true") {
+                document.querySelector("#doNotShowTourUsrStry").checked = true;
             } else {
-                document.querySelector("#doNotShowTourUsr").checked = false;
+                document.querySelector("#doNotShowTourUsrStry").checked = false;
                 tour.start();
             }
             // datatables search filters
-            if (localStorage.getItem("doNotShowFiltersUsr") == "true") {
-                document.querySelector("#doNotShowFiltersUsr").checked = true;
+            if (localStorage.getItem("doNotShowFiltersUsrStry") == "true") {
+                document.querySelector("#doNotShowFiltersUsrStry").checked = true;
             } else {
-                document.querySelector("#doNotShowFiltersUsr").checked = false;
+                document.querySelector("#doNotShowFiltersUsrStry").checked = false;
             }
             // datatables search builder
-            if (localStorage.getItem("doNotShowSearchBuilderUsr") == "true") {
-                document.querySelector("#doNotShowSearchBuilderUsr").checked = true;
+            if (localStorage.getItem("doNotShowSearchBuilderUsrStry") == "true") {
+                document.querySelector("#doNotShowSearchBuilderUsrStry").checked = true;
             } else {
-                document.querySelector("#doNotShowSearchBuilderUsr").checked = false;
+                document.querySelector("#doNotShowSearchBuilderUsrStry").checked = false;
             }
 
             // *** generate dt ***
@@ -1367,10 +1376,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             // *** settings - datalist ***
             const dlValues = [
-                { namedDataList: "categoryDataListUsr", dataListControl: "#dataListCategoriesUsr", inputControl: "category", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
-                { namedDataList: "categoryDataListUsr", dataListControl: "#dataListCategoriesUsr", inputControl: "txbCategory", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
-                { namedDataList: "userDataListUsr", dataListControl: "#dataListUsersUsr", inputControl: "user", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
-                { namedDataList: "userDataListUsr", dataListControl: "#dataListUsersUsr", inputControl: "txbUser", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" }
+                { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "category", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
+                { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "txbCategory", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
+                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "user", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
+                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "txbUser", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" }
             ];
             //loop through array of objects to construct the datalists
             for (let i = 0; i < dlValues.length; i++) {
