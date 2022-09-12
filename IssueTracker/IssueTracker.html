@@ -1046,9 +1046,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     if (autoNum.length == 3) { autoNum = `00${i}` } else if (autoNum.length == 4) { autoNum = `0${i}` } else { autoNum = i }
                     //test if comments do not exist
                     if (issueData[7] == undefined) {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                        // document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0]}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments" : [["${computeDate()}", "📝 No_Comment_Added"]] ],`;
                     } else {
-                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}']" ],`;
+                        // document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments : ['${computeDate()}', '📝 ${issueData[7].replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replaceAll("\t", "")}']" ],`;
+                        document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate()) + '-' + autoNum}", "${issueData[0]}", "${issueData[1]}", "${issueData[2]}", "${issueData[3]}", "${issueData[4]}", "${issueData[5]}", "${issueData[6]}", "${computeDate()}", "${issueData[6]}", "Comments" : [["${computeDate()}", "📝 ${issueData[7]}"]] ],`;
                     }
                 }
                 //add rows from CSV to local storage
@@ -1066,6 +1068,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Description: handles button event clicks
         // Created on: 2022.01.27
         // Modified on:
+        //      2022.08.31 refactor edit and choose file to work with refactored JSON
         // ***
         // #region *** add button ***
         document.querySelector("#addIssue").addEventListener("click", () => {
@@ -1135,7 +1138,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     }).then((willDelete) => {
                         if (willDelete) {
                             deleteRow();
-                            dt();
+                            dt("edit");
                         }
                     });
                 } else {
@@ -1178,13 +1181,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     document.querySelector("#tblComments").innerHTML = "";
                     quill.root.innerHTML = "";
                     //process the comments                 
-                    let commentsJSON = "[" + dataRow[0][10].replace("Comments :", "").replace(/'/g, '"').replace(/&quot;/g, "") + "]";
-                    let cleanCommentJSON = JSON.parse(commentsJSON);
+                    let commentsJSON = dataRow[0][10].Comments;
+                    // let cleanCommentJSON = JSON.parse(commentsJSON);
                     let commentRow = "";
-                    for (let i = 0; i < cleanCommentJSON.length; i++) {
+                    for (let i = 0; i < commentsJSON.length; i++) {
                         //test for comment placeholder
-                        if (cleanCommentJSON[i][1].indexOf("No_Comment_Added") == -1) {
-                            commentRow += `<tr><td>${cleanCommentJSON[i][0]}</td><td>${cleanCommentJSON[i][1]}</td></tr>`;
+                        if (commentsJSON[i][1].indexOf("No_Comment_Added") == -1) {
+                            commentRow += `<tr><td>${commentsJSON[i][0]}</td><td>${commentsJSON[i][1]}</td></tr>`;
                         }
                     }
                     //output the comments
@@ -1323,6 +1326,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Description: handles edit modal actions
         // Created on: 2022.07.21
         // Modified on:
+        //      2022.08.31 refactor JSON
         // ***
         //close button
         document.querySelector('#closeEdit').addEventListener("click", () => {
@@ -1338,59 +1342,53 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if (document.querySelector("#dialogHeader>h1").innerHTML == "Add Entry") {
                 buildRows("add");
                 addRows();
-                dt();
+                dt("add");
                 toastMsg("Issue Added!");
             } else {
                 //get the selected row
                 let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
                 //need to check to see if changes were made in the form and make an entry in the comment
-                let addChange2Comment = "";
-                addChange2Comment = dataRow[0][10];
+                let addChange2Comment = JSON.stringify(dataRow[0][10]).replace(/"]]}/g, '"]');
+                // addChange2Comment = addChange2Comment[0][0];//this is an object and need to push into it as the string concat won't work below and the data is dropped
 
-                //TODO Need to determine the columns here to see what has changed in the order and proceed accordingly - reuse the code from above - turn into a helper function 
                 //process column order coming from table as user may have moved columns
                 columnOrder(dataRow, "compareEdits");
-                // need loop and test for description - consolidate the other if conditions - clean up #txb from id
 
                 //if original does not equal current then need to make a comment
-                if (quillDesc.root.innerHTML.replace(/\t/g, "").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "") != dataRow[0][1].replace(/(<([^>]+)>)/ig, "")) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Description changed <strong>from</strong> ${dataRow[0][1]} <strong>to</strong> ${quillDesc.root.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
+                if (quillDesc.root.innerHTML.replace(/\t/g, "").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "") != dataRow[0][1].replace(/(<([^>]+)>)/ig, "")) {
+                    addChange2Comment += `,["${computeDate()}", "📃 Description changed <strong>from</strong> ${dataRow[0][1]} <strong>to</strong> ${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;")}"]`;
                 }
-                // else {
-
-                //this block here is the same logic - could still have a loop and if description then handle differently - only
-                // need one if else
+                //this block here is the same logic - could have a loop and if description then handle differently
                 if (document.querySelector("#txbUpdatedBy").value != dataRow[0][9]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Updated By changed <strong>from</strong> ${dataRow[0][9]} <strong>to</strong> ${document.querySelector("#txbUpdatedBy").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Updated By changed <strong>from</strong> ${dataRow[0][9]} <strong>to</strong> ${document.querySelector("#txbUpdatedBy").value}"]`;
                 }
                 if (document.querySelector("#txbProject").value != dataRow[0][2]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Project changed <strong>from</strong> ${dataRow[0][2]} <strong>to</strong> ${document.querySelector("#txbProject").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Project changed <strong>from</strong> ${dataRow[0][2]} <strong>to</strong> ${document.querySelector("#txbProject").value}"]`;
                 }
                 if (document.querySelector("#txbCategory").value != dataRow[0][3]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Category changed <strong>from</strong> ${dataRow[0][3]} <strong>to</strong> ${document.querySelector("#txbCategory").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Category changed <strong>from</strong> ${dataRow[0][3]} <strong>to</strong> ${document.querySelector("#txbCategory").value}"]`;
                 }
                 if (document.querySelector("#txbPriority").value != dataRow[0][4]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Priority changed <strong>from</strong> ${dataRow[0][4]} <strong>to</strong> ${document.querySelector("#txbPriority").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Priority changed <strong>from</strong> ${dataRow[0][4]} <strong>to</strong> ${document.querySelector("#txbPriority").value}"]`;
                 }
                 if (document.querySelector("#txbStatus").value != dataRow[0][5]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Status changed <strong>from</strong> ${dataRow[0][5]} <strong>to</strong> ${document.querySelector("#txbStatus").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Status changed <strong>from</strong> ${dataRow[0][5]} <strong>to</strong> ${document.querySelector("#txbStatus").value}"]`;
                 }
                 if (document.querySelector("#txbAssignedTo").value != dataRow[0][6]) {
-                    addChange2Comment += `,['${computeDate()}', '📃 Assigned To changed <strong>from</strong> ${dataRow[0][6]} <strong>to</strong> ${document.querySelector("#txbAssignedTo").value}']`;
+                    addChange2Comment += `,["${computeDate()}", "📃 Assigned To changed <strong>from</strong> ${dataRow[0][6]} <strong>to</strong> ${document.querySelector("#txbAssignedTo").value}"]`;
                 }
-                // }
                 //we are not tracking comment changes and just treat them as an add
                 if (quill.root.textContent != "") {
-                    addChange2Comment += `,['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/\t/g, "").replace(/"/g, "&quot;").replace(/'/g, "&apos;")}']`;
+                    addChange2Comment += `,["${computeDate()}", "📝 ${quill.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/\t/g, "").replace(/"/g, "&quot;")}"]`;
                 }
-
+                addChange2Comment += "]} ]";
                 //close the modal 
                 document.querySelector("#modalAddEdit").close();
                 //remove row for edit
-                deleteRow();
+                deleteRow("edit");
                 buildRows("edit", addChange2Comment);
                 addRows();
-                dt();
+                dt("edit");
                 toastMsg("Issue Updated!");
             }
         });
@@ -1473,17 +1471,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //      2022.05.18 refactor date into reusable function add parameter addOrEdit
         //      2022.06.14 add comments parameter and update comment to handle additions
         //      2022.07.14 add new quill for description input
+        //      2022.08.31 refactor JSON
         // ***            
         const buildRows = (addOrEdit, add2Comments) => {
             //create json from add form controls or edit form controls
+            let commentsValue = "";
+            let updatedByValue = "";
+            let coreJSON = `"${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replaceAll('"', "&quot;")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", `;
+            let addJSON = `[ "${todaysDate(computeDate())}", `;
+            let editJSON = `[ "${document.querySelector("#txbID").value}", `;
+
             if (addOrEdit !== "edit") {
-                if (quill.root.textContent == "") {
-                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                updatedByValue = document.querySelector("#txbCreatedBy").value;
+                if (quill.root.textContent == "📝 No_Comment_Added") {
+                    // document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 No_Comment_Added']" ],`;
+                    commentsValue = "📝 No_Comment_Added";
+                    document.querySelector("#changesJSON").value += `${addJSON}${coreJSON}"${updatedByValue}", { "Comments" : [["${computeDate()}", "${commentsValue}"]] } ],`;
                 } else {
-                    document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}']" ],`;
+                    commentsValue = `📝 ${quill.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replaceAll('"', "&quot;")}`;
+                    // document.querySelector("#changesJSON").value += `[ "${todaysDate(computeDate())}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbCreatedBy").value}", "Comments : ['${computeDate()}', '📝 ${quill.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}']" ],`;
+                    document.querySelector("#changesJSON").value += `${addJSON}${coreJSON}"${updatedByValue}", { "Comments" : [["${computeDate()}", "${commentsValue}"]] } ],`;
                 }
             } else {
-                document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbID").value}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbUpdatedBy").value}", "${add2Comments}" ], `;
+                commentsValue = add2Comments;
+                updatedByValue = document.querySelector("#txbUpdatedBy").value;
+                // document.querySelector("#changesJSON").value += `[ "${document.querySelector("#txbID").value}", "${quillDesc.root.innerHTML.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g, "<a href=$1").replace('target="_blank"', "target=_blank").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\t/g, "")}", "${document.querySelector("#txbProject").value}", "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbPriority").value}", "${document.querySelector("#txbStatus").value}", "${document.querySelector("#txbAssignedTo").value}", "${document.querySelector("#txbCreatedBy").value}", "${computeDate()}", "${document.querySelector("#txbUpdatedBy").value}", "${add2Comments}" ], `;
+                document.querySelector("#changesJSON").value += `${editJSON}${coreJSON}"${updatedByValue}", ${commentsValue}`;
+                //{ "Comments" : [["${computeDate()}", "${commentsValue}"]] } ],
             }
             //console.log("build rows - changesJSON value: " + document.querySelector("#changesJSON").value);
         }
@@ -1509,8 +1523,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Modified on: 
         //      2022.06.21 compare ids to determine what should be removed
         //      2022.07.02 removed string array based approach and went with object
+        //      2022.09.07 add deleteOrEdit param with conditional test
         // ***
-        const deleteRow = () => {
+        const deleteRow = (deleteOrEdit) => {
             let updatedRows = "";
             //get the selected row
             let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
@@ -1518,7 +1533,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             let rowID = dataRow[0][0];
             //get rows from local storage
             let newResults = localStorage.getItem("UsrIssue");
-            newResults = `[ ${newResults.slice(0, newResults.lastIndexOf(","))} ]`;
+            if (deleteOrEdit != "edit") {
+                newResults = `[ ${newResults.slice(0, newResults.lastIndexOf(","))} ]`;
+            } else {
+                newResults = `[ ${newResults} ]`;
+            }
             newResults = JSON.parse(newResults);
             //find matching row and remove
             for (let i = 0; i < newResults.length; i++) {
@@ -1586,8 +1605,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Modified on:
         //      2022.01.27 added more settings for search pane, search builder, state save
         //      2022.05.11 added check for datatable row existence
+        //      2022.09.07 add param addOrEdit
         // ***
-        const dt = () => {
+        const dt = (addOrEdit) => {
             //test to see if the datatable has any rows
             if (document.querySelector('#myTable tbody')) {
                 $('#myTable').DataTable().clear();
@@ -1596,7 +1616,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
             //get the data
             let json = localStorage.getItem("UsrIssue");
-            json = json.substring(0, json.lastIndexOf(","));
+            if (addOrEdit != "edit") {
+                json = json.substring(0, json.lastIndexOf(","));
+            }
+
             let jsonData = `[ ${json} ] `;
             //console.log("dt step - ls value: " + jsonData);
             let domSettings = "lBfrtip"; //dom: P - search panes | Q - condition builder | l - Entry Length
@@ -1616,6 +1639,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             //make sure there is data - using a string still
             if (jsonData.indexOf(",") > 0) {
+                // jsonData = jsonData.replace(/, { "Comments" : .*?]] }/g, "");
+                // jsonData = JSON.stringify(jsonData);
                 jsonData = JSON.parse(jsonData); //convert to JSON
 
                 $('#myTable').DataTable({
@@ -1761,7 +1786,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 document.querySelector("#changesJSON").value = localStorage.getItem("UsrIssue");
                 //pull in rows (if any) and gen table
                 addRows();
-                dt();
+                dt("edit");
             }
         }
         // #endregion
