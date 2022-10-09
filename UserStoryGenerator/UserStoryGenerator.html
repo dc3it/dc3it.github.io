@@ -342,13 +342,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             style="position: -webkit-sticky; position: sticky; top: 0; background-color: #ffffff; z-index: 1">
             <div>
                 <!-- category-datalist provides drodown, autocomplete, and custom entry -->
-                <label for="category">Category:</label>
+                <label for="category">Epic / Feature:</label>
                 <input name="category" id="category" class="mainTxtControls">
-
                 <!-- user type-datalist provides drodown, autocomplete, and custom entry -->
                 <label for="user">As a [type of user]</label>
                 <input name="user" id="user" class="mainTxtControls">
-
                 <!-- action value -->
                 <label for="action">I want to [an action]</label>
                 <textarea id="action"
@@ -357,6 +355,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <label for="benefit">so that [a benefit/value]</label>
                 <textarea id="benefit"
                     style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+            </div>
+            <div>
+                <!-- notes / tasks -->
+                <label for="notes_tasks">Notes / Tasks</label>
+                <textarea id="notes_tasks"
+                    style="margin: 0px; width: 100%; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
             </div>
             <!-- process story -->
             <div style="margin: auto; width:60%; padding:.10em;">
@@ -487,6 +491,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     class="modalSettingsTxtAreaControls"></textarea>
             </div>
         </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbNotesTasks">Notes / Tasks </label>
+            </div>
+            <div class="column">
+                <textarea id="txbNotesTasks" style="margin: 0px; width: 250px; height: 150px;vertical-align: top;"
+                    class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>        
         <div>
             <button type="button" id="btnSaveEdit" class="btn">Save Changes</button>
             <button type="button" id="btnCancelEdit" class="btn">Cancel</button>
@@ -902,6 +915,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 document.querySelector("#txbUser").value = dataRow[0][1];
                 document.querySelector("#txbAction").value = dataRow[0][2];
                 document.querySelector("#txbBenefit").value = dataRow[0][3];
+                document.querySelector("txbNotesTasks").value = dataRow[0][4];
                 //show the form
                 document.querySelector("#confirm-edit").showModal();
             } else {
@@ -948,7 +962,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     swal("There are no stories to download", {
                         icon: "error"
                     });
-                }            
+                }
         });
         // #endregion
 
@@ -1076,9 +1090,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const buildRows = (addOrEdit) => {
             //create json from add form controls or edit form controls
             if (addOrEdit !== "edit") {
-                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "${document.querySelector("#notes_tasks").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}", "${todaysDate(computeDate())}" ], `;
             } else {
-                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "${document.querySelector("#txbNotesTasks")}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}", "${todaysDate(computeDate())}" ], `;
             }
         }
         // #endregion
@@ -1203,6 +1217,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             //make sure there is data - using a string still
             if (jsonData.indexOf(",") > 0) {
+                jsonData = jsonData.replaceAll("\n","<br/>");
                 jsonData = JSON.parse(jsonData); //convert to JSON
 
                 $('#myTable').DataTable({
@@ -1233,13 +1248,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                     let user = csv_cell_array[1];
                                     let action = csv_cell_array[2].replaceAll(",", "").replaceAll('"', "");
                                     let benefit = csv_cell_array[3].replaceAll(",", "").replaceAll('"', "");
+                                    let notesTasks = csv_cell_array[4].replaceAll(",", "").replaceAll('"', "");
                                     //reset description
                                     csv_cell_array[0] = `<b>As a</b> ${user} <b>I want to</b> ${action} <b>so that</b> ${benefit}`;
                                     csv_cell_array[1] = `Enter Project`; //project
                                     csv_cell_array[3] = `Low`; //priority
                                     csv_cell_array[4] = `New`; //status
                                     //comment
-                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}`;
+                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}<br/>${notesTasks}`;
                                     //category
                                     csv_cell_array[2] = `${category} :: ${user}`;
                                     //Join the table on the quotes and comma; add back the quotes at the beginning and end
@@ -1261,6 +1277,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         { title: "User" },
                         { title: "Action" },
                         { title: "Benefit" },
+                        { title: "Notes / Tasks" },
                         { title: "Story and AC" },
                         { title: "Date Added" }
                     ],
