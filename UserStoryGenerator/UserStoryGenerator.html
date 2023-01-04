@@ -35,11 +35,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         body {
-            opacity: 95%;
+            /* opacity: 100%; */
             background-attachment: fixed;
             background-repeat: no-repeat;
             background-position: top;
             background-size: contain;
+            /* background-color: dimgrey; */
         }
 
         div {
@@ -186,7 +187,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         .row {
             display: grid;
             grid-template-columns: 50% 50%;
-            padding: 10px;
+            padding: 5px;
             width: 60%;
         }
 
@@ -327,13 +328,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 </head>
 
 <body>
-    <h1>User Story Creation Panel
+    <h3>User Story Creation Panel
         <button type="button" id="configSettingsHelp"
             style="background-color: transparent; border: 0; vertical-align: top">
             <i class="fas fa-question-circle"></i></button>
         <button type="button" id="openSettings"
             style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button>
-    </h1>
+    </h3>
     <div>
         <span id="fileSave2FileButtonUsrStry"></span>
     </div>
@@ -342,13 +343,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             style="position: -webkit-sticky; position: sticky; top: 0; background-color: #ffffff; z-index: 1">
             <div>
                 <!-- category-datalist provides drodown, autocomplete, and custom entry -->
-                <label for="category">Category:</label>
+                <label for="category">Epic / Feature:</label>
                 <input name="category" id="category" class="mainTxtControls">
-
                 <!-- user type-datalist provides drodown, autocomplete, and custom entry -->
                 <label for="user">As a [type of user]</label>
                 <input name="user" id="user" class="mainTxtControls">
-
                 <!-- action value -->
                 <label for="action">I want to [an action]</label>
                 <textarea id="action"
@@ -357,6 +356,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <label for="benefit">so that [a benefit/value]</label>
                 <textarea id="benefit"
                     style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+            </div>
+            <div style="padding-top: 5px">
+                <!-- notes / tasks -->
+                <label for="notes_tasks">Notes / Tasks</label>
+                <textarea id="notes_tasks"
+                    style="margin: 0px; width: 25%; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+                <!-- story points -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="storyPoints">Story Points:</label>
+                <input name="storyPoints" id="storyPoints" class="mainTxtControls" style="width: 35px">
+                <!-- priority -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="priorities">Priorities:</label>
+                <input name="priorities" id="priorities" class="mainTxtControls" style="width: 35px">                
+                <!-- sprint -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="sprint">Sprint:</label>
+                <input name="sprint" id="sprint" class="mainTxtControls" style="width: 70px">
+                <!-- hours -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="hours">Hours:</label>
+                <input name="hours" id="hours" class="mainTxtControls" style="width: 35px">
             </div>
             <!-- process story -->
             <div style="margin: auto; width:60%; padding:.10em;">
@@ -411,9 +428,35 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             </div>
             <span style="font-weight: bold">Enter Users</span>
             <div class="settingsDDL">
-                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls"></textarea>
+                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 35px"></textarea>
                 <button type="button" id="addDataListUsersUsrStry" class="settingsBtn">Add
                     Users</button>
+            </div>
+            <div>
+                <span style="font-weight: bold">Enter Story Points</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListStoryPointsUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <button type="button" id="addDataListStoryPointsUsrStry" class="settingsBtn">Add
+                        Points</button>
+                </div>
+                <span style="font-weight: bold">Enter Priorities</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListPrioritiesUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <button type="button" id="addDataListPrioritiesUsrStry" class="settingsBtn">Add
+                        Priorities</button>
+                </div>                
+                <span style="font-weight: bold">Enter Sprints</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListSprintsUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <button type="button" id="addDataListSprintsUsrStry" class="settingsBtn">Add
+                        Sprints</button>
+                </div>
+                <span style="font-weight: bold">Enter Hours</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListHoursUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <button type="button" id="addDataListHoursUsrStry" class="settingsBtn">Add
+                        Hours</button>
+                </div>
             </div>
             <hr />
             <div class="settingsRow">
@@ -452,6 +495,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         </div>
         <header class="dialog-header" id="editHeader">
             <h1>Edit Entry</h1>
+            <div style="text-align: right"><span style="padding-right: .5em;"><button id="prevRecord">◀️ Prev</button></span><span><button id="nextRecord">Next ▶️</button></span></div>
         </header>
         <div class="row">
             <div class="column">
@@ -485,6 +529,47 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             <div class="column">
                 <textarea id="txbBenefit" style="margin: 0px; width: 250px; height: 50px;vertical-align: top;"
                     class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbNotesTasks">Notes / Tasks </label>
+            </div>
+            <div class="column">
+                <textarea id="txbNotesTasks" style="margin: 0px; width: 250px; height: 150px;vertical-align: top;"
+                    class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbStoryPoints">Story Points</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbStoryPoints" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbPriorities">Priorities</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbPriorities" class="mainTxtControls" />
+            </div>
+        </div>        
+        <div class="row">
+            <div class="column">
+                <label for="txbSprint">Sprint</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbSprint" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbHours">Hours</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbHours" class="mainTxtControls" />
             </div>
         </div>
         <div>
@@ -785,6 +870,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             updateDataList("#dataListUsersUsrStry", "userDataListUsrStry", "user");
             toastMsg("User DataList values updated!");
         });
+        document.querySelector("#addDataListStoryPointsUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListStoryPointsUsrStry", "storyPointsDataListUsrStry", "storyPoints");
+            toastMsg("Story points DataList values updated!");
+        });
+        document.querySelector("#addDataListPrioritiesUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListPrioritiesUsrStry", "prioritiesDataListUsrStry", "priorities");
+            toastMsg("Story points DataList values updated!");
+        });        
+        document.querySelector("#addDataListSprintsUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListSprintsUsrStry", "sprintDataListUsrStry", "sprint");
+            toastMsg("Sprint DataList values updated!");
+        });
+        document.querySelector("#addDataListHoursUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListHoursUsrStry", "hoursDataListUsrStry", "hours");
+            toastMsg("Hours DataList values updated!");
+        });
         //disable esc key on settings modal because of need to reload the page for the show/hide on datatables
         document.querySelector("#modalSettings").addEventListener('cancel', (event) => {
             event.preventDefault();
@@ -897,11 +998,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
                 //get the selected row
                 let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+                let rows = $('#myTable').DataTable().rows('.selected').indexes();
+                let rowsRaw = $('#myTable').DataTable().rows().count();
+                alert(`Selected Row: ${rows[0]} | Total Rows: ${rowsRaw} | Rows for purposes of plus/minus: ${rowsRaw - 1}`);
                 //populate modal with values for editing              
                 document.querySelector("#txbCategory").value = dataRow[0][0];
                 document.querySelector("#txbUser").value = dataRow[0][1];
                 document.querySelector("#txbAction").value = dataRow[0][2];
                 document.querySelector("#txbBenefit").value = dataRow[0][3];
+                document.querySelector("#txbNotesTasks").value = dataRow[0][4];
+                document.querySelector("#txbStoryPoints").value = dataRow[0][5];
+                document.querySelector("#txbPriorities").value = dataRow[0][6];
+                document.querySelector("#txbSprint").value = dataRow[0][7];
+                document.querySelector("#txbHours").value = dataRow[0][8];
                 //show the form
                 document.querySelector("#confirm-edit").showModal();
             } else {
@@ -948,7 +1057,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     swal("There are no stories to download", {
                         icon: "error"
                     });
-                }            
+                }
         });
         // #endregion
 
@@ -990,23 +1099,36 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Description: handles datalist dropdown resets
         // Created on: 2022.07.21
         // Modified on:
+        //  2022.10.22 added story points, sprint, and hours
         // ***
         // reset Category dropdown
         document.querySelector("#category").addEventListener("click", () => {
             document.querySelector("#category").value = "";
-        })
+        });
         // reset User dropdown
         document.querySelector("#user").addEventListener("click", () => {
             document.querySelector("#user").value = "";
-        })
+        });
+        // reset Story Points dropdown
+        document.querySelector("#storyPoints").addEventListener("click", () => {
+            document.querySelector("#storyPoints").value = "";
+        });
+        // reset sprint dropdown
+        document.querySelector("#sprint").addEventListener("click", () => {
+            document.querySelector("#sprint").value = "";
+        });
+        // reset hours dropdown
+        document.querySelector("#hours").addEventListener("click", () => {
+            document.querySelector("#hours").value = "";
+        });
         // reset edit Category dropdown
         document.querySelector("#txbCategory").addEventListener("click", () => {
             document.querySelector("#txbCategory").value = "";
-        })
+        });
         // reset edit User dropdown
         document.querySelector("#txbUser").addEventListener("click", () => {
             document.querySelector("#txbUser").value = "";
-        })
+        });
         // #endregion
 
         // #region *** edit modal ***
@@ -1072,13 +1194,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //      2022.04.28 refactor to handle JSON
         //      2022.03.10 added date added column
         //      2022.05.18 refactor date into reusable function add parameter addOrEdit
+        //      2022.10.22 add story points, priority, sprint, hours
         // ***            
         const buildRows = (addOrEdit) => {
             //create json from add form controls or edit form controls
             if (addOrEdit !== "edit") {
-                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#action").value}", "${document.querySelector("#benefit").value}", "${document.querySelector("#notes_tasks").value}", "${document.querySelector("#storyPoints").value}", "${document.querySelector("#priorities").value}", "${document.querySelector("#sprint").value}", "${document.querySelector("#hours").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}", "${todaysDate(computeDate())}" ], `;
             } else {
-                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}<br/>", "${todaysDate(computeDate())}" ], `;
+                document.querySelector("#changesUsrStryJSON").value += `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "${document.querySelector("#txbNotesTasks").value.replace(/\t/g, "").replace(/\"/g, "&quot;").replace(/(<([^>]+)>)/ig, "")}", "${document.querySelector("#txbStoryPoints").value}", "${document.querySelector("#txbPriorities").value}", "${document.querySelector("#txbSprint").value}", "${document.querySelector("#txbHours").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}", "${todaysDate(computeDate())}" ], `;
             }
         }
         // #endregion
@@ -1203,6 +1326,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             //make sure there is data - using a string still
             if (jsonData.indexOf(",") > 0) {
+                jsonData = jsonData.replaceAll("\n", "<br/>");
                 jsonData = JSON.parse(jsonData); //convert to JSON
 
                 $('#myTable').DataTable({
@@ -1233,13 +1357,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                     let user = csv_cell_array[1];
                                     let action = csv_cell_array[2].replaceAll(",", "").replaceAll('"', "");
                                     let benefit = csv_cell_array[3].replaceAll(",", "").replaceAll('"', "");
+                                    let notesTasks = csv_cell_array[4].replaceAll(",", "").replaceAll('"', "");
                                     //reset description
                                     csv_cell_array[0] = `<b>As a</b> ${user} <b>I want to</b> ${action} <b>so that</b> ${benefit}`;
                                     csv_cell_array[1] = `Enter Project`; //project
                                     csv_cell_array[3] = `Low`; //priority
                                     csv_cell_array[4] = `New`; //status
                                     //comment
-                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}`;
+                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}<br/>${notesTasks}`;
                                     //category
                                     csv_cell_array[2] = `${category} :: ${user}`;
                                     //Join the table on the quotes and comma; add back the quotes at the beginning and end
@@ -1261,6 +1386,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         { title: "User" },
                         { title: "Action" },
                         { title: "Benefit" },
+                        { title: "Notes / Tasks" },
+                        { title: "Points" },
+                        { title: "Priority" },
+                        { title: "Sprint" },
+                        { title: "Hours" },
                         { title: "Story and AC" },
                         { title: "Date Added" }
                     ],
@@ -1337,6 +1467,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // Created on: 2022.01.27
         // Modified on:
         //      2022.07.21 added refactored code and update dlValues
+        //      2022.10.22 added storyPoints, sprint, and hours
         // ***            
         window.addEventListener('DOMContentLoaded', (event) => {
 
@@ -1348,11 +1479,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "category", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
                 { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "txbCategory", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
                 { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "user", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
-                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "txbUser", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" }
+                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "txbUser", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
+                { namedDataList: "storyPointsDataListUsrStry", dataListControl: "#dataListStoryPointsUsrStry", inputControl: "storyPoints", controlValue: "1|2|3|5|8|13|21" },
+                { namedDataList: "storyPointsDataListUsrStry", dataListControl: "#dataListStoryPointsUsrStry", inputControl: "txbStoryPoints", controlValue: "1|2|3|5|8|13|21" },
+                { namedDataList: "prioritiesDataListUsrStry", dataListControl: "#dataListPrioritiesUsrStry", inputControl: "priorities", controlValue: "P1|P2|P3|P4" },
+                { namedDataList: "prioritiesDataListUsrStry", dataListControl: "#dataListPrioritiesUsrStry", inputControl: "txbPriorities", controlValue: "P1|P2|P3|P4" },
+                { namedDataList: "sprintDataListUsrStry", dataListControl: "#dataListSprintsUsrStry", inputControl: "sprint", controlValue: "Sprint 1|Sprint 2|Sprint 3|Sprint 4|Sprint 5|Sprint 6" },
+                { namedDataList: "sprintDataListUsrStry", dataListControl: "#dataListSprintsUsrStry", inputControl: "txbSprint", controlValue: "Sprint 1|Sprint 2|Sprint 3|Sprint 4|Sprint 5|Sprint 6" },
+                { namedDataList: "hoursDataListUsrStry", dataListControl: "#dataListHoursUsrStry", inputControl: "hours", controlValue: ".25|.5|.75|1|2|4|6|8|12|16|24|32|40" },
+                { namedDataList: "hoursDataListUsrStry", dataListControl: "#dataListHoursUsrStry", inputControl: "txbHours", controlValue: ".25|.5|.75|1|2|4|6|8|12|16|24|32|40" }
             ];
             //loop through array of objects to construct the datalists
             for (let i = 0; i < dlValues.length; i++) {
                 if (localStorage.getItem(dlValues[i].namedDataList)) {
+                    //get value from local storage
                     document.querySelector(dlValues[i].dataListControl).value = localStorage.getItem(dlValues[i].namedDataList);
                     updateDataList(dlValues[i].dataListControl, dlValues[i].namedDataList, dlValues[i].inputControl);
                     document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
