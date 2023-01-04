@@ -1000,7 +1000,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
                 let rows = $('#myTable').DataTable().rows('.selected').indexes();
                 let rowsRaw = $('#myTable').DataTable().rows().count();
-                alert(`Selected Row: ${rows[0]} | Total Rows: ${rowsRaw} | Rows for purposes of plus/minus: ${rowsRaw - 1}`);
+                // alert(`Selected Row: ${rows[0]} | Total Rows: ${rowsRaw} | Rows for purposes of plus/minus: ${rowsRaw - 1}`);
                 //populate modal with values for editing              
                 document.querySelector("#txbCategory").value = dataRow[0][0];
                 document.querySelector("#txbUser").value = dataRow[0][1];
