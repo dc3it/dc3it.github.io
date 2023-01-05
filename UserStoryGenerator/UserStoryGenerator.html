@@ -1113,6 +1113,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.querySelector("#storyPoints").addEventListener("click", () => {
             document.querySelector("#storyPoints").value = "";
         });
+        // reset priorities dropdown
+        document.querySelector("#priorities").addEventListener("click", () => {
+            document.querySelector("#priorities").value = "";
+        });
         // reset sprint dropdown
         document.querySelector("#sprint").addEventListener("click", () => {
             document.querySelector("#sprint").value = "";
@@ -1131,15 +1135,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         });
         // reset edit Story Points dropdown
         document.querySelector("#txbStoryPoints").addEventListener("click", () => {
-            document.querySelector("#storyPoints").value = "";
+            document.querySelector("#txbStoryPoints").value = "";
         });
+        // reset edit priorities dropdown
+        document.querySelector("#txbPriorities").addEventListener("click", () => {
+            document.querySelector("#txbPriorities").value = "";
+        });        
         // reset edit sprint dropdown
         document.querySelector("#txbSprint").addEventListener("click", () => {
-            document.querySelector("#sprint").value = "";
+            document.querySelector("#txbSprint").value = "";
         });
         // reset edit hours dropdown
         document.querySelector("#txbHours").addEventListener("click", () => {
-            document.querySelector("#hours").value = "";
+            document.querySelector("#txbHours").value = "";
         });        
         // #endregion
 
