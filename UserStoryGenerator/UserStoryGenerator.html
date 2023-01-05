@@ -1129,6 +1129,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.querySelector("#txbUser").addEventListener("click", () => {
             document.querySelector("#txbUser").value = "";
         });
+        // reset edit Story Points dropdown
+        document.querySelector("#txbStoryPoints").addEventListener("click", () => {
+            document.querySelector("#storyPoints").value = "";
+        });
+        // reset edit sprint dropdown
+        document.querySelector("#txbSprint").addEventListener("click", () => {
+            document.querySelector("#sprint").value = "";
+        });
+        // reset edit hours dropdown
+        document.querySelector("#txbHours").addEventListener("click", () => {
+            document.querySelector("#hours").value = "";
+        });        
         // #endregion
 
         // #region *** edit modal ***
