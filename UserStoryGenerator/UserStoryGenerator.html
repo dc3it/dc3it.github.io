@@ -126,6 +126,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             width: 125px;
         }
 
+        .pnBtn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 9px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 55px;
+        }
+
         .settingsBtn {
             background-color: rgba(85, 110, 156, 0.5);
             border: none;
@@ -213,7 +227,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             vertical-align: middle;
             padding: 6px;
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 5px;
         }
 
         .modalSettingsTxtControls {
@@ -223,7 +237,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             vertical-align: middle;
             padding: 6px;
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 5px;
         }
 
         .modalSettingsTxtAreaControls {
@@ -233,7 +247,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             vertical-align: middle;
             padding: 6px;
             border: 1px solid #ccc;
-            border-radius: 10px;
+            border-radius: 5px;
         }
 
         /* https://www.w3schools.com/howto/howto_css_switch.asp */
@@ -351,29 +365,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <!-- action value -->
                 <label for="action">I want to [an action]</label>
                 <textarea id="action"
-                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
                 <!-- benefit value -->
                 <label for="benefit">so that [a benefit/value]</label>
                 <textarea id="benefit"
-                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
             </div>
             <div style="padding-top: 5px">
                 <!-- notes / tasks -->
                 <label for="notes_tasks">Notes / Tasks</label>
                 <textarea id="notes_tasks"
-                    style="margin: 0px; width: 25%; height: 50px;vertical-align: top;border-radius: 10px;"></textarea>
+                    style="margin: 0px; width: 25%; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
                 <!-- story points -datalist provides drodown, autocomplete, and custom entry -->
                 <label for="storyPoints">Story Points:</label>
                 <input name="storyPoints" id="storyPoints" class="mainTxtControls" style="width: 35px">
                 <!-- priority -datalist provides drodown, autocomplete, and custom entry -->
                 <label for="priorities">Priorities:</label>
-                <input name="priorities" id="priorities" class="mainTxtControls" style="width: 35px">                
+                <input name="priorities" id="priorities" class="mainTxtControls" style="width: 35px">
                 <!-- sprint -datalist provides drodown, autocomplete, and custom entry -->
                 <label for="sprint">Sprint:</label>
                 <input name="sprint" id="sprint" class="mainTxtControls" style="width: 70px">
                 <!-- hours -datalist provides drodown, autocomplete, and custom entry -->
                 <label for="hours">Hours:</label>
-                <input name="hours" id="hours" class="mainTxtControls" style="width: 35px">
+                <input name="hours" id="hours" class="mainTxtControls" style="width: 40px">
             </div>
             <!-- process story -->
             <div style="margin: auto; width:60%; padding:.10em;">
@@ -428,32 +442,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             </div>
             <span style="font-weight: bold">Enter Users</span>
             <div class="settingsDDL">
-                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 35px"></textarea>
+                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                    style="height: 35px"></textarea>
                 <button type="button" id="addDataListUsersUsrStry" class="settingsBtn">Add
                     Users</button>
             </div>
             <div>
                 <span style="font-weight: bold">Enter Story Points</span>
                 <div class="settingsDDL">
-                    <textarea id="dataListStoryPointsUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <textarea id="dataListStoryPointsUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
                     <button type="button" id="addDataListStoryPointsUsrStry" class="settingsBtn">Add
                         Points</button>
                 </div>
                 <span style="font-weight: bold">Enter Priorities</span>
                 <div class="settingsDDL">
-                    <textarea id="dataListPrioritiesUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <textarea id="dataListPrioritiesUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
                     <button type="button" id="addDataListPrioritiesUsrStry" class="settingsBtn">Add
                         Priorities</button>
-                </div>                
+                </div>
                 <span style="font-weight: bold">Enter Sprints</span>
                 <div class="settingsDDL">
-                    <textarea id="dataListSprintsUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <textarea id="dataListSprintsUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
                     <button type="button" id="addDataListSprintsUsrStry" class="settingsBtn">Add
                         Sprints</button>
                 </div>
                 <span style="font-weight: bold">Enter Hours</span>
                 <div class="settingsDDL">
-                    <textarea id="dataListHoursUsrStry" rows="10" class="modalSettingsTxtAreaControls" style="height: 25px"></textarea>
+                    <textarea id="dataListHoursUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
                     <button type="button" id="addDataListHoursUsrStry" class="settingsBtn">Add
                         Hours</button>
                 </div>
@@ -495,7 +514,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         </div>
         <header class="dialog-header" id="editHeader">
             <h1>Edit Entry</h1>
-            <div style="text-align: right"><span style="padding-right: .5em;"><button id="prevRecord">◀️ Prev</button></span><span><button id="nextRecord">Next ▶️</button></span></div>
+            <div style="text-align: right"><span style="padding-right: .5em;"><button class="pnBtn" id="prevRecord">◀️
+                        Prev</button></span><span><button id="nextRecord" class="pnBtn">Next ▶️</button></span></div>
         </header>
         <div class="row">
             <div class="column">
@@ -555,7 +575,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             <div class="column">
                 <input type="text" id="txbPriorities" class="mainTxtControls" />
             </div>
-        </div>        
+        </div>
         <div class="row">
             <div class="column">
                 <label for="txbSprint">Sprint</label>
@@ -877,7 +897,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.querySelector("#addDataListPrioritiesUsrStry").addEventListener("click", () => {
             updateDataList("#dataListPrioritiesUsrStry", "prioritiesDataListUsrStry", "priorities");
             toastMsg("Story points DataList values updated!");
-        });        
+        });
         document.querySelector("#addDataListSprintsUsrStry").addEventListener("click", () => {
             updateDataList("#dataListSprintsUsrStry", "sprintDataListUsrStry", "sprint");
             toastMsg("Sprint DataList values updated!");
@@ -998,9 +1018,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
                 //get the selected row
                 let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
-                let rows = $('#myTable').DataTable().rows('.selected').indexes();
-                let rowsRaw = $('#myTable').DataTable().rows().count();
-                // alert(`Selected Row: ${rows[0]} | Total Rows: ${rowsRaw} | Rows for purposes of plus/minus: ${rowsRaw - 1}`);
                 //populate modal with values for editing              
                 document.querySelector("#txbCategory").value = dataRow[0][0];
                 document.querySelector("#txbUser").value = dataRow[0][1];
@@ -1140,7 +1157,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // reset edit priorities dropdown
         document.querySelector("#txbPriorities").addEventListener("click", () => {
             document.querySelector("#txbPriorities").value = "";
-        });        
+        });
         // reset edit sprint dropdown
         document.querySelector("#txbSprint").addEventListener("click", () => {
             document.querySelector("#txbSprint").value = "";
@@ -1148,13 +1165,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // reset edit hours dropdown
         document.querySelector("#txbHours").addEventListener("click", () => {
             document.querySelector("#txbHours").value = "";
-        });        
+        });
         // #endregion
 
         // #region *** edit modal ***
         // Description: handles edit modal actions
         // Created on: 2022.07.21
         // Modified on:
+        //  2023.01.04 added previous and next buttons
+        //  2023.02.06 handle when start / end reached and refactor code
         // ***
         //edit modal close
         document.querySelector('#closeEdit').addEventListener("click", () => {
@@ -1167,12 +1186,64 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //edit modal save
         document.querySelector("#btnSaveEdit").addEventListener("click", () => {
             //close the modal
-            document.querySelector("#confirm-edit").close();
+            // document.querySelector("#confirm-edit").close();
             deleteRow();
             buildRows("edit");
             addRows();
             dt();
             toastMsg("User Story values updated!");
+        });
+
+        //populate modal with values for editing              
+        const setDataRow = (dataRow) => {
+            document.querySelector("#txbCategory").value = dataRow[0][0];
+            document.querySelector("#txbUser").value = dataRow[0][1];
+            document.querySelector("#txbAction").value = dataRow[0][2];
+            document.querySelector("#txbBenefit").value = dataRow[0][3];
+            document.querySelector("#txbNotesTasks").value = dataRow[0][4];
+            document.querySelector("#txbStoryPoints").value = dataRow[0][5];
+            document.querySelector("#txbPriorities").value = dataRow[0][6];
+            document.querySelector("#txbSprint").value = dataRow[0][7];
+            document.querySelector("#txbHours").value = dataRow[0][8];
+        }
+        // move up and down the record
+        const traverseRows = (rowDirection) => {
+            //1 get the selected row
+            let rowIndexSelected = $('#myTable').DataTable().row('.selected').index();
+            let rowsRaw = $('#myTable').DataTable().rows().count();
+            if (rowsRaw != 1) {
+                //2 set selected row to next/prev row
+                if (rowDirection == "next") {
+                    if (rowIndexSelected + 1 < rowsRaw) {
+                        $('#myTable').DataTable().row(rowIndexSelected + 1).select();
+                        let dataRow = $('#myTable').DataTable().rows(rowIndexSelected + 1).data();
+                        setDataRow(dataRow);
+                    } else {
+                        toastMsg("No additional rows to navigate!");
+                    }
+                }
+                if (rowDirection == "prev") {
+                    if (rowIndexSelected - 1 > -1) {
+                        $('#myTable').DataTable().row(rowIndexSelected - 1).select();
+                        let dataRow = $('#myTable').DataTable().rows(rowIndexSelected - 1).data();
+                        setDataRow(dataRow);
+                    } else {
+                        toastMsg("No additional rows to navigate!");
+                    }
+                }
+            }
+            else {
+                toastMsg("No additional rows to navigate!");
+            }
+        };
+
+        // edit form next record button
+        document.querySelector("#nextRecord").addEventListener("click", () => {
+            traverseRows("next");
+        });
+        // edit form previous record button
+        document.querySelector("#prevRecord").addEventListener("click", () => {
+            traverseRows("prev");
         });
         // #endregion
 
@@ -1399,7 +1470,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         }
                     ],
                     stateSave: true,
-                    select: true,
+                    select: {
+                        style: 'single'
+                    },
                     data: jsonData,
                     columns: [
                         { title: "Category" },
