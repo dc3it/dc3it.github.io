@@ -1187,7 +1187,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         document.querySelector("#btnSaveEdit").addEventListener("click", () => {
             //close the modal
             // document.querySelector("#confirm-edit").close();
-            deleteRow();
+            deleteRow(); //problem with the delete because when using the navigation it really isn't grabbing the proper row with the nav buttonsS
             buildRows("edit");
             addRows();
             dt();
@@ -1320,7 +1320,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const deleteRow = () => {
             let updatedRows = "";
             //get the selected row
-            let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+            let dataRow = $('#myTable').DataTable().row('.selected').index();
+            // let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
             //extract row ID
             let rowID = dataRow[0][5];
             //get rows from local storage
