@@ -1191,6 +1191,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             buildRows("edit");
             addRows();
             dt();
+            //make sure to select a row
+            let rowsRaw = $('#myTable').DataTable().rows().count() - 1;
+            $('#myTable').DataTable().row(rowsRaw).select();
+            let dataRow = $('#myTable').DataTable().rows(rowsRaw).data();
+            setDataRow(dataRow);
             toastMsg("User Story values updated!");
         });
 
@@ -1320,8 +1325,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const deleteRow = () => {
             let updatedRows = "";
             //get the selected row
-            let dataRow = $('#myTable').DataTable().row('.selected').index();
-            // let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+            let dataRowIdx = $('#myTable').DataTable().row('.selected').index();
+            localStorage.setItem("dataRowIdx", dataRowIdx);
+            let dataRow = $('#myTable').DataTable().rows(dataRowIdx).data();
             //extract row ID
             let rowID = dataRow[0][5];
             //get rows from local storage
