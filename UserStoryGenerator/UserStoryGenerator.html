@@ -1065,7 +1065,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         }
                         let usrStryString = document.querySelector("#changesUsrStryJSON").value;
                         usrStryString = usrStryString.slice(0, usrStryString.lastIndexOf(","));
-                        let formattedUsrStryJSON = `{ "Settings": [ {"lowColorPickerUsrStry": "${localStorage.getItem('lowColorPickerUsrStry')}"},{"mediumColorPickerUsrStry": "${localStorage.getItem('mediumColorPickerUsrStry')}"},{"highColorPickerUsrStry": "${localStorage.getItem('highColorPickerUsrStry')}"},{"showStopperColorPickerUsrStry": "${localStorage.getItem('showStopperColorPickerUsrStry')}"},{"createdByDataListUsrStry": "${localStorage.getItem('createdByDataListUsrStry')}"},{"updatedByDataListUsrStry": "${localStorage.getItem('updatedByDataListUsrStry')}"},{"projectDataListUsrStry": "${localStorage.getItem('projectDataListUsrStry')}"},{"categoryDataListUsrStry": "${localStorage.getItem('categoryDataListUsrStry')}"},{"priorityDataListUsrStry": "${localStorage.getItem('priorityDataListUsrStry')}"},{"statusDataListUsrStry": "${localStorage.getItem('statusDataListUsrStry')}"},{"assigneeDataListUsrStry": "${localStorage.getItem('assigneeDataListUsrStry')}"},{"doNotShowTourUsrStry": "${localStorage.getItem('doNotShowTourUsrStry')}"},{"doNotShowFiltersUsrStry": "${localStorage.getItem('doNotShowFiltersUsrStry')}"},{"doNotShowSearchBuilderUsrStry": "${localStorage.getItem('doNotShowSearchBuilderUsrStry')}"}],"Stories": [ ${usrStryString} ] }`;
+                        let formattedUsrStryJSON = `{ "Settings": [ {"categoryDataListUsrStry": "${localStorage.getItem('categoryDataListUsrStry')}"},{"userDataListUsrStry": "${localStorage.getItem('userDataListUsrStry')}"},{"storyPointsDataListUsrStry": "${localStorage.getItem('storyPointsDataListUsrStry')}"},{"prioritiesDataListUsrStry": "${localStorage.getItem('prioritiesDataListUsrStry')}"},{"sprintDataListUsrStry": "${localStorage.getItem('sprintDataListUsrStry')}"},{"hoursDataListUsrStry": "${localStorage.getItem('hoursDataListUsrStry')}"},{"doNotShowTourUsrStry": "${localStorage.getItem('doNotShowTourUsrStry')}"},{"doNotShowFiltersUsrStry": "${localStorage.getItem('doNotShowFiltersUsrStry')}"},{"doNotShowSearchBuilderUsrStry": "${localStorage.getItem('doNotShowSearchBuilderUsrStry')}"}],"Stories": [ ${usrStryString} ] }`;
                         download(`${fileName2SaveUsrStry}.json`, formattedUsrStryJSON);
                         localStorage.setItem("fileLastSavedUsrStry", `${fileName2SaveUsrStry} | ${computeDate()}`);
                         checkLocalStorage();
@@ -1095,9 +1095,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     jsonDataObject = JSON.parse(jsonData);
                     localStorage.setItem('categoryDataListUsrStry', jsonDataObject.Settings[0].categoryDataListUsrStry);
                     localStorage.setItem('userDataListUsrStry', jsonDataObject.Settings[1].userDataListUsrStry);
-                    localStorage.setItem('doNotShowTourUsrStry', jsonDataObject.Settings[2].doNotShowTourUsrStry);
-                    localStorage.setItem('doNotShowFiltersUsrStry', jsonDataObject.Settings[3].doNotShowFiltersUsrStry);
-                    localStorage.setItem('doNotShowSearchBuilderUsrStry', jsonDataObject.Settings[4].doNotShowSearchBuilderUsrStry);
+                    localStorage.setItem('storyPointsDataListUsrStry', jsonDataObject.Settings[2].storyPointsDataListUsrStry);
+                    localStorage.setItem('prioritiesDataListUsrStry', jsonDataObject.Settings[3].prioritiesDataListUsrStry);
+                    localStorage.setItem('sprintDataListUsrStry', jsonDataObject.Settings[4].sprintDataListUsrStry);
+                    localStorage.setItem('hoursDataListUsrStry', jsonDataObject.Settings[5].hoursDataListUsrStry);
+                    localStorage.setItem('doNotShowTourUsrStry', jsonDataObject.Settings[6].doNotShowTourUsrStry);
+                    localStorage.setItem('doNotShowFiltersUsrStry', jsonDataObject.Settings[7].doNotShowFiltersUsrStry);
+                    localStorage.setItem('doNotShowSearchBuilderUsrStry', jsonDataObject.Settings[8].doNotShowSearchBuilderUsrStry);
                     //need to loop through object 2 construct JSON
                     for (let i = 0; i < jsonDataObject.Stories.length; i++) {
                         storyData += `${JSON.stringify(jsonDataObject.Stories[i])},`;
