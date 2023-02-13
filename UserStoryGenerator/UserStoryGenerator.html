@@ -947,7 +947,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // #region *** action button event listeners ***
         // Description: handles button event clicks
         // Created on: 2022.01.27
-        // Modified on:
+        // Modified on: 2023.02.13 refactor edit button code to reuse setDataRow()
         // ***
         // #region *** add button ***
         document.querySelector("#processStory").addEventListener("click", () => {
@@ -1019,15 +1019,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 //get the selected row
                 let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
                 //populate modal with values for editing              
-                document.querySelector("#txbCategory").value = dataRow[0][0];
-                document.querySelector("#txbUser").value = dataRow[0][1];
-                document.querySelector("#txbAction").value = dataRow[0][2];
-                document.querySelector("#txbBenefit").value = dataRow[0][3];
-                document.querySelector("#txbNotesTasks").value = dataRow[0][4];
-                document.querySelector("#txbStoryPoints").value = dataRow[0][5];
-                document.querySelector("#txbPriorities").value = dataRow[0][6];
-                document.querySelector("#txbSprint").value = dataRow[0][7];
-                document.querySelector("#txbHours").value = dataRow[0][8];
+                setDataRow(dataRow);
                 //show the form
                 document.querySelector("#confirm-edit").showModal();
             } else {
@@ -1207,13 +1199,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         const setDataRow = (dataRow) => {
             document.querySelector("#txbCategory").value = dataRow[0][0];
             document.querySelector("#txbUser").value = dataRow[0][1];
-            document.querySelector("#txbAction").value = dataRow[0][2];
-            document.querySelector("#txbBenefit").value = dataRow[0][3];
-            document.querySelector("#txbNotesTasks").value = dataRow[0][4];
+            document.querySelector("#txbAction").value = dataRow[0][2].replaceAll("<br/>", "\n");
+            document.querySelector("#txbBenefit").value = dataRow[0][3].replaceAll("<br/>", "\n");
+            document.querySelector("#txbNotesTasks").value = dataRow[0][4].replaceAll("<br/>", "\n");
             document.querySelector("#txbStoryPoints").value = dataRow[0][5];
             document.querySelector("#txbPriorities").value = dataRow[0][6];
             document.querySelector("#txbSprint").value = dataRow[0][7];
-            document.querySelector("#txbHours").value = dataRow[0][8];
+            document.querySelector("#txbHours").value = dataRow[0][8];          
         }
         // move up and down the record
         const traverseRows = (rowDirection) => {
@@ -1295,6 +1287,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         //      2022.03.10 added date added column
         //      2022.05.18 refactor date into reusable function add parameter addOrEdit
         //      2022.10.22 add story points, priority, sprint, hours
+        //      2023.02.13 update handling of hard returns
         // ***            
         const buildRows = (addOrEdit) => {
             //create json from add form controls or edit form controls
