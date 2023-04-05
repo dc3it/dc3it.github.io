@@ -1,0 +1,39 @@
+root {
+    display: table;
+    margin: auto;
+}
+
+root>CustomField:first-child {
+    font-weight: bold;
+    color: black;
+    background-color: #00ffff;
+}
+
+CustomField {
+    display: table-row;
+    padding: 10px;
+}
+
+CustomField>fullName, 
+CustomField>label, 
+CustomField>length, 
+CustomField>required,
+CustomField>type {
+    font-size: larger;
+    color: blue;
+    display: table-cell;
+    border: 1px solid #c40505;
+    padding: 25px;
+}
+
+CustomField>externalId, 
+CustomField>trackFeedHistory, 
+CustomField>trackTrending, 
+CustomField>unique {
+    font-size: larger;
+    color: blue;
+    display: table-cell;
+    border: 1px solid #c40505;
+    padding: 25px;
+    display: none;
+}
