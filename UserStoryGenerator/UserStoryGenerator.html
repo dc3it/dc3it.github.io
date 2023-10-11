@@ -601,7 +601,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <!-- jsZip is used by the datatables to export to excel MIT License -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+        integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- datatables.net is based on jQuery and requires various bolt ons for additional functionality MIT License -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
@@ -1207,7 +1209,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             document.querySelector("#txbStoryPoints").value = dataRow[0][5];
             document.querySelector("#txbPriorities").value = dataRow[0][6];
             document.querySelector("#txbSprint").value = dataRow[0][7];
-            document.querySelector("#txbHours").value = dataRow[0][8];          
+            document.querySelector("#txbHours").value = dataRow[0][8];
         }
         // move up and down the record
         const traverseRows = (rowDirection) => {
@@ -1299,7 +1301,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 document.querySelector("#changesUsrStryJSON").value += newRow;
             } else {
                 let newRow = `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbAction").value}", "${document.querySelector("#txbBenefit").value}", "${document.querySelector("#txbNotesTasks").value.replace(/\t/g, "").replace(/\"/g, "&quot;")}", "${document.querySelector("#txbStoryPoints").value}", "${document.querySelector("#txbPriorities").value}", "${document.querySelector("#txbSprint").value}", "${document.querySelector("#txbHours").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}", "${todaysDate(computeDate())}" ], `;
-                newRow = newRow.replaceAll("\n", "<br/>"); 
+                newRow = newRow.replaceAll("\n", "<br/>");
                 document.querySelector("#changesUsrStryJSON").value += newRow;
             }
         }
@@ -1476,6 +1478,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                 //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
                                 csv = split_csv.join("\n");
                                 return csv;
+                            },
+                        },
+                        {
+                            //https://datatables.net/reference/button/excelHtml5
+                            extend: 'excelHtml5',
+                            filename: 'UserStoriesFormatted',
+                            text: 'Excel with Format',
+                            customize: function (xlsx) {
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                let rowCount = $('#myTable').DataTable().rows().count();
+                                for (let i = 0; i < rowCount; i++) {
+                                    let cellValue = `c[r=J${3+i}] t`;
+                                    let cellFormat = `c[r=J${3+i}]`;
+                                    let oldValue = $(cellValue, sheet).text();
+                                    let newValue = oldValue.replace("Acceptance Criteria:", "\n\nAcceptance Criteria:").replace("Given", "\nGiven").replace("When", "\nWhen").replace("Then", "\nThen");
+                                    $(cellValue, sheet).text(newValue);
+                                    $(cellFormat, sheet).attr('s', '42');
+                                }
                             },
                         }
                     ],
