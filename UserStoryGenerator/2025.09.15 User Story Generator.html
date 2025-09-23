@@ -1,0 +1,1744 @@
+<!--
+    Copyright 2022 DC3IT
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Story Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.3.0/css/searchBuilder.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.4.0/css/searchPanes.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.4/css/fixedHeader.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/css/shepherd.min.css"
+        integrity="sha512-g7F1lXNWWNdbCy2Qk6XTRx5FJ9U1w1rOmFo3/cIJApqtPBBd4GYGxV/MLnM0CVtVyWqIwnpSVIWZACMEkKO/CQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        body,
+        textarea {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            /* opacity: 100%; */
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: top;
+            background-size: contain;
+            /* background-color: dimgrey; */
+        }
+
+        div {
+            font-size: 16px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;
+            /* Mozilla, since 1999 */
+            white-space: -pre-wrap;
+            /* Opera 4-6 */
+            white-space: -o-pre-wrap;
+            /* Opera 7 */
+            word-wrap: break-word;
+            /* Internet Explorer 5.5+ */
+        }
+
+        /* https://alligator.io/html/dialog-element/ */
+        dialog {
+            background-color: #cfdff5;
+            color: #000000;
+            text-align: center;
+            border: none;
+            padding: 2rem;
+            border-radius: 6px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1), 0 0 10px rgba(0, 0, 0, 0.25);
+            max-width: 90vw;
+        }
+
+        dialog[open] {
+            animation: appear .15s cubic-bezier(0, 1.8, 1, 1.8);
+        }
+
+        dialog::backdrop {
+            background: linear-gradient(45deg, rgba(112, 117, 116, 0.5), rgba(85, 110, 156, 0.5));
+        }
+
+        dialog .actions {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateX(-3rem);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .btn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 125px;
+        }
+
+        .pnBtn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 9px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 55px;
+        }
+
+        .settingsBtn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 135px;
+        }
+
+        input[type=file]::file-selector-button {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 125px;
+        }
+
+        .toast {
+            background-color: green;
+            z-index: 10;
+            height: 75px;
+            float: right;
+            margin: -35px;
+        }
+
+        .toastError {
+            background-color: red;
+            z-index: 10;
+            height: 75px;
+            float: right;
+            margin: -35px;
+        }
+
+        .toast>.swal-text {
+            color: #fff;
+        }
+
+        .actions {
+            float: right;
+        }
+
+        #closeSettings,
+        #closeEdit {
+            border: none;
+            background: transparent;
+        }
+
+        .shepWalk {
+            background-color: rgb(209, 219, 238);
+        }
+
+        .shepherd-header {
+            background-color: #b0c4de;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            padding: 5px;
+            width: 60%;
+        }
+
+        .column {
+            text-align: left;
+        }
+
+        .settingsHelp {
+            width: 60%;
+        }
+
+        .header {
+            padding: .1em .1em;
+            /* border-radius: 1em; */
+            /* background:#8ABF5A; */
+            color: #0e0d0d;
+        }
+
+        .mainTxtControls {
+            margin: 0px;
+            /* width: 350px;
+            height: 30px; */
+            vertical-align: middle;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modalSettingsTxtControls {
+            margin: 0px;
+            width: 350px;
+            height: 30px;
+            vertical-align: middle;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modalSettingsTxtAreaControls {
+            margin: 0px;
+            width: 350px;
+            height: 100px;
+            vertical-align: middle;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* https://www.w3schools.com/howto/howto_css_switch.asp */
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .settingsRow {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            padding: 5px;
+            width: 90%;
+        }
+
+        .modalSettingsBtn {
+            background-color: rgba(85, 110, 156, 0.5);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 135px;
+        }
+
+        .settingsDDL {
+            padding-bottom: 5%;
+        }
+
+        /* Spinner Styles */
+        .spinner {
+            display: none;
+            margin: 1.5rem auto 0 auto;
+            width: 68px;
+            height: 68px;
+            border: 6px solid #e0e7ff;
+            border-top: 6px solid #4f8cff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="spinner" id="spinner"></div>
+    </div>
+    <h3>User Story Creation Panel
+        <button type="button" id="configSettingsHelp"
+            style="background-color: transparent; border: 0; vertical-align: top">
+            <i class="fas fa-question-circle"></i></button>
+        <button type="button" id="openSettings"
+            style="background: transparent;border: 0; float: right; margin-top: -50x">⚙️</button>
+    </h3>
+    <div>
+        <span id="fileSave2FileButtonUsrStry"></span>
+    </div>
+    <div style="background-color: #ffffff">
+        <div class="header" id="myHeader"
+            style="position: -webkit-sticky; position: sticky; top: 0; background-color: #ffffff; z-index: 1">
+            <div>
+                <!-- category-datalist provides drodown, autocomplete, and custom entry -->
+                <label for="category">Epic / Feature:</label>
+                <input name="category" id="category" class="mainTxtControls">
+                <!-- user type-datalist provides drodown, autocomplete, and custom entry -->
+                <label for="user">As a [type of user]</label>
+                <input name="user" id="user" class="mainTxtControls">
+                <!-- action value -->
+                <label for="action">I want to [an action]</label>
+                <textarea id="action"
+                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
+                <!-- benefit value -->
+                <label for="benefit">so that [a benefit/value]</label>
+                <textarea id="benefit"
+                    style="margin: 0px; width: 250px; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
+            </div>
+            <div style="padding-top: 5px">
+                <!-- notes / tasks -->
+                <label for="notes_tasks">Notes / Tasks</label>
+                <textarea id="notes_tasks"
+                    style="margin: 0px; width: 25%; height: 50px;vertical-align: top;border-radius: 5px;"></textarea>
+                <!-- story points -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="storyPoints">Story Points:</label>
+                <input name="storyPoints" id="storyPoints" class="mainTxtControls" style="width: 35px">
+                <!-- priority -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="priorities">Priorities:</label>
+                <input name="priorities" id="priorities" class="mainTxtControls" style="width: 35px">
+                <!-- sprint -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="sprint">Sprint:</label>
+                <input name="sprint" id="sprint" class="mainTxtControls" style="width: 70px">
+                <!-- hours -datalist provides drodown, autocomplete, and custom entry -->
+                <label for="hours">Hours:</label>
+                <input name="hours" id="hours" class="mainTxtControls" style="width: 40px">
+            </div>
+            <!-- process story -->
+            <div style="margin: auto; width:60%; padding:.10em;">
+                <button type="button" id="processStory" class="btn">Add
+                </button>
+                <button type="button" id="editStory" class="btn">Edit
+                </button>
+                <button type="button" id="deleteStory" class="btn">Delete
+                </button>
+                <button type="button" id="clearStory" class="btn">Clear
+                </button>
+                <button type="button" id="downloadStory" class="btn">Save to File
+                </button>
+                <button class="btn" id="chooseFile">
+                    <label>
+                        <input type="file" id="openFile" style="display: none;" accept=".json" />
+                        <a style="font-weight:normal">Choose File</a>
+                    </label>
+                </button>
+                <span id="fileSelectedFromChooseFileButtonUsrStry" style="font-size: smaller;"></span>
+            </div>
+            <!-- stores all rows -->
+            <textarea id="changesUsrStryJSON" rows="10"
+                style="margin: 0px; width: 1050px; height: 100px; display:none"></textarea>
+        </div>
+        <!-- apply rows to table -->
+        <div style="background-color: #ffffff">
+            <div style="padding: 1em">
+                <table id="myTable"></table>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <span>Powered by</span>
+        <a href="https://dc3it.github.io" target="_blank"><img src="https://dc3it.github.io/images/DC3ITFAVICON.png"
+                height="45px" width="45px" style="vertical-align: middle" /></a>
+    </div>
+    <!-- settings modal -->
+    <dialog class="my-modal" id="modalSettings">
+        <div class="actions">
+            <button type="button" id="closeSettings">❌</button>
+        </div>
+        <div style="text-align: left">
+            <h3>⚙️ Settings</h3>
+            <p>Use this modal form to update the datalist (pseudo dropdown) choices.</p>
+            <p>Make sure to use the | (pipe) symbol to separate the values.</p>
+            <p>When first starting some examples are provided.</p>
+            <span style="font-weight: bold">Enter Categories</span>
+            <div class="settingsDDL">
+                <textarea id="dataListCategoriesUsrStry" rows="10" class="modalSettingsTxtAreaControls"></textarea>
+                <button type="button" id="addDataListCategoriesUsrStry" class="settingsBtn">Add Categories</button>
+            </div>
+            <span style="font-weight: bold">Enter Users</span>
+            <div class="settingsDDL">
+                <textarea id="dataListUsersUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                    style="height: 35px"></textarea>
+                <button type="button" id="addDataListUsersUsrStry" class="settingsBtn">Add
+                    Users</button>
+            </div>
+            <div>
+                <span style="font-weight: bold">Enter Story Points</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListStoryPointsUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
+                    <button type="button" id="addDataListStoryPointsUsrStry" class="settingsBtn">Add
+                        Points</button>
+                </div>
+                <span style="font-weight: bold">Enter Priorities</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListPrioritiesUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
+                    <button type="button" id="addDataListPrioritiesUsrStry" class="settingsBtn">Add
+                        Priorities</button>
+                </div>
+                <span style="font-weight: bold">Enter Sprints</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListSprintsUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
+                    <button type="button" id="addDataListSprintsUsrStry" class="settingsBtn">Add
+                        Sprints</button>
+                </div>
+                <span style="font-weight: bold">Enter Hours</span>
+                <div class="settingsDDL">
+                    <textarea id="dataListHoursUsrStry" rows="10" class="modalSettingsTxtAreaControls"
+                        style="height: 25px"></textarea>
+                    <button type="button" id="addDataListHoursUsrStry" class="settingsBtn">Add
+                        Hours</button>
+                </div>
+            </div>
+            <hr />
+            <div class="settingsRow">
+                <div class="column">
+                    <h3>Turn off Guide Me</h3>
+                </div>
+                <div class="column" style="margin: auto">
+                    <label class="switch"><input type="checkbox" id="doNotShowTourUsrStry"><span
+                            class="slider round"></span></label>
+                </div>
+            </div>
+            <div class="settingsRow">
+                <div class="column">
+                    <h3>Hide Filters</h3>
+                </div>
+                <div class="column" style="margin: auto">
+                    <label class="switch"><input type="checkbox" id="doNotShowFiltersUsrStry"><span
+                            class="slider round"></span></label>
+                </div>
+            </div>
+            <div class="settingsRow">
+                <div class="column">
+                    <h3>Hide Search Builder</h3>
+                </div>
+                <div class="column" style="margin: auto">
+                    <label class="switch"><input type="checkbox" id="doNotShowSearchBuilderUsrStry"><span
+                            class="slider round"></span></label>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <!-- edit row modal -->
+    <dialog id="confirm-edit" class="my-modal">
+        <div class="actions">
+            <button type="button" id="closeEdit">❌</button>
+        </div>
+        <header class="dialog-header" id="editHeader">
+            <h1>Edit Entry</h1>
+            <div style="text-align: right"><span style="padding-right: .5em;"><button class="pnBtn" id="prevRecord">◀️
+                        Prev</button></span><span><button id="nextRecord" class="pnBtn">Next ▶️</button></span></div>
+        </header>
+        <div class="row">
+            <div class="column">
+                <label for="txbCategory">Category: </label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbCategory" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbUser">As a [type of user] </label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbUser" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbAction">I want to [an action] </label>
+            </div>
+            <div class="column">
+                <textarea id="txbAction" style="margin: 0px; width: 250px; height: 50px;vertical-align: top;"
+                    class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbBenefit">so that [a benefit/value] </label>
+            </div>
+            <div class="column">
+                <textarea id="txbBenefit" style="margin: 0px; width: 250px; height: 50px;vertical-align: top;"
+                    class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbNotesTasks">Notes / Tasks </label>
+            </div>
+            <div class="column">
+                <textarea id="txbNotesTasks" style="margin: 0px; width: 250px; height: 150px;vertical-align: top;"
+                    class="modalSettingsTxtAreaControls"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbStoryPoints">Story Points</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbStoryPoints" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbPriorities">Priorities</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbPriorities" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbSprint">Sprint</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbSprint" class="mainTxtControls" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <label for="txbHours">Hours</label>
+            </div>
+            <div class="column">
+                <input type="text" id="txbHours" class="mainTxtControls" />
+            </div>
+        </div>
+        <div>
+            <button type="button" id="btnSaveEdit" class="btn">Save Changes</button>
+            <button type="button" id="btnCancelEdit" class="btn">Cancel</button>
+        </div>
+    </dialog>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- jsZip is used by the datatables to export to excel MIT License -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+        integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- datatables.net is based on jQuery and requires various bolt ons for additional functionality MIT License -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.2.4/js/dataTables.fixedHeader.min.js"></script>
+    <!-- shepherd js is MIT licensed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/9.0.0/js/shepherd.min.js"
+        integrity="sha512-PW9R1HcNuXvRsX9Ibbjzki4sp5pqAl6GLNhkNeAA1jRfVWGXg+i9eRN9VC4r/i/W7WaA8f1/ejqRTR7pgr+R+Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- sweet alert is MIT licensed and a nice popup -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+
+        // #region *** globals ***
+        // Description: 
+        // Created on: 2025.09.15
+        // Modified on:
+        // ***
+        let aiAvailability;
+        let aiSession;
+        // #endregion
+
+        // #region opensource MIT walkme - shepherdjs ***
+        // Description: handles creating a walkme concept for new users
+        // Created on: 2022.03.20
+        // Modified on:
+        //  2022.05.16 added steps for Edit Delete Choose file
+        // ***
+        const tour = new Shepherd.Tour({
+            defaultStepOptions: {
+                cancelIcon: {
+                    enabled: true
+                },
+                classes: 'shepWalk',
+                scrollTo: { behavior: 'smooth', block: 'center' },
+                useModalOverlay: true,
+                when: {
+                    show() {
+                        const currentStepElement = tour.currentStep.el;
+                        const header = currentStepElement.querySelector('.shepherd-header');
+                        const progress = document.createElement('span');
+                        progress.style['margin-right'] = '15px';
+                        progress.style['font-size'] = '9px';
+                        progress.innerText = `${tour.steps.indexOf(tour.currentStep) + 1}/${tour.steps.length}`;
+                        header.insertBefore(progress, currentStepElement.querySelector('.shepherd-cancel-icon'));
+                        const footer = currentStepElement.querySelector('.shepherd-footer');
+                        const progressBar = document.createElement('progress');
+                        progressBar.style['margin-right'] = '50px';
+                        progressBar.style['margin-top'] = '10px';
+                        progressBar.max = tour.steps.length;
+                        progressBar.value = tour.steps.indexOf(tour.currentStep) + 1;
+                        footer.insertBefore(progressBar, currentStepElement.querySelector('.shepherd-button'));
+                    }
+                }
+            }
+        });
+        tour.addStep({
+            title: 'Welcome!',
+            text: `This tool helps to generate User Stories and Acceptance Criteria. It is MIT licensed.`,
+            attachTo: {
+                element: '#configSettingsHelp',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'creating'
+        });
+        tour.addStep({
+            title: 'Add',
+            text: `To add a User Story, select the category and user, fill in the action and benefit descriptions, and click Add. The category and user lists offer autocomplete, dropdown, and overwrite functionality. Please <b>NOTE</b> all stories are stored in the browser's local storage. This means you can close and reopen the app and the stories will persist. However, if you clear the local storage, then the stories will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage.`,
+            attachTo: {
+                element: '#processStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'addStories'
+        });
+        tour.addStep({
+            title: 'Edit',
+            text: `Click to select a row from the table and then click edit to open a modal form where the values from that row can be modified and changes saved.`,
+            attachTo: {
+                element: '#editStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'editStories'
+        });
+        tour.addStep({
+            title: 'Delete',
+            text: `Click to select a row from the table and then click delete to remove the row from the table and local storage.`,
+            attachTo: {
+                element: '#deleteStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'deleteStories'
+        });
+        tour.addStep({
+            title: 'Clear',
+            text: `Click clear to remove all stories from the table and local storage. Please <b>NOTE</b> use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage.`,
+            attachTo: {
+                element: '#clearStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'clearStories'
+        });
+        tour.addStep({
+            title: 'Save to File',
+            text: `Click Save to File button to save all the rows to a JSON formatted file and allow for persistent data storage to a desired location on your device. Please <b>NOTE</b> all stories are stored in the browser's local storage. This means you can close and reopen the app and the stories will persist. However, if you clear the local storage, then the stories will be removed. Please use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage. <b>To save stories to a file please use the Save to File button</b>`,
+            attachTo: {
+                element: '#downloadStory',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'downloadStories'
+        });
+        tour.addStep({
+            title: 'Choose File',
+            text: `Click choose file to select a JSON file that was created by the Save to File button. The Save to File button saves all the rows to a JSON formatted file and allows for persistent data storage to a desired location.`,
+            attachTo: {
+                element: '#chooseFile',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'chooseStories'
+        });
+        tour.addStep({
+            title: 'Dropdown / Autocomplete / Datalist Settings',
+            text: `To modify the dropdown / autocomplete / picklist / datalist choices and this guided tour, click the gear ⚙️ ICON in the upper right.`,
+            attachTo: {
+                element: '#openSettings',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'settings'
+        });
+        tour.addStep({
+            title: 'Filtering and Sorting',
+            text: `Stories can be filtered based on the Search box, the Custom Search Builder button, and the Search Pane. Each column is sortable. Multi column sorting is not enabled.`,
+            attachTo: {
+                element: '.dtsb-add dtsb-button',
+                on: 'bottom'
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    classes: 'shepherd-button-secondary',
+                    text: 'Back'
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: 'Next'
+                }
+            ],
+            id: 'filterStories'
+        });
+        // #endregion
+
+        // #region settings modal event listeners ***
+        // Description: handles button event clicks
+        // Created on: 2022.01.27
+        // Modified on:
+        // ***
+        // settings buttons
+        document.querySelector("#configSettingsHelp").addEventListener("click", () => {
+            swal({
+                title: "Settings Help",
+                text: "Use this tool to generate user stories and acceptance criteria. The information is saved in the browser's local storage. If you clear the cache and storage, then the entries will be deleted. Prior to clearing the browser cache, please use the Copy, CSV, and/or Save to File buttons to save the stories to more persistent file based storage. Brought 2 u by 1 who is a fry short of a happy meal 🍟 \n\n Copyright 2022\n\n Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+                className: "settingsHelp",
+                icon: "info"
+            });
+        });
+        document.querySelector("#addDataListCategoriesUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListCategoriesUsrStry", "categoryDataListUsrStry", "category");
+            toastMsg("Category DataList values updated!");
+        });
+        document.querySelector("#addDataListUsersUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListUsersUsrStry", "userDataListUsrStry", "user");
+            toastMsg("User DataList values updated!");
+        });
+        document.querySelector("#addDataListStoryPointsUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListStoryPointsUsrStry", "storyPointsDataListUsrStry", "storyPoints");
+            toastMsg("Story points DataList values updated!");
+        });
+        document.querySelector("#addDataListPrioritiesUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListPrioritiesUsrStry", "prioritiesDataListUsrStry", "priorities");
+            toastMsg("Story points DataList values updated!");
+        });
+        document.querySelector("#addDataListSprintsUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListSprintsUsrStry", "sprintDataListUsrStry", "sprint");
+            toastMsg("Sprint DataList values updated!");
+        });
+        document.querySelector("#addDataListHoursUsrStry").addEventListener("click", () => {
+            updateDataList("#dataListHoursUsrStry", "hoursDataListUsrStry", "hours");
+            toastMsg("Hours DataList values updated!");
+        });
+        //disable esc key on settings modal because of need to reload the page for the show/hide on datatables
+        document.querySelector("#modalSettings").addEventListener('cancel', (event) => {
+            event.preventDefault();
+        });
+        //settings gear icon open
+        document.querySelector("#openSettings").addEventListener("click", () => {
+            document.querySelector(".my-modal").showModal();
+        });
+        //settings modal close
+        document.querySelector('#closeSettings').addEventListener("click", () => {
+            document.querySelector('.my-modal').close();
+            location.reload();
+        });
+        // walk me - guide me
+        document.querySelector("#doNotShowTourUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowTourUsrStry");
+        });
+        // datatables filters
+        document.querySelector("#doNotShowFiltersUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowFiltersUsrStry");
+        });
+        // datatables search builder
+        document.querySelector("#doNotShowSearchBuilderUsrStry").addEventListener("click", () => {
+            setLocalStorageValuesForSettings("doNotShowSearchBuilderUsrStry");
+        });
+        const setLocalStorageValuesForSettings = (lsKeyName) => {
+            if (localStorage.getItem(lsKeyName)) {
+                if (document.querySelector(`#${lsKeyName}`).checked == true) {
+                    localStorage.setItem(lsKeyName, "true");
+                } else {
+                    localStorage.setItem(lsKeyName, "false");
+                }
+            } else {
+                localStorage.setItem(lsKeyName, "true");
+            }
+        }
+        // #endregion
+
+        // #region *** action button event listeners ***
+        // Description: handles button event clicks
+        // Created on: 2022.01.27
+        // Modified on: 2023.02.13 refactor edit button code to reuse setDataRow()
+        // ***
+        // #region *** add button ***
+        document.querySelector("#processStory").addEventListener("click", async () => {
+            document.querySelector("#spinner").style.display = "block";
+            await buildRows("add");
+            addRows();
+            dt();
+            toastMsg("New User Story Added!");
+            document.querySelector("#spinner").style.display = "none";
+        });
+        // #endregion
+
+        // #region *** clear all button ***
+        document.querySelector("#clearStory").addEventListener("click", () => {
+            swal({
+                title: "Clear ALL Stories",
+                text: "Are you sure you want to clear all stories from local storage? Have you backed the stories up to an external file or copied them to a file?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    //reset localstorage and the textarea
+                    localStorage.clear();
+                    document.querySelector("#changesUsrStryJSON").value = "";
+                    swal("Stories have been cleared!", {
+                        icon: "success"
+                    });
+                    $('#myTable').DataTable().clear();
+                    $('#myTable').DataTable().destroy();
+                    $('#myTable + tbody').empty();
+                    location.reload();
+                }
+            });
+        });
+        // #endregion
+
+        // #region *** delete button ***
+        document.querySelector('#deleteStory').addEventListener("click", () => {
+            if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
+                if (localStorage.getItem("UsrStry")) {
+                    swal({
+                        title: "Delete Story",
+                        text: "Are you sure you want to delete this story?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            deleteRow();
+                            dt();
+                        }
+                    });
+                } else {
+                    swal("There are no rows to delete", {
+                        icon: "warning"
+                    });
+                }
+            } else {
+                swal("Please select a row to delete", {
+                    icon: "warning"
+                });
+            }
+        });
+        // #endregion
+
+        // #region *** edit button ***
+        document.querySelector('#editStory').addEventListener("click", () => {
+            //check if datatable has rows
+            if ($('#myTable').DataTable().rows({ selected: true }).count() > 0) {
+                //get the selected row
+                let dataRow = $('#myTable').DataTable().rows({ selected: true }).data();
+                //populate modal with values for editing              
+                setDataRow(dataRow);
+                //show the form
+                document.querySelector("#confirm-edit").showModal();
+            } else {
+                swal("Please select a row to edit", {
+                    icon: "warning"
+                });
+            }
+        });
+        // #endregion
+
+        // #region *** save to file button ***
+        document.querySelector("#downloadStory").addEventListener("click", () => {
+            let fileNameLastSavedUsrStry = "";
+            if (localStorage.getItem("fileLastSavedUsrStry")) {
+                fileNameLastSavedUsrStry = localStorage.getItem("fileLastSavedUsrStry");
+                fileNameLastSavedUsrStry = fileNameLastSavedUsrStry.slice(0, fileNameLastSavedUsrStry.indexOf("|")).trim();
+            }
+            if (document.querySelector("#fileSave2FileButtonUsrStry").innerHTML !== "")
+                if (document.querySelector("#changesUsrStryJSON").value != "") {
+                    swal("Please enter a filename - no extension necessary", {
+                        content: "input",
+                        icon: "info",
+                        content: {
+                            element: 'input',
+                            attributes: {
+                                value: fileNameLastSavedUsrStry
+                            }
+                        }
+                    }).then((value) => {
+                        let fileName2SaveUsrStry = ""
+                        if (value != "") {
+                            fileName2SaveUsrStry = value;
+                        } else {
+                            fileName2SaveUsrStry = fileNameLastSavedUsrStry;
+                        }
+                        let usrStryString = document.querySelector("#changesUsrStryJSON").value;
+                        usrStryString = usrStryString.slice(0, usrStryString.lastIndexOf(","));
+                        let formattedUsrStryJSON = `{ "Settings": [ {"categoryDataListUsrStry": "${localStorage.getItem('categoryDataListUsrStry')}"},{"userDataListUsrStry": "${localStorage.getItem('userDataListUsrStry')}"},{"storyPointsDataListUsrStry": "${localStorage.getItem('storyPointsDataListUsrStry')}"},{"prioritiesDataListUsrStry": "${localStorage.getItem('prioritiesDataListUsrStry')}"},{"sprintDataListUsrStry": "${localStorage.getItem('sprintDataListUsrStry')}"},{"hoursDataListUsrStry": "${localStorage.getItem('hoursDataListUsrStry')}"},{"doNotShowTourUsrStry": "${localStorage.getItem('doNotShowTourUsrStry')}"},{"doNotShowFiltersUsrStry": "${localStorage.getItem('doNotShowFiltersUsrStry')}"},{"doNotShowSearchBuilderUsrStry": "${localStorage.getItem('doNotShowSearchBuilderUsrStry')}"}],"Stories": [ ${usrStryString} ] }`;
+                        download(`${fileName2SaveUsrStry}.json`, formattedUsrStryJSON);
+                        localStorage.setItem("fileLastSavedUsrStry", `${fileName2SaveUsrStry} | ${computeDate()}`);
+                        checkLocalStorage();
+                    });
+                } else {
+                    swal("There are no stories to download", {
+                        icon: "error"
+                    });
+                }
+        });
+        // #endregion
+
+        // #region *** choose file - process uploaded json file *** 
+        document.querySelector("#openFile").addEventListener("change", () => {
+            {
+                const selectedFile = document.querySelector("#openFile").files[0];
+                const reader = new FileReader();
+                localStorage.setItem("file2ProcessUsrStry", selectedFile.name);
+                let lines = ""; //remove
+                let jsonData = "";
+                let jsonDataObject = {};
+                let storyData = "";
+                reader.addEventListener("load", () => {
+                    //set local storage as the reload with trigger main and that will load the rows
+                    //create object to get values from
+                    jsonData = reader.result;
+                    jsonDataObject = JSON.parse(jsonData);
+                    localStorage.setItem('categoryDataListUsrStry', jsonDataObject.Settings[0].categoryDataListUsrStry);
+                    localStorage.setItem('userDataListUsrStry', jsonDataObject.Settings[1].userDataListUsrStry);
+                    localStorage.setItem('storyPointsDataListUsrStry', jsonDataObject.Settings[2].storyPointsDataListUsrStry);
+                    localStorage.setItem('prioritiesDataListUsrStry', jsonDataObject.Settings[3].prioritiesDataListUsrStry);
+                    localStorage.setItem('sprintDataListUsrStry', jsonDataObject.Settings[4].sprintDataListUsrStry);
+                    localStorage.setItem('hoursDataListUsrStry', jsonDataObject.Settings[5].hoursDataListUsrStry);
+                    localStorage.setItem('doNotShowTourUsrStry', jsonDataObject.Settings[6].doNotShowTourUsrStry);
+                    localStorage.setItem('doNotShowFiltersUsrStry', jsonDataObject.Settings[7].doNotShowFiltersUsrStry);
+                    localStorage.setItem('doNotShowSearchBuilderUsrStry', jsonDataObject.Settings[8].doNotShowSearchBuilderUsrStry);
+                    //need to loop through object 2 construct JSON
+                    for (let i = 0; i < jsonDataObject.Stories.length; i++) {
+                        storyData += `${JSON.stringify(jsonDataObject.Stories[i])},`;
+                    }
+                    localStorage.setItem("UsrStry", storyData);
+                    location.reload();
+                }, false);
+                reader.readAsText(selectedFile);
+            }
+        });
+        // #endregion
+
+        // #endregion
+
+        // #region *** reset datalist controls ***
+        // Description: handles datalist dropdown resets
+        // Created on: 2022.07.21
+        // Modified on:
+        //  2022.10.22 added story points, sprint, and hours
+        // ***
+        // reset Category dropdown
+        document.querySelector("#category").addEventListener("click", () => {
+            document.querySelector("#category").value = "";
+        });
+        // reset User dropdown
+        document.querySelector("#user").addEventListener("click", () => {
+            document.querySelector("#user").value = "";
+        });
+        // reset Story Points dropdown
+        document.querySelector("#storyPoints").addEventListener("click", () => {
+            document.querySelector("#storyPoints").value = "";
+        });
+        // reset priorities dropdown
+        document.querySelector("#priorities").addEventListener("click", () => {
+            document.querySelector("#priorities").value = "";
+        });
+        // reset sprint dropdown
+        document.querySelector("#sprint").addEventListener("click", () => {
+            document.querySelector("#sprint").value = "";
+        });
+        // reset hours dropdown
+        document.querySelector("#hours").addEventListener("click", () => {
+            document.querySelector("#hours").value = "";
+        });
+        // reset edit Category dropdown
+        document.querySelector("#txbCategory").addEventListener("click", () => {
+            document.querySelector("#txbCategory").value = "";
+        });
+        // reset edit User dropdown
+        document.querySelector("#txbUser").addEventListener("click", () => {
+            document.querySelector("#txbUser").value = "";
+        });
+        // reset edit Story Points dropdown
+        document.querySelector("#txbStoryPoints").addEventListener("click", () => {
+            document.querySelector("#txbStoryPoints").value = "";
+        });
+        // reset edit priorities dropdown
+        document.querySelector("#txbPriorities").addEventListener("click", () => {
+            document.querySelector("#txbPriorities").value = "";
+        });
+        // reset edit sprint dropdown
+        document.querySelector("#txbSprint").addEventListener("click", () => {
+            document.querySelector("#txbSprint").value = "";
+        });
+        // reset edit hours dropdown
+        document.querySelector("#txbHours").addEventListener("click", () => {
+            document.querySelector("#txbHours").value = "";
+        });
+        // #endregion
+
+        // #region *** edit modal ***
+        // Description: handles edit modal actions
+        // Created on: 2022.07.21
+        // Modified on:
+        //  2023.01.04 added previous and next buttons
+        //  2023.02.06 handle when start / end reached and refactor code
+        // ***
+        //edit modal close
+        document.querySelector('#closeEdit').addEventListener("click", () => {
+            document.querySelector('#confirm-edit').close();
+        });
+        //edit modal cancel
+        document.querySelector("#btnCancelEdit").addEventListener("click", () => {
+            document.querySelector("#confirm-edit").close();
+        });
+        //edit modal save
+        document.querySelector("#btnSaveEdit").addEventListener("click", () => {
+            //close the modal
+            // document.querySelector("#confirm-edit").close();
+            deleteRow(); //problem with the delete because when using the navigation it really isn't grabbing the proper row with the nav buttonsS
+            buildRows("edit");
+            addRows();
+            dt();
+            //make sure to select a row
+            let rowsRaw = $('#myTable').DataTable().rows().count() - 1;
+            $('#myTable').DataTable().row(rowsRaw).select();
+            let dataRow = $('#myTable').DataTable().rows(rowsRaw).data();
+            setDataRow(dataRow);
+            toastMsg("User Story values updated!");
+        });
+
+        //populate modal with values for editing              
+        const setDataRow = (dataRow) => {
+            document.querySelector("#txbCategory").value = dataRow[0][0];
+            document.querySelector("#txbUser").value = dataRow[0][1];
+            document.querySelector("#txbAction").value = dataRow[0][2].replaceAll("<br/>", "\n");
+            document.querySelector("#txbBenefit").value = dataRow[0][3].replaceAll("<br/>", "\n");
+            document.querySelector("#txbNotesTasks").value = dataRow[0][4].replaceAll("<br/>", "\n");
+            document.querySelector("#txbStoryPoints").value = dataRow[0][5];
+            document.querySelector("#txbPriorities").value = dataRow[0][6];
+            document.querySelector("#txbSprint").value = dataRow[0][7];
+            document.querySelector("#txbHours").value = dataRow[0][8];
+        }
+        // move up and down the record
+        const traverseRows = (rowDirection) => {
+            //1 get the selected row
+            let rowIndexSelected = $('#myTable').DataTable().row('.selected').index();
+            let rowsRaw = $('#myTable').DataTable().rows().count();
+            if (rowsRaw != 1) {
+                //2 set selected row to next/prev row
+                if (rowDirection == "next") {
+                    if (rowIndexSelected + 1 < rowsRaw) {
+                        $('#myTable').DataTable().row(rowIndexSelected + 1).select();
+                        let dataRow = $('#myTable').DataTable().rows(rowIndexSelected + 1).data();
+                        setDataRow(dataRow);
+                    } else {
+                        toastMsg("No additional rows to navigate!");
+                    }
+                }
+                if (rowDirection == "prev") {
+                    if (rowIndexSelected - 1 > -1) {
+                        $('#myTable').DataTable().row(rowIndexSelected - 1).select();
+                        let dataRow = $('#myTable').DataTable().rows(rowIndexSelected - 1).data();
+                        setDataRow(dataRow);
+                    } else {
+                        toastMsg("No additional rows to navigate!");
+                    }
+                }
+            }
+            else {
+                toastMsg("No additional rows to navigate!");
+            }
+        };
+
+        // edit form next record button
+        document.querySelector("#nextRecord").addEventListener("click", () => {
+            traverseRows("next");
+        });
+        // edit form previous record button
+        document.querySelector("#prevRecord").addEventListener("click", () => {
+            traverseRows("prev");
+        });
+        // #endregion
+
+        // #region *** helper functions ***
+        // Description: resuable misc functions
+        // Created on: 2022.05.18
+        // Modified on: 
+        //  2022.06.13 added computeDate and todaysDateClean
+        // ***
+        const computeDate = () => {
+            const d = new Date();
+            let isoDateTime = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString();
+            return isoDateTime;
+        }
+        const todaysDate = (isoDT) => {
+            return (isoDT.slice(0, -1).replace("T", " "));
+        }
+        const todaysDateClean = (isoDT) => {
+            return (isoDT.slice(0, isoDT.indexOf("T")));
+        }
+        //https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server/18197341#18197341
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none'; //could have link be visible and allow right click to save to a different location if so desired
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        // #endregion
+
+        // #region *** build table rows ***
+        // Description: handles concatenating the rows together and storing in hidden textarea
+        // Params: 
+        //      addOrEdit: create Row from different form controls
+        // Created on: 2022.01.27
+        // Modified on: 
+        //      2022.04.28 refactor to handle JSON
+        //      2022.03.10 added date added column
+        //      2022.05.18 refactor date into reusable function add parameter addOrEdit
+        //      2022.10.22 add story points, priority, sprint, hours
+        //      2023.02.13 update handling of hard returns
+        //      2025.09.15 update to incorporate local AI
+        // ***            
+        const buildRows = async (addOrEdit) => {
+            //create json from add form controls or edit form controls
+            let newRow = "";
+            if (addOrEdit !== "edit") {
+                // use AI in chrome to generate acceptance criteria
+                let usrStory = `As a ${document.querySelector("#user").value}, I want to ${document.querySelector("#action").value} so that ${document.querySelector("#benefit").value}`;
+                let acceptanceCriteria = "";
+                if (aiSession) {
+                    try {
+                        let promptText = `Please create user acceptance criteria for a given user story. The format of the output should be <b>Given</b> <b>When</b> <b>Then</b>. The user story is as follows: ${usrStory}`;
+                        const result = await aiSession.prompt(promptText);
+                        console.log(result);
+                        //console.log(`${aiSession.inputUsage}/${aiSession.inputQuota}`);
+                        acceptanceCriteria = result.replaceAll('"', "&quot;").replaceAll("Scenario:", "<b>Scenario:</b>").replaceAll("Given", "<b>Given</b>").replaceAll("When", "<b>When</b>").replaceAll("Then", "<b>Then</b>").replaceAll("And", "<i>And</i>").replaceAll("*", "").replaceAll("#", "");
+
+                        newRow = `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#storyPoints").value}", "${document.querySelector("#priorities").value}", "${document.querySelector("#sprint").value}", "${document.querySelector("#hours").value}", "${acceptanceCriteria}", "${document.querySelector("#notes_tasks").value}", "${todaysDate(computeDate())}" ], `;
+                    } catch (error) {
+                        toastMsg(`Error executing prompt: ${error.message}`, "toastError");
+                        console.error('Error executing prompt:', error);
+                    }
+                } else {
+                    newRow = `[ "${document.querySelector("#category").value}", "${document.querySelector("#user").value}", "${document.querySelector("#storyPoints").value}", "${document.querySelector("#priorities").value}", "${document.querySelector("#sprint").value}", "${document.querySelector("#hours").value}", "<b>As a </b>${document.querySelector("#user").value}, <b>I want to</b> ${document.querySelector("#action").value} <b>so that </b>${document.querySelector("#benefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#user").value}<br/><b>When </b>${document.querySelector("#action").value}<br/><b>Then </b>${document.querySelector("#benefit").value}", "${document.querySelector("#notes_tasks").value}", "${todaysDate(computeDate())}" ], `;
+                }
+                newRow = newRow.replaceAll("\n", "<br/>");
+                document.querySelector("#changesUsrStryJSON").value += newRow;
+            } else {
+                // edit
+                newRow = `[ "${document.querySelector("#txbCategory").value}", "${document.querySelector("#txbUser").value}", "${document.querySelector("#txbStoryPoints").value}", "${document.querySelector("#txbPriorities").value}", "${document.querySelector("#txbSprint").value}", "${document.querySelector("#txbHours").value}", "<b>As a </b>${document.querySelector("#txbUser").value}, <b>I want to</b> ${document.querySelector("#txbAction").value} <b>so that </b>${document.querySelector("#txbBenefit").value}<br/><br/><b>Acceptance Criteria:</b><br/><b>Given </b>${document.querySelector("#txbUser").value}<br/><b>When </b>${document.querySelector("#txbAction").value}<br/><b>Then </b>${document.querySelector("#txbBenefit").value}", "${document.querySelector("#txbNotesTasks").value.replace(/\t/g, "").replace(/\"/g, "&quot;")}", "${todaysDate(computeDate())}" ], `;
+                newRow = newRow.replaceAll("\n", "<br/>");
+                document.querySelector("#changesUsrStryJSON").value += newRow;
+            }
+        }
+        // #endregion
+
+        // #region *** add row ***
+        // Description: handles inserting new row into DOM/table and overwriting local storage with all rows
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.04.28 refactor to support JSON approach
+        // ***
+        const addRows = () => {
+            if (document.querySelector("#changesUsrStryJSON").value.length > 0) {
+                localStorage.setItem("UsrStry", document.querySelector("#changesUsrStryJSON").value);
+            }
+        };
+        // #endregion
+
+        // #region *** delete row ***
+        // Description: handles deleting a higlighted row
+        // Created on: 2022.05.18
+        // Modified on: 
+        //      2022.06.21 compare ids to determine what should be removed
+        //      2022.07.02 removed string array based approach and went with object
+        // ***
+        const deleteRow = () => {
+            let updatedRows = "";
+            //get the selected row
+            let dataRowIdx = $('#myTable').DataTable().row('.selected').index();
+            localStorage.setItem("dataRowIdx", dataRowIdx);
+            let dataRow = $('#myTable').DataTable().rows(dataRowIdx).data();
+            //extract row ID
+            let rowID = dataRow[0][5];
+            //get rows from local storage
+            let newResults = localStorage.getItem("UsrStry");
+            newResults = `[ ${newResults.slice(0, newResults.lastIndexOf(","))} ]`;
+            newResults = JSON.parse(newResults);
+            //find matching row and remove
+            for (let i = 0; i < newResults.length; i++) {
+                //test to see if rows match if not retain value
+                if (rowID !== newResults[i][5]) {
+                    updatedRows += `${JSON.stringify(newResults[i])},`;
+                }
+            }
+            document.querySelector("#changesUsrStryJSON").value = updatedRows;
+            localStorage.setItem("UsrStry", updatedRows);
+            //console.log("deleteRow - ls value: " + updatedRows);
+        }
+        // #endregion
+
+        // #region *** update datalist ***
+        // Description: handles updating the datalist
+        // Params: 
+        //      elemValuesID: values for DL
+        //      dlID: new DL ID
+        //      inputID: existing input ID
+        // Created on: 2022.03.18
+        // Modified on:
+        // ***
+        const updateDataList = (elemValuesID, dlID, inputID) => {
+            //remove existing dataList - don't want dupes
+            if (document.querySelector(`#${dlID}`)) {
+                document.querySelector(`#${dlID}`).remove();
+            }
+            //declare array
+            let newList = [];
+            //break up the list into array to loop through and create dataList
+            newList = document.querySelector(`${elemValuesID}`).value.split("|");
+            let newDataList = document.createElement('datalist');
+            newDataList.id = `${dlID}`;
+            document.body.appendChild(newDataList);
+            for (let i = 0; i < newList.length; i++) {
+                var newDataListOption = document.createElement("option");
+                newDataListOption.value = newList[i];
+                newDataList.appendChild(newDataListOption);
+            }
+            //set list attribute values
+            document.querySelector(`#${inputID}`).setAttribute('list', `${dlID}`);
+            //set local storage for datalist values
+            localStorage.setItem(dlID, document.querySelector(`${elemValuesID}`).value);
+        };
+        // #endregion
+
+        // #region *** toast message ***
+        // Description: handles formatting toast message with sweetalert
+        // Created on: 2022.03.19
+        // Modified on:
+        // ***
+        const toastMsg = (msg, classType = "toast") => {
+            swal(msg, {
+                timer: 1000,
+                buttons: false,
+                className: classType
+            });
+        };
+        // #endregion
+
+        // #region *** destroy datatable and regen ***
+        // Description: handles clearing datatable from DOM and recreate when adding row otherwise errors will arise
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.01.27 added more settings for search pane, search builder, state save
+        //      2022.05.11 added check for datatable row existence
+        //      2025.09.16 modified dt headers and refactored to newest version
+        // ***
+        const dt = () => {
+            //test to see if the datatable has any rows
+            if (document.querySelector('#myTable tbody')) {
+                $('#myTable').DataTable().clear();
+                $('#myTable').DataTable().destroy();
+                $('#myTable + tbody').empty();
+            }
+            //get the data
+            let json = localStorage.getItem("UsrStry");
+            json = json.substring(0, json.lastIndexOf(","));
+            let jsonData = `[ ${json} ] `;
+            //console.log("dt step - ls value: " + jsonData);
+            let domSettings = "lBfrtip"; //dom: P - search panes | Q - condition builder | l - Entry Length
+            //modify dom to account for settings
+            if (localStorage.getItem("doNotShowSearchBuilderUsrStry") !== "true") {
+                domSettings = `Q${domSettings}`;
+            }
+            if (localStorage.getItem("doNotShowFiltersUsrStry") !== "true") {
+                domSettings = `P${domSettings}`;
+            }
+
+            //make sure there is data - using a string still
+            if (jsonData.indexOf(",") > 0) {
+                jsonData = jsonData.replaceAll("\n", "<br/>");
+                jsonData = JSON.parse(jsonData); //convert to JSON
+
+                $('#myTable').DataTable({
+                    dom: domSettings,
+                    searchPanes: {
+                        layout: 'columns-2'
+                    },
+                    buttons: [
+                        'copy', 'excel', 'csv',
+                        {
+                            //datatables.net/reference/button/csv
+                            extend: 'csv',
+                            filename: 'CSV4IssueTracker',
+                            text: 'Issue Tracker CSV',
+                            customize: function (csv, btnConfigObj, dtAPI) {
+                                //Split the csv to get the rows
+                                let split_csv = csv.split("\n");
+                                //Remove the row one to personnalize the headers
+                                split_csv[0] = '"Description","Project","Category","Priority","Status","Comment"';
+
+                                for (let i = 1; i < split_csv.length; i++) {
+                                    //Split on quotes and comma to get each cell
+                                    let csv_cell_array = split_csv[i].split('","');
+                                    //Remove replace the two quotes which are left at the beginning and the end (first and last cell)
+                                    csv_cell_array[0] = csv_cell_array[0].replace(/"/g, '');
+                                    csv_cell_array[5] = csv_cell_array[5].replace(/"/g, '');
+                                    let category = csv_cell_array[0];
+                                    let user = csv_cell_array[1];
+                                    let action = csv_cell_array[2].replaceAll(",", "").replaceAll('"', "");
+                                    let benefit = csv_cell_array[3].replaceAll(",", "").replaceAll('"', "");
+                                    let notesTasks = csv_cell_array[4].replaceAll(",", "").replaceAll('"', "");
+                                    //reset description
+                                    csv_cell_array[0] = `<b>As a</b> ${user} <b>I want to</b> ${action} <b>so that</b> ${benefit}`;
+                                    csv_cell_array[1] = `Enter Project`; //project
+                                    csv_cell_array[3] = `Low`; //priority
+                                    csv_cell_array[4] = `New`; //status
+                                    //comment
+                                    csv_cell_array[5] = `<b>Acceptance Criteria:</b><br/><b>Given</b> ${user}<br><b>When</b> ${action}<br/><b>Then</b> ${benefit}<br/>${notesTasks}`;
+                                    //category
+                                    csv_cell_array[2] = `${category} :: ${user}`;
+                                    //Join the table on the quotes and comma; add back the quotes at the beginning and end
+                                    csv_cell_array_quotes = '"' + csv_cell_array.join('","') + '"';
+                                    //Insert the new row into the rows array at the previous index
+                                    split_csv[i] = csv_cell_array_quotes;
+                                }
+                                //Join the rows with line breck and return the final csv (datatables will take the returned csv and process it)
+                                csv = split_csv.join("\n");
+                                return csv;
+                            },
+                        },
+                        {
+                            //https://datatables.net/reference/button/excelHtml5
+                            extend: 'excelHtml5',
+                            filename: 'UserStoriesFormatted',
+                            text: 'Excel with Format',
+                            customize: function (xlsx) {
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                let rowCount = $('#myTable').DataTable().rows().count();
+                                for (let i = 0; i < rowCount; i++) {
+                                    let cellValue = `c[r=J${3 + i}] t`;
+                                    let cellFormat = `c[r=J${3 + i}]`;
+                                    let oldValue = $(cellValue, sheet).text();
+                                    let newValue = oldValue.replace("Acceptance Criteria:", "\n\nAcceptance Criteria:").replace("Given", "\nGiven").replace("When", "\nWhen").replace("Then", "\nThen");
+                                    $(cellValue, sheet).text(newValue);
+                                    $(cellFormat, sheet).attr('s', '42');
+                                }
+                            },
+                        }
+                    ],
+                    stateSave: true,
+                    select: {
+                        style: 'single'
+                    },
+                    data: jsonData,
+                    columns: [
+                        { title: "Epic/Feature" },
+                        { title: "User" },
+                        { title: "Points" },
+                        { title: "Priority" },
+                        { title: "Sprint" },
+                        { title: "Hours" },
+                        { title: "Story and AC" },
+                        { title: "Notes / Tasks" },
+                        { title: "Date Added" }
+                    ],
+                    columnDefs: [
+                        {
+                            searchPanes: {
+                                show: true
+                            },
+                            targets: [0, 1]
+                        }
+                    ],
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+                }).draw();
+            }
+        };
+        // #endregion
+
+        // #region *** local storage ***
+        // Description: handles processing local storage values
+        // Created on: 2022.07.21 refactor to separate routine
+        // Modified on:
+        // ***        
+        const checkLocalStorage = () => {
+            // *** get files info ***
+            // source filename info
+            if (localStorage.getItem("file2ProcessUsrStry")) {
+                //set filename on page
+                document.querySelector("#fileSelectedFromChooseFileButtonUsrStry").textContent = `${localStorage.getItem("file2ProcessUsrStry")}`;
+            } else {
+                document.querySelector("#fileSelectedFromChooseFileButtonUsrStry").textContent = "No file selected.";
+            }
+            //last saved
+            if (localStorage.getItem("fileLastSavedUsrStry")) {
+                //set filename on page
+                document.querySelector("#fileSave2FileButtonUsrStry").textContent = `Stories last saved: ${localStorage.getItem("fileLastSavedUsrStry")}. Please check Downloads folder for most current version.`;
+            } else {
+                document.querySelector("#fileSave2FileButtonUsrStry").textContent = "Stories have not been saved to a file.";
+            }
+
+            // *** settings - toggle switches ***
+            // walk me - tour - guide me
+            if (localStorage.getItem("doNotShowTourUsrStry") == "true") {
+                document.querySelector("#doNotShowTourUsrStry").checked = true;
+            } else {
+                document.querySelector("#doNotShowTourUsrStry").checked = false;
+                tour.start();
+            }
+            // datatables search filters
+            if (localStorage.getItem("doNotShowFiltersUsrStry") == "true") {
+                document.querySelector("#doNotShowFiltersUsrStry").checked = true;
+            } else {
+                document.querySelector("#doNotShowFiltersUsrStry").checked = false;
+            }
+            // datatables search builder
+            if (localStorage.getItem("doNotShowSearchBuilderUsrStry") == "true") {
+                document.querySelector("#doNotShowSearchBuilderUsrStry").checked = true;
+            } else {
+                document.querySelector("#doNotShowSearchBuilderUsrStry").checked = false;
+            }
+
+            // *** generate dt ***
+            if (localStorage.getItem("UsrStry")) {
+                //if localstorage has rows, then overwrite hidden textarea to build table
+                document.querySelector("#changesUsrStryJSON").value = localStorage.getItem("UsrStry");
+                //pull in rows (if any) and gen table
+                addRows();
+                dt();
+            }
+        }
+        // #endregion
+
+        // #region *** check in browser AI ***
+        // Description: hendles determining if the browser and machine support AI APIs
+        // Created on: 2025.09.15
+        // Modified on: 
+        // ***
+        const checkLocalAI = async () => {
+            if ("LanguageModel" in self) {
+                //set up AI
+                try {
+                    aiAvailability = await LanguageModel.availability();
+                    if (aiAvailability == "downloadable" || aiAvailability == "available") {
+                        aiSession = await LanguageModel.create({
+                            initialPrompts: [
+                                {
+                                    role: 'system',
+                                    content: 'You are a helpful business analyst and you assist with the creation of user stories.'
+                                }
+                            ],
+                            expectedInputs: [{ type: 'text' }],
+                            monitor(m) {
+                                m.addEventListener('downloadprogress', (e) => {
+                                    console.log(`Local model ready for use ${e.loaded * 100}%`);
+                                });
+                            },
+                        });
+                        console.log(`Gemini Nano language model parameters: ${LanguageModel.params()}`);
+                        toastMsg("AI Session Created")
+                    } else {
+                        toastMsg(`Error attempting to access Local AI. ${error.message}`, "toastError");
+                    }
+                } catch (error) {
+                    toastMsg(`Error attempting to access Local AI. ${error.message}`, "toastError");
+                }
+            } else {
+                toastMsg(`Local AI Not Available. ${error.message}`, "toastError");
+            }
+        }
+
+        // #region *** page ready ***
+        // Description: handles pure JS document.ready event when page first loads/painted
+        // Created on: 2022.01.27
+        // Modified on:
+        //      2022.07.21 added refactored code and update dlValues
+        //      2022.10.22 added storyPoints, sprint, and hours
+        // ***            
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // local LLM in browser
+            checkLocalAI();
+
+            //handle local storage
+            checkLocalStorage();
+
+            // *** settings - datalist ***
+            const dlValues = [
+                { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "category", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
+                { namedDataList: "categoryDataListUsrStry", dataListControl: "#dataListCategoriesUsrStry", inputControl: "txbCategory", controlValue: "CLM Action Menu|CLM Admin Setting|CLM Attribute|CLM AutoNumber|CLM Branding|CLM CSV|CLM Dashboard|CLM eForm|CLM Group|CLM Task Group|CLM Workflow|CLM Intake Form|CLM Integration|CLM Merge Template|CLM Persona|CLM Report|CLM Schedule|CLM Smart Rule|eSignature Admin Setting|eSignature Agreement Rule|eSignature Branding|eSignature Custom Field|eSignature Integration|eSignature PowerForm|eSignature Report|eSignature Template" },
+                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "user", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
+                { namedDataList: "userDataListUsrStry", dataListControl: "#dataListUsersUsrStry", inputControl: "txbUser", controlValue: "CLM User|CLM Admin|CLM Viewer|eSignature User|eSignature Admin|eSignature Viewer" },
+                { namedDataList: "storyPointsDataListUsrStry", dataListControl: "#dataListStoryPointsUsrStry", inputControl: "storyPoints", controlValue: "1|2|3|5|8|13|21" },
+                { namedDataList: "storyPointsDataListUsrStry", dataListControl: "#dataListStoryPointsUsrStry", inputControl: "txbStoryPoints", controlValue: "1|2|3|5|8|13|21" },
+                { namedDataList: "prioritiesDataListUsrStry", dataListControl: "#dataListPrioritiesUsrStry", inputControl: "priorities", controlValue: "P1|P2|P3|P4" },
+                { namedDataList: "prioritiesDataListUsrStry", dataListControl: "#dataListPrioritiesUsrStry", inputControl: "txbPriorities", controlValue: "P1|P2|P3|P4" },
+                { namedDataList: "sprintDataListUsrStry", dataListControl: "#dataListSprintsUsrStry", inputControl: "sprint", controlValue: "Sprint 1|Sprint 2|Sprint 3|Sprint 4|Sprint 5|Sprint 6" },
+                { namedDataList: "sprintDataListUsrStry", dataListControl: "#dataListSprintsUsrStry", inputControl: "txbSprint", controlValue: "Sprint 1|Sprint 2|Sprint 3|Sprint 4|Sprint 5|Sprint 6" },
+                { namedDataList: "hoursDataListUsrStry", dataListControl: "#dataListHoursUsrStry", inputControl: "hours", controlValue: ".25|.5|.75|1|2|4|6|8|12|16|24|32|40" },
+                { namedDataList: "hoursDataListUsrStry", dataListControl: "#dataListHoursUsrStry", inputControl: "txbHours", controlValue: ".25|.5|.75|1|2|4|6|8|12|16|24|32|40" }
+            ];
+            //loop through array of objects to construct the datalists
+            for (let i = 0; i < dlValues.length; i++) {
+                if (localStorage.getItem(dlValues[i].namedDataList)) {
+                    //get value from local storage
+                    document.querySelector(dlValues[i].dataListControl).value = localStorage.getItem(dlValues[i].namedDataList);
+                    updateDataList(dlValues[i].dataListControl, dlValues[i].namedDataList, dlValues[i].inputControl);
+                    document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
+                } else {
+                    document.querySelector(dlValues[i].dataListControl).value = dlValues[i].controlValue;
+                    updateDataList(dlValues[i].dataListControl, dlValues[i].namedDataList, dlValues[i].inputControl);
+                    document.querySelector(`#${dlValues[i].inputControl}`).setAttribute('list', dlValues[i].namedDataList);
+                }
+            }
+        });
+        // #endregion
+    </script>
+</body>
+
+</html>
