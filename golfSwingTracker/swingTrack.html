@@ -271,6 +271,18 @@
 
   let visionRunning = false;
   let videoStream = null;
+  
+  let COURSE_DATA = [];
+
+async function loadCourseData() {
+  try {
+    COURSE_DATA = await fetch("courses/ny-golf-courses.json").then(r => r.json());
+    console.log("Loaded NY course dataset:", COURSE_DATA.length, "courses");
+  } catch (err) {
+    console.error("Failed to load course dataset:", err);
+  }
+}
+
 
   // ------------ Haversine distance helper ------------
 
@@ -335,96 +347,33 @@
 
 // ------------ Overpass API: Find closest golf courses ------------
 async function fetchCourseInfo(lat, lng) {
-  const radius = 5000; // meters (10 km search radius)
-
-  const query = `
-    [out:json];
-(
-  way["leisure"="golf_course"](around:${radius},${lat},${lng});
-  relation["leisure"="golf_course"](around:${radius},${lat},${lng});
-);
-
-    out center;
-  `;
-const url = "https://overpass.kumi.systems/api/interpreter?data=" + encodeURIComponent(query);
-
-  //const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error("Overpass HTTP error:", res.status, await res.text());
-      detectedCourse = null;
-      detectedHole = null;
-      yardsToPin = null;
-      updateCourseStatus("Overpass HTTP error " + res.status);
-      // Fallback: center map on user
-      updateMapWithPins(null, null);
-      return;
-    }
-
-    const data = await res.json();
-
-    if (!data.elements || data.elements.length === 0) {
-      console.warn("Overpass: no elements returned");
-      detectedCourse = null;
-      detectedHole = null;
-      yardsToPin = null;
-      updateCourseStatus("No golf courses found nearby");
-      updateMapWithPins(null, null);
-      return;
-    }
-
-    // Build list of courses with coordinates + distance
-    const courses = [];
-
-    for (const el of data.elements) {
-      const cLat = el.lat || (el.center && el.center.lat);
-      const cLng = el.lon || (el.center && el.center.lon);
-      if (!cLat || !cLng) continue;
-
-      const dist = distanceInYards(lat, lng, cLat, cLng);
-
-      courses.push({
-        name: el.tags && el.tags.name ? el.tags.name : "Unnamed Golf Course",
-        lat: cLat,
-        lng: cLng,
-        dist
-      });
-    }
-
-    if (courses.length === 0) {
-      console.warn("Overpass: elements but no usable coordinates");
-      detectedCourse = null;
-      detectedHole = null;
-      yardsToPin = null;
-      updateCourseStatus("No valid course geometry found");
-      updateMapWithPins(null, null);
-      return;
-    }
-
-    // Sort by distance
-    courses.sort((a, b) => a.dist - b.dist);
-
-    const closest = courses[0];
-    const nextThree = courses.slice(1, 4);
-
-    detectedCourse = closest.name;
-    detectedHole = "Unknown";
-    yardsToPin = "-";
-
-    updateCourseStatus();
-    updateMapWithPins(closest, nextThree);
-
-  } catch (err) {
-    console.error("Overpass error:", err);
-    detectedCourse = null;
-    detectedHole = null;
-    yardsToPin = null;
-    updateCourseStatus("Overpass API error");
-    updateMapWithPins(null, null);
+  if (!COURSE_DATA || COURSE_DATA.length === 0) {
+    updateCourseStatus("Course dataset not loaded");
+    return;
   }
+
+  // Compute distances
+  const sorted = COURSE_DATA
+    .map(c => ({
+      ...c,
+      dist: distanceInYards(lat, lng, c.lat, c.lng)
+    }))
+    .sort((a, b) => a.dist - b.dist);
+
+  const closest = sorted[0];
+  const nextThree = sorted.slice(1, 4);
+
+  detectedCourse = closest.name;
+  detectedHole = "Unknown";
+  yardsToPin = "-";
+
+  updateCourseStatus();
+  updateMapWithPins(closest, nextThree);
 }
+
+
+
+
   function updateCourseStatus(extraMsg) {
     const statusEl = document.getElementById('courseStatus');
     const base = `Course: ${detectedCourse || "unknown"} | ` +
@@ -684,6 +633,7 @@ const url = "https://overpass.kumi.systems/api/interpreter?data=" + encodeURICom
 
   // ------------ Init ------------
 
+loadCourseData();
   renderLog();
   updateCourseStatus();
 </script>
