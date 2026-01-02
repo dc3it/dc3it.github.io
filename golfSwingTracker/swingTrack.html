@@ -295,35 +295,76 @@
    *   pin: { lat: 40.123, lng: -75.456 }
    * }
    */
-  async function fetchCourseInfo(lat, lng) {
-    // Replace this URL with your real API endpoint.
-    const url = `https://example.com/api/golf-courses?lat=${lat}&lng=${lng}`;
+  // ------------ Overpass API: Find closest golf course ------------
+async function fetchCourseInfo(lat, lng) {
+  const radius = 5000; // meters (5 km search radius)
 
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
+  const query = `
+    [out:json];
+    (
+      node["leisure"="golf_course"](around:${radius},${lat},${lng});
+      way["leisure"="golf_course"](around:${radius},${lat},${lng});
+      relation["leisure"="golf_course"](around:${radius},${lat},${lng});
+    );
+    out center;
+  `;
 
-      const courseName = data.courseName;
-      const holeNumber = data.holeNumber;
-      const pin = data.pin; // { lat, lng }
+  const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
 
-      if (courseName && holeNumber && pin && pin.lat && pin.lng) {
-        detectedCourse = courseName;
-        detectedHole = holeNumber;
-        yardsToPin = Math.round(distanceInYards(lat, lng, pin.lat, pin.lng));
-        updateCourseStatus();
-      } else {
-        detectedCourse = null;
-        detectedHole = null;
-        yardsToPin = null;
-        updateCourseStatus("API returned incomplete data");
-      }
-    } catch (err) {
-      console.error("Course API error:", err);
-      updateCourseStatus("Course API error or unavailable");
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.elements || data.elements.length === 0) {
+      detectedCourse = null;
+      detectedHole = null;
+      yardsToPin = null;
+      updateCourseStatus("No golf courses found nearby");
+      return;
     }
+
+    // Find closest course by center point
+    let closest = null;
+    let bestDist = Infinity;
+
+    for (const el of data.elements) {
+      // Overpass returns:
+      // - nodes with lat/lon
+      // - ways/relations with center: { lat, lon }
+      const cLat = el.lat || (el.center && el.center.lat);
+      const cLng = el.lon || (el.center && el.center.lon);
+
+      if (!cLat || !cLng) continue;
+
+      const d = distanceInYards(lat, lng, cLat, cLng);
+
+      if (d < bestDist) {
+        bestDist = d;
+        closest = el;
+      }
+    }
+
+    if (!closest) {
+      updateCourseStatus("No valid course geometry found");
+      return;
+    }
+
+    // Extract course name if available
+    detectedCourse = closest.tags && closest.tags.name
+      ? closest.tags.name
+      : "Unnamed Golf Course";
+
+    // Hole + pin detection not available from OSM directly
+    detectedHole = "Unknown";
+    yardsToPin = "-";
+
+    updateCourseStatus();
+
+  } catch (err) {
+    console.error("Overpass error:", err);
+    updateCourseStatus("Overpass API error");
   }
+}
 
   function updateCourseStatus(extraMsg) {
     const statusEl = document.getElementById('courseStatus');
