@@ -289,103 +289,141 @@
   // ------------ Map with multi-course pins (Option A embed) ------------
 
   function updateMapWithPins(closest, nextThree) {
-    if (!closest) return;
-
-    const markers = [];
-
-    // Closest course marker (red)
-    markers.push(`color:red|${closest.lat},${closest.lng}`);
-
-    // Next three markers (blue)
-    nextThree.forEach(c => {
-      markers.push(`color:blue|${c.lat},${c.lng}`);
-    });
-
-    const markersParam = markers
-      .map(m => `&markers=${encodeURIComponent(m)}`)
-      .join("");
-
-    const url =
-      `https://maps.google.com/maps?` +
-      `q=${closest.lat},${closest.lng}` +  // center on closest course
-      `&z=${MAP_ZOOM}` +
-      markersParam +
-      `&output=embed`;
-
-    document.getElementById("map").innerHTML =
-      `<iframe width="100%" height="220" frameborder="0" src="${url}"></iframe>`;
-  }
-
-  // ------------ Overpass API: Find closest golf courses ------------
-  async function fetchCourseInfo(lat, lng) {
-    const radius = 10000; // meters (10 km search radius)
-
-    const query = `
-      [out:json];
-      (
-        node["leisure"="golf_course"](around:${radius},${lat},${lng});
-        way["leisure"="golf_course"](around:${radius},${lat},${lng});
-        relation["leisure"="golf_course"](around:${radius},${lat},${lng});
-      );
-      out center;
-    `;
-
-    const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (!data.elements || data.elements.length === 0) {
-        detectedCourse = null;
-        detectedHole = null;
-        yardsToPin = null;
-        updateCourseStatus("No golf courses found nearby");
-        return;
-      }
-
-      // Build list of courses with coordinates + distance
-      const courses = [];
-
-      for (const el of data.elements) {
-        const cLat = el.lat || (el.center && el.center.lat);
-        const cLng = el.lon || (el.center && el.center.lon);
-        if (!cLat || !cLng) continue;
-
-        const dist = distanceInYards(lat, lng, cLat, cLng);
-
-        courses.push({
-          name: el.tags && el.tags.name ? el.tags.name : "Unnamed Golf Course",
-          lat: cLat,
-          lng: cLng,
-          dist
-        });
-      }
-
-      if (courses.length === 0) {
-        updateCourseStatus("No valid course geometry found");
-        return;
-      }
-
-      // Sort by distance
-      courses.sort((a, b) => a.dist - b.dist);
-
-      const closest = courses[0];
-      const nextThree = courses.slice(1, 4);
-
-      detectedCourse = closest.name;
-      detectedHole = "Unknown";
-      yardsToPin = "-";
-
-      updateCourseStatus();
-      updateMapWithPins(closest, nextThree);
-
-    } catch (err) {
-      console.error("Overpass error:", err);
-      updateCourseStatus("Overpass API error");
+  const mapEl = document.getElementById("map");
+  if (!closest || !closest.lat || !closest.lng) {
+    // Fallback: center on user if we have GPS
+    if (gps.lat && gps.lng) {
+      const url =
+        `https://maps.google.com/maps?` +
+        `q=${gps.lat},${gps.lng}` +
+        `&z=${MAP_ZOOM}` +
+        `&output=embed`;
+      mapEl.innerHTML =
+        `<iframe width="100%" height="220" frameborder="0" src="${url}"></iframe>`;
     }
+    return;
   }
 
+  const markers = [];
+
+  // Closest course marker (red)
+  markers.push(`color:red|${closest.lat},${closest.lng}`);
+
+  // Next three markers (blue)
+  if (Array.isArray(nextThree)) {
+    nextThree.forEach(c => {
+      if (c && c.lat && c.lng) {
+        markers.push(`color:blue|${c.lat},${c.lng}`);
+      }
+    });
+  }
+
+  const markersParam = markers
+    .map(m => `&markers=${encodeURIComponent(m)}`)
+    .join("");
+
+  const url =
+    `https://maps.google.com/maps?` +
+    `q=${closest.lat},${closest.lng}` +  // center on closest course
+    `&z=${MAP_ZOOM}` +
+    markersParam +
+    `&output=embed`;
+
+  mapEl.innerHTML =
+    `<iframe width="100%" height="220" frameborder="0" src="${url}"></iframe>`;
+}
+
+// ------------ Overpass API: Find closest golf courses ------------
+async function fetchCourseInfo(lat, lng) {
+  const radius = 10000; // meters (10 km search radius)
+
+  const query = `
+    [out:json];
+    (
+      node["leisure"="golf_course"](around:${radius},${lat},${lng});
+      way["leisure"="golf_course"](around:${radius},${lat},${lng});
+      relation["leisure"="golf_course"](around:${radius},${lat},${lng});
+    );
+    out center;
+  `;
+
+  const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error("Overpass HTTP error:", res.status, await res.text());
+      detectedCourse = null;
+      detectedHole = null;
+      yardsToPin = null;
+      updateCourseStatus("Overpass HTTP error " + res.status);
+      // Fallback: center map on user
+      updateMapWithPins(null, null);
+      return;
+    }
+
+    const data = await res.json();
+
+    if (!data.elements || data.elements.length === 0) {
+      console.warn("Overpass: no elements returned");
+      detectedCourse = null;
+      detectedHole = null;
+      yardsToPin = null;
+      updateCourseStatus("No golf courses found nearby");
+      updateMapWithPins(null, null);
+      return;
+    }
+
+    // Build list of courses with coordinates + distance
+    const courses = [];
+
+    for (const el of data.elements) {
+      const cLat = el.lat || (el.center && el.center.lat);
+      const cLng = el.lon || (el.center && el.center.lon);
+      if (!cLat || !cLng) continue;
+
+      const dist = distanceInYards(lat, lng, cLat, cLng);
+
+      courses.push({
+        name: el.tags && el.tags.name ? el.tags.name : "Unnamed Golf Course",
+        lat: cLat,
+        lng: cLng,
+        dist
+      });
+    }
+
+    if (courses.length === 0) {
+      console.warn("Overpass: elements but no usable coordinates");
+      detectedCourse = null;
+      detectedHole = null;
+      yardsToPin = null;
+      updateCourseStatus("No valid course geometry found");
+      updateMapWithPins(null, null);
+      return;
+    }
+
+    // Sort by distance
+    courses.sort((a, b) => a.dist - b.dist);
+
+    const closest = courses[0];
+    const nextThree = courses.slice(1, 4);
+
+    detectedCourse = closest.name;
+    detectedHole = "Unknown";
+    yardsToPin = "-";
+
+    updateCourseStatus();
+    updateMapWithPins(closest, nextThree);
+
+  } catch (err) {
+    console.error("Overpass error:", err);
+    detectedCourse = null;
+    detectedHole = null;
+    yardsToPin = null;
+    updateCourseStatus("Overpass API error");
+    updateMapWithPins(null, null);
+  }
+}
   function updateCourseStatus(extraMsg) {
     const statusEl = document.getElementById('courseStatus');
     const base = `Course: ${detectedCourse || "unknown"} | ` +
