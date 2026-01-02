@@ -245,19 +245,19 @@
 <script>
   // --- Randomize flag cup position on load ---
   window.addEventListener("DOMContentLoaded", () => {
-    const flag = document.createElement("div");
-    flag.id = "flagCup";
+    //const flag = document.createElement("div");
+    //flag.id = "flagCup";
 
-    const maxX = window.innerWidth - 80;
-    const maxY = window.innerHeight - 120;
+    //const maxX = window.innerWidth - 80;
+    //const maxY = window.innerHeight - 120;
 
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+    //const x = Math.random() * maxX;
+    //const y = Math.random() * maxY;
 
-    flag.style.left = x + "px";
-    flag.style.top = y + "px";
+    //flag.style.left = x + "px";
+    //flag.style.top = y + "px";
 
-    document.body.appendChild(flag);
+    //document.body.appendChild(flag);
   });
 
   const STORAGE_KEY = 'golfTrackerLog';
@@ -335,7 +335,7 @@
 
 // ------------ Overpass API: Find closest golf courses ------------
 async function fetchCourseInfo(lat, lng) {
-  const radius = 10000; // meters (10 km search radius)
+  const radius = 5000; // meters (10 km search radius)
 
   const query = `
     [out:json];
