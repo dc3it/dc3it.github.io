@@ -246,6 +246,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if (lives === 0) {
                 gameOver = true;
                 dinosaur.setText('💀');
+                // Show restart button 
+                createRestartButton(game.scene.scenes[0]);
             } else {
                 resetDinosaurPosition();
             }
@@ -279,6 +281,56 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 speedMultiplier = Math.min(10.0, speedMultiplier * 1.5);
             }
         }
+        
+        function createRestartButton(scene) {
+            // Prevent duplicates
+            if (scene.restartButton) return;
+        
+            const { width, height } = scene.scale;
+        
+            scene.restartButton = scene.add.text(width / 2, height / 2, "🔄 Restart", {
+                fontFamily: "Arial",
+                fontSize: "48px",
+                color: "#ffffff",
+                backgroundColor: "#000000cc",
+                padding: { x: 25, y: 15 },
+                align: "center"
+            })
+            .setOrigin(0.5)
+            .setDepth(999)
+            .setInteractive({ useHandCursor: true })
+            .on("pointerdown", () => {
+                scene.restartButton.destroy();
+                scene.restartButton = null;
+        
+                // Reset game state
+                lives = 3;
+                successfulCrossings = 0;
+                totalAttempts = 0;
+                timer = 0;
+                speedMultiplier = 1;
+                gameOver = false;
+        
+                // Reset HUD
+                document.getElementById('lives').innerText = `Lives: ${lives}`;
+                document.getElementById('score').innerText = `Score: 0/0`;
+                document.getElementById('timer').innerText = `Time: 0`;
+        
+                // Reset dino + vehicles
+                resetDinosaurPosition();
+                refreshLaneVehicles();
+            });
+        
+            // Nice little pop‑in animation
+            scene.tweens.add({
+                targets: scene.restartButton,
+                scale: { from: 0.7, to: 1 },
+                duration: 300,
+                ease: "Back.Out"
+            });
+        }
+
+        
     </script>
 </body>
 
