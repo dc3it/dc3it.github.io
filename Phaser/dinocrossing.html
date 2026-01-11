@@ -261,6 +261,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             });
         }
 
+        function resetBottomLaneVehicle() {
+            const bottomIndex = 5; // last lane
+            const vehicle = vehicles[bottomIndex];
+        
+            const direction = vehicle.direction;
+            const xStart = direction === 1
+                ? Phaser.Math.Between(-200, 0)
+                : Phaser.Math.Between(800, 1000);
+        
+            vehicle.x = xStart;
+        }
+
+
         function increaseVehicleSpeed() {
             if (speedMultiplier < 1.8) {
                 speedMultiplier = Math.min(10.0, speedMultiplier * 1.5);
