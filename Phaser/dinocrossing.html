@@ -152,7 +152,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
 
             // Add dinosaur
-            dinosaur = this.add.text(400, 575, '🦖', {
+            dinosaur = this.add.text(400, 550, '🦖', {
                 fontSize: '32px'
             }).setOrigin(0.5);
 
@@ -239,6 +239,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
         }
 
+        function resetDinosaurPosition() {
+            dinosaur.setPosition(game.scale.width / 2, game.scale.height - 50);
+        }
+
+        function getUniqueVehicleForLane(laneIndex) {
+            const remainingEmojis = vehicleEmojis.filter(emoji => !laneVehicleTracker.includes(emoji));
+            if (remainingEmojis.length === 0) {
+                laneVehicleTracker.fill(null); // Reset tracker when all emojis are used
+            }
+            const emoji = Phaser.Math.RND.pick(vehicleEmojis.filter(emoji => !laneVehicleTracker.includes(emoji)));
+            laneVehicleTracker[laneIndex] = emoji;
+            return emoji;
+        }
+
+        function refreshLaneVehicles() {
+            vehicles.forEach((vehicle, index) => {
+                const newEmoji = getUniqueVehicleForLane(index);
+                vehicle.setText(newEmoji);
+                vehicle.flipX = vehicle.direction === 1; // Ensure the flip state matches direction
+            });
+        }
+
+        function increaseVehicleSpeed() {
+            if (speedMultiplier < 1.8) {
+                speedMultiplier = Math.min(10.0, speedMultiplier * 1.5);
+            }
+        }
+
         function createRestartButton(scene) {
             // Prevent duplicates
             if (scene.restartButton) return;
@@ -300,36 +328,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             } else {
                 resetDinosaurPosition();
             }
-        }
-
-        function resetDinosaurPosition() {
-            dinosaur.setPosition(game.scale.width / 2, game.scale.height - 50);
-        }
-
-        function getUniqueVehicleForLane(laneIndex) {
-            const remainingEmojis = vehicleEmojis.filter(emoji => !laneVehicleTracker.includes(emoji));
-            if (remainingEmojis.length === 0) {
-                laneVehicleTracker.fill(null); // Reset tracker when all emojis are used
-            }
-            const emoji = Phaser.Math.RND.pick(vehicleEmojis.filter(emoji => !laneVehicleTracker.includes(emoji)));
-            laneVehicleTracker[laneIndex] = emoji;
-            return emoji;
-        }
-
-        function refreshLaneVehicles() {
-            vehicles.forEach((vehicle, index) => {
-                const newEmoji = getUniqueVehicleForLane(index);
-                vehicle.setText(newEmoji);
-                vehicle.flipX = vehicle.direction === 1; // Ensure the flip state matches direction
-            });
-        }
-
-        function increaseVehicleSpeed() {
-            if (speedMultiplier < 1.8) {
-                speedMultiplier = Math.min(10.0, speedMultiplier * 1.5);
-            }
-        }
-                
+        } 
     </script>
 </body>
 
