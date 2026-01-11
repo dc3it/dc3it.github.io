@@ -276,6 +276,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 // Reset dino + vehicles
                 resetDinosaurPosition();
                 refreshLaneVehicles();
+                dinosaur.setText('🦖');
             });
         
             // Nice little pop‑in animation
@@ -304,7 +305,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         function resetDinosaurPosition() {
             dinosaur.setPosition(game.scale.width / 2, game.scale.height - 50);
         }
-
 
         function getUniqueVehicleForLane(laneIndex) {
             const remainingEmojis = vehicleEmojis.filter(emoji => !laneVehicleTracker.includes(emoji));
