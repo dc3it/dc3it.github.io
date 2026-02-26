@@ -587,7 +587,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <select id="useAI" required>
                     <option value="">Please select ...</option>
                     <option value="acOnly">AI Generated Acceptance Criteria Only</option>
-                    <option value="storyWithAC">AI Generated User Story with Acceptance Criteria</option>
+                    <!--<option value="storyWithAC">AI Generated User Story with Acceptance Criteria</option>-->
                     <option value="none">Do Not Use Local AI</option>
                 </select>
                 <div id="tokenUsage"></div>
@@ -624,12 +624,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <input name="hours" id="hours" class="mainTxtControls" style="width: 40px">
                 </div>
             </div>
-            <div class="promptBorder">
+            <!--<div class="promptBorder">
                 <div class="prompt-container">
                     <textarea id="gptPrompt" class="prompt-input" placeholder="Type your prompt here..."></textarea>
                     <button class="send-button">Send</button>
                 </div>
-            </div>
+            </div>-->
             <!-- process story -->
             <div style="margin: auto; width:60%; padding:.10em;">
                 <button type="button" id="processStory" class="btn">Add
@@ -1719,5 +1719,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         // #endregion
     </script>
 </body>
+
 
 </html>
