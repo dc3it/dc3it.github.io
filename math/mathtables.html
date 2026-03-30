@@ -1,0 +1,266 @@
+<!--
+Copyright 2018 DC3IT
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <meta name="description" content="Math Tables">
+    <meta name="viewport" content="initial-scale = 1.0, maximum-scale = 1.0, user-scalable = yes, width = device-width">
+    <style>
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        table { page-break-inside:auto }
+        tr    { page-break-inside:avoid; page-break-after:auto }
+        thead { display:table-header-group }
+        tfoot { display:table-footer-group }
+    </style>
+</head>
+<body>
+    <details open>
+        <summary style="font-size: 24px;">Math Table Generator</summary>
+        <div id="mathTypes">
+            <input type="radio" name="mathType" value="addition" autofocus/>
+            <label for="add">Addition</label>
+            <input type="radio" name="mathType" value="subtraction"/>
+            <label for="add">Subtraction</label>
+            <input type="radio" name="mathType" value="multiplication"/>
+            <label for="add">Multiplication</label>
+            <input type="radio" name="mathType" value="division"/>
+            <label for="add">Division</label>
+            <input id="showEquation" type="checkbox" checked />
+            <label for="showEquation">Show Equation</label>
+            <input id="showAnswer" type="checkbox" checked />
+            <label for="showAnswer">Show Answer</label>
+        </div>
+        <label for="numSC">Starting Column Number:</label>
+        <input id="numSC" type="number" step="1" style="width: 50px" />
+        <label for="numEC">Ending Column Number:</label>
+        <input id="numEC" type="number" step="1" style="width: 50px"/><br/>
+        <label for="numSR">Starting Row Number:</label>
+        <input id="numSR" type="number" step="1" style="width: 50px"/>
+        <label for="numER">Ending Row Number:</label>
+        <input id="numER" type="number" step="1" style="width: 50px"/>
+    
+        <label for="rowColor">Select Row Color</label>
+        <input id="rowColor" type="color" value="#f2f2f2" />
+        <button type="button" id="btnGenerateMath">Generate Table</button>
+        <button type="button" id="btnGenerateFlashCards">Generate Flash Cards</button>
+    </details>
+    <div>&nbsp;</div>
+    <table id="tblMathTable" style="border-collapse: collapse;"></table>
+</body>
+<script>
+function generateTable(){
+    let ndMathType = document.querySelectorAll("[name='mathType']");
+    let mathTypeSymbol = "";
+    for (let i = 0; i < ndMathType.length; i++) {
+        if (ndMathType[i].checked) {
+            mathTypeSymbol = ndMathType[i].value;
+        }
+    }
+    
+    document.getElementById("tblMathTable").innerHTML = "";
+    let numSC = 0;
+    let numEC = 0;
+    let numSR = 0;
+    let numER = 0;
+    if (document.getElementById("numSC").value != "") {
+        numSC = parseInt(document.getElementById("numSC").value);
+    }
+    if (document.getElementById("numEC").value != "") {
+        numEC = parseInt(document.getElementById("numEC").value);
+    }
+    if (document.getElementById("numSR").value != "") {
+        numSR = parseInt(document.getElementById("numSR").value);
+    }
+    if (document.getElementById("numER").value != "") {
+        numER = parseInt(document.getElementById("numER").value);
+    }
+    let mathFunc = ""; //holds the column
+    let startColumn = numSC; //sets the first column of numbers used
+    let startRowNum = ""; //holds the markup for the first column of numbers used
+    //loop through the columns
+    for (numSC; numSC <= numEC; numSC++) {
+        let mathRow = ""; //holds the created row
+        //make sure we have a start row number
+        if (document.getElementById("numSR").value != "") {
+            numSR = parseInt(document.getElementById("numSR").value);
+        }
+        //loop through the rows for each column number
+        for (numSR; numSR <= numER; numSR++) {
+            let classVal = ""; //use for row stripes
+            if (numSR % 2 == 1) {
+                classVal = `class="even"`;
+            } else {
+                classVal = `class="odd"`;
+            }
+            //if on the first column output initial row number
+            if (startColumn == numSC) {
+                startRowNum = `<td style="border: 1px solid #000">${ numSR }</td>`;
+            } else {
+                startRowNum = ``;
+            }
+            mathRow += createMathRow(mathTypeSymbol, classVal, startRowNum, numSC, numSR);
+        }
+        //create column
+        mathFunc += `<td style="vertical-align:top;padding:0px"><table style="border-collapse: collapse; border: solid 1px #000; width: 100%;text-align:center"><tr><td>${ numSC }</td></tr></table><table style="border-collapse: collapse; border: solid 1px #000">` + mathRow + `</table></td>`;
+    }
+    mathFunc = `<tr>` + mathFunc + `</tr>`;
+    document.querySelector("#tblMathTable").insertAdjacentHTML("afterbegin", mathFunc);
+    
+    setRowColor();
+}
+
+function createMathRow(mathTypeSymbol, classVal, startRowNum, numSC, numSR) {
+            //generate each row for column of math functions
+            //addition and multiplication are very similar so combined to streamline
+            if ((mathTypeSymbol == "multiplication") || (mathTypeSymbol == "addition")) {
+                let mathSymbol = "";
+                let mathEquation = "";
+                if (mathTypeSymbol == "multiplication") {
+                    mathSymbol = "x";
+                    mathEquation = (numSC * numSR);
+                } else {
+                    mathSymbol = "+";
+                    mathEquation = (numSC + numSR);
+                }
+                //show formula
+                if (document.getElementById("showEquation").checked) {
+                    //show answer
+                    if (document.getElementById("showAnswer").checked) {
+                    return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>${ numSC } ${ mathSymbol } ${ numSR } = ${ mathEquation } </td></tr>`;
+                    } else {
+                        //show formula
+                        return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>${ numSC } ${ mathSymbol } ${ numSR } =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>`;
+                    }
+                } else {
+                    //show answer
+                    if (document.getElementById("showAnswer").checked) {
+                    return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>${ mathEquation }</td></tr>`;
+                    } else {
+                        //show nothing
+                        return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>&nbsp;</td></tr>`;
+                    }
+                }
+            } else if (mathTypeSymbol == "subtraction") {
+                //always have larger number come first
+                if (numSC > numSR) {
+                    if (document.getElementById("showEquation").checked) {
+                        if (document.getElementById("showAnswer").checked) {
+                            mathEquation = `${ numSC } - ${ numSR } = ` + (numSC - numSR);
+                        } else {
+                            mathEquation = `${ numSC } - ${ numSR } =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                        }
+                    } else {
+                        if (document.getElementById("showAnswer").checked) {
+                            mathEquation = (numSC - numSR);
+                        } else {
+                            mathEquation = "&nbsp;";
+                        }
+                    }
+                } else {
+                     if (document.getElementById("showEquation").checked) {
+                        if (document.getElementById("showAnswer").checked) {
+                            mathEquation = `${ numSR } - ${ numSC } = ` + (numSR - numSC);
+                        } else {
+                            mathEquation = `${ numSR } - ${ numSC } =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                        }
+                     } else {
+                        if (document.getElementById("showAnswer").checked) {
+                            mathEquation = (numSR - numSC);
+                        } else {
+                            mathEquation = "&nbsp;";
+                        }
+                     }
+                }
+                //show formula and answer
+                return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>${ mathEquation }</td></tr>`;
+            } else {
+                // division
+                //always have larger number come first
+                let resultantWholeNumber = true;
+                if (numSC > numSR) {
+                    //don't show decimals
+                    if (numSC % numSR == 0) {
+                        //show formula and answer
+                        if (document.getElementById("showEquation").checked) {
+                            if (document.getElementById("showAnswer").checked) {
+                                mathEquation = `${ numSC } &#247; ${ numSR } = ` + (numSC / numSR);
+                            } else {
+                                mathEquation = `${ numSC } &#247; ${ numSR } = &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                            }
+                        } else {
+                            if (document.getElementById("showAnswer").checked) {
+                                mathEquation = (numSC / numSR);
+                            } else {
+                                mathEquation = "&nbsp;";
+                            }
+                        }
+                    } else {
+                        resultantWholeNumber = false;
+                    }
+                } else {
+                    //don't show decimals
+                    if (numSR % numSC == 0) {
+                        //show formula and answer
+                        if (document.getElementById("showEquation").checked) {
+                            if (document.getElementById("showAnswer").checked) {
+                                mathEquation = `${ numSR } &#247; ${ numSC } = ` + (numSR / numSC);
+                            } else {
+                                mathEquation = `${ numSR } &#247; ${ numSC } = &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+                            }
+                        } else {
+                            if (document.getElementById("showAnswer").checked) {
+                                mathEquation = (numSR / numSC);
+                            } else {
+                                mathEquation = "&nbsp;";
+                            }
+                        }
+                    } else {
+                        resultantWholeNumber = false;
+                    }
+                }
+                if (resultantWholeNumber == true) {
+                    return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>${ mathEquation }</td></tr>`;
+                } else {
+                    return `<tr ${ classVal } style="border: 1px solid #000">${ startRowNum }<td class="mathCell" nowrap>&nbsp;</td></tr>`;
+                }
+            }
+}
+
+function setRowColor() {
+    let ndTR = document.querySelectorAll("tr[class='even']");
+    for (let i=0; i<ndTR.length; i++) {
+        ndTR[i].style.backgroundColor = document.getElementById("rowColor").value;
+    }
+}
+
+document.getElementById("btnGenerateMath").addEventListener("click", function() {
+    generateTable();
+})
+
+document.getElementById("btnGenerateFlashCards").addEventListener("click", function() {
+    let tdNodes = document.getElementsByClassName("mathCell");
+    let i;
+    for (i = 0; i < tdNodes.length; i++) {
+        tdNodes[i].style.padding = "125px 125px 125px 125px";
+        tdNodes[i].style.fontSize = "xx-large";
+    }
+})
+
+document.getElementById("rowColor").addEventListener("change", function(){
+    setRowColor();
+})
+
+</script>
+</html>

@@ -1,5 +1,5 @@
 <!--
-Copyright DC3IT 2017
+Copyright DC3IT 2018
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>Math</title>
+	<title>Math Quiz</title>
 	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
 	<style type="text/css">
 		#tbl{display: table; width: 100%;}
@@ -18,7 +18,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		@media (min-width: 1200px)
 		{
 			body{font-size: 72pt;}
-			input{font-size: 42pt;width:auto;}
+			input{font-size: 42pt;width:150px;}
 			#number2{padding-left: 40px;}
 			#separator{padding-left: 40px;}
 			#tblLCell{display: table-cell; width: 40%;}
@@ -224,8 +224,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				<div id="number2">+ </div>
 				<div id="separator">-----</div>
 				<div id="btnAns">
-					<input id="ans1" type="button" value="" />
-					<input id="ans2" type="button" value="" />
+				    <input id="ans0" type="number" autofocus style="text-align: center"/>
+				<div><input id="checkAnswer" type="button" value="&#10004;" /></div>
+				<input id="correctAnswer" type="hidden" value="" />
 				</div>
 				<br/>
 			</div>
@@ -271,256 +272,231 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <div class="modal-footer">
         <div> <a href="/telltime/telltime.html">tell time</a></div>
         <div> <a href="/math/mathtables.html">math table</a></div>
+        <div> <a href="/math/math.html">math</a></div>
       </div>
     </div>
   </div>
-	<script type="text/javascript">
-      "use strict";
-      
-      var blnAns1; //boolean flag used to set button 1 correct message
-      var blnAns2; //boolean flag used to set button 2 correct message
+<script type="text/javascript">
+"use strict";
+//private and incognito modes nuke ability to use local storage
+function storageAvailable(type) {
+    try {
+        var storage = window[type],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there is something already stored
+            storage.length !== 0;
+    }
+}
 
-      //private and incognito modes nuke ability to use local storage
-      function storageAvailable(type) {
-        try {
-            var storage = window[type],
-                x = '__storage_test__';
-            storage.setItem(x, x);
-            storage.removeItem(x);
-            return true;
-        }
-        catch(e) {
-            return e instanceof DOMException && (
-                // everything except Firefox
-                e.code === 22 ||
-                // Firefox
-                e.code === 1014 ||
-                // test name field too, because code might not be present
-                // everything except Firefox
-                e.name === 'QuotaExceededError' ||
-                // Firefox
-                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                // acknowledge QuotaExceededError only if there is something already stored
-                storage.length !== 0;
-        }
-      }
-
-      //main
-    	function myMath() {
-      	var intNum1; //use for top number
-      	var intNum2; //use for bottom number
-      	var intAns; //computed answer
-      	var intRanBtn; //random number used for setting button with correct answwer
-      	var intWrgAns; //deliberate wrong answer
-      	var blnNum1Greater; //flag for numerator denominator determination
-      	blnAns1 = false;
-      	blnAns2 = false;
+//main
+function myMath() {
+        //setup event listeners
+        //checkAnswer();
+        //triggerButtonClickOnEnter();
+        
+        let intNum1; //use for top number
+        let intNum2; //use for bottom number
+        let intAns; //computed answer
+        let intRanBtn; //random number used for setting button with correct answwer
+        let intWrgAns; //deliberate wrong answer
+        let blnNum1Greater; //flag for numerator denominator determination
         //local storage values
-      // 	var lsMinNum;
-      //   var lsMaxNum;
-        var lsTopMinNum;
-        var lsTopMaxNum;
-        var lsBottomMinNum;
-        var lsBottomMaxNum;
-
+        let lsTopMinNum;
+        let lsTopMaxNum;
+        let lsBottomMinNum;
+        let lsBottomMaxNum;
+    
+        //reset
+        document.getElementById("ans0").value = "";
+        document.getElementById("ans0").focus();
+        document.getElementById("bdy").style.backgroundColor = "white";
+    
         if (storageAvailable('localStorage')) {
-             //alert("local storage test true");
-        	//get from local storage the min and max values for the equations
-        // 	lsMinNum = parseInt(localStorage.getItem("minNum"));
-        // 	lsMaxNum = parseInt(localStorage.getItem("maxNum"));
-          lsTopMinNum = parseInt(localStorage.getItem("topMinNum"));
-          lsTopMaxNum = parseInt(localStorage.getItem("topMaxNum"));
-          lsBottomMinNum = parseInt(localStorage.getItem("bottomMinNum"));
-          lsBottomMaxNum = parseInt(localStorage.getItem("bottomMaxNum"));
-        // 	if (isNaN(lsMinNum)) {
-      	 //   lsMinNum = 0;
-      	 //   localStorage.setItem("minNum", 0);
-      	 // }
-        // 	if (isNaN(lsMaxNum)) {
-        // 	  lsMaxNum = 10;
-      	 //   localStorage.setItem("maxNum", 10);
-      	 // }
-        	if (isNaN(lsTopMinNum)) {
-      	    lsTopMinNum = 0;
-      	    localStorage.setItem("topMinNum", 0);
-      	  }
-        	if (isNaN(lsTopMaxNum)) {
-        	  lsTopMaxNum = 10;
-      	    localStorage.setItem("topMaxNum", 10);
-      	  }
-        	if (isNaN(lsBottomMinNum)) {
-      	    lsBottomMinNum = 0;
-      	    localStorage.setItem("bottomMinNum", 0);
-      	  }
-        	if (isNaN(lsBottomMaxNum)) {
-        	  lsBottomMaxNum = 10;
-      	    localStorage.setItem("bottomMaxNum", 10);
-      	  }
+            //alert("local storage test true");
+            //get from local storage the min and max values for the equations
+            lsTopMinNum = parseInt(localStorage.getItem("topMinNum"));
+            lsTopMaxNum = parseInt(localStorage.getItem("topMaxNum"));
+            lsBottomMinNum = parseInt(localStorage.getItem("bottomMinNum"));
+            lsBottomMaxNum = parseInt(localStorage.getItem("bottomMaxNum"));
+            if (isNaN(lsTopMinNum)) {
+                lsTopMinNum = 0;
+                localStorage.setItem("topMinNum", 0);
+            }
+            if (isNaN(lsTopMaxNum)) {
+                lsTopMaxNum = 10;
+                localStorage.setItem("topMaxNum", 10);
+            }
+            if (isNaN(lsBottomMinNum)) {
+                lsBottomMinNum = 0;
+                localStorage.setItem("bottomMinNum", 0);
+            }
+            if (isNaN(lsBottomMaxNum)) {
+                lsBottomMaxNum = 10;
+                localStorage.setItem("bottomMaxNum", 10);
+            }
+        } else {
+            lsTopMinNum = parseInt(document.getElementById("topMinNum").value);
+            lsTopMaxNum = parseInt(document.getElementById("topMaxNum").value);
+            lsBottomMinNum = parseInt(document.getElementById("bottomMinNum").value);
+            lsBottomMaxNum = parseInt(document.getElementById("bottomMaxNum").value);
+            if (isNaN(lsTopMinNum)) {
+                lsTopMinNum = 0;
+                document.getElementById("topMinNum").value = 0;
+            }
+            if (isNaN(lsTopMaxNum)) {
+                lsTopMaxNum = 10;
+                document.getElementById("topMaxNum").value = 10;
+            }
+            if (isNaN(lsBottomMinNum)) {
+                lsBottomMinNum = 0;
+                document.getElementById("bottomMinNum").value = 0;
+            }
+            if (isNaN(lsBottomMaxNum)) {
+                lsBottomMaxNum = 10;
+                document.getElementById("bottomMaxNum").value = 10;
+            }
+    
+        } //end local storage
+    
+        //generate random numbers inclusive of min and max as set by user
+        let intTopMin = Math.ceil(lsTopMinNum);
+        let intTopMax = Math.floor(lsTopMaxNum);
+        intNum1 = Math.floor(Math.random() * (intTopMax - intTopMin + 1)) + intTopMin;
+    
+        let intBottomMin = Math.ceil(lsBottomMinNum);
+        let intBottomMax = Math.floor(lsBottomMaxNum);
+        intNum2 = Math.floor(Math.random() * (intBottomMax - intBottomMin + 1)) + intBottomMin;
+    
+    
+        //set flag numerator denominator is larger - helps determine top or bottom number for equation
+        if (intNum1 > intNum2) {
+            blnNum1Greater = true;
         }
         else {
-	       // lsMinNum = parseInt(document.getElementById("minNum").value);
-	       // lsMaxNum = parseInt(document.getElementById("maxNum").value);
-          lsTopMinNum = parseInt(document.getElementById("topMinNum").value);
-          lsTopMaxNum = parseInt(document.getElementById("topMaxNum").value);
-          lsBottomMinNum = parseInt(document.getElementById("bottomMinNum").value);
-          lsBottomMaxNum = parseInt(document.getElementById("bottomMaxNum").value);
-	       // if (isNaN(lsMinNum)) {
-	       //   lsMinNum = 0;
-	       //   document.getElementById("minNum").value = 0;
-	       // }
-	       // if (isNaN(lsMaxNum)) {
-	       //   lsMaxNum = 10;
-	       //   document.getElementById("maxNum").value = 10;
-	       // }
-	        if (isNaN(lsTopMinNum)) {
-	          lsTopMinNum = 0;
-	          document.getElementById("topMinNum").value = 0;
-	        }
-	        if (isNaN(lsTopMaxNum)) {
-	          lsTopMaxNum = 10;
-	          document.getElementById("topMaxNum").value = 10;
-	        }
-	        if (isNaN(lsBottomMinNum)) {
-	          lsBottomMinNum = 0;
-	          document.getElementById("bottomMinNum").value = 0;
-	        }
-	        if (isNaN(lsBottomMaxNum)) {
-	          lsBottomMaxNum = 10;
-	          document.getElementById("bottomMaxNum").value = 10;
-	        }
-	        
+            blnNum1Greater = false;
         }
-
-      	//generate random numbers inclusive of min and max as set by user
-      // 	var intMin = Math.ceil(lsMinNum);
-      // 	var intMax = Math.floor(lsMaxNum);
-      // 	intNum1 = Math.floor(Math.random() * (intMax - intMin + 1)) + intMin;
-      // 	intNum2 = Math.floor(Math.random() * (intMax - intMin + 1)) + intMin;
-
-      	var intTopMin = Math.ceil(lsTopMinNum);
-      	var intTopMax = Math.floor(lsTopMaxNum);
-      	intNum1 = Math.floor(Math.random() * (intTopMax - intTopMin + 1)) + intTopMin;
-      // 	intNum2 = Math.floor(Math.random() * (intMax - intMin + 1)) + intMin;
-
-      	var intBottomMin = Math.ceil(lsBottomMinNum);
-      	var intBottomMax = Math.floor(lsBottomMaxNum);
-      // 	intNum1 = Math.floor(Math.random() * (i
-      	intNum2 = Math.floor(Math.random() * (intBottomMax - intBottomMin + 1)) + intBottomMin;
-
-
-      	//set flag numerator denominator is larger - helps determine top or bottom number for equation
-      	if (intNum1 > intNum2) {
-      	    blnNum1Greater = true;
-      	} else {
-      	    blnNum1Greater = false;
-      	}
-
-      	//determine the type of math to perform
-        var strMathType;
-        var aryMathType;
+    
+        //determine the type of math to perform
+        let strMathType;
+        let aryMathType;
         if (storageAvailable('localStorage')) {
-          strMathType = localStorage.getItem("mathType");
-        } else {
-          aryMathType = document.getElementsByName("mathType");
-          var j;
-          for (j = 0; j < aryMathType.length; j++) {
-            if (aryMathType[j].checked === true) {
-              strMathType = aryMathType[j].value;
-              break;
-            }
-          }
-          if (strMathType === undefined) {
-            strMathType = "Add";
-            document.querySelector("input[value=Add]").checked = true;
-          }
+            strMathType = localStorage.getItem("mathType");
         }
-
-      	if ((strMathType === "Add") || (strMathType === null)) {
-      	    intAns = intNum1 + intNum2; //compute answer
+        else {
+            aryMathType = document.getElementsByName("mathType");
+            let j;
+            for (j = 0; j < aryMathType.length; j++) {
+                if (aryMathType[j].checked === true) {
+                    strMathType = aryMathType[j].value;
+                    break;
+                }
+            }
+            if (strMathType === undefined) {
+                strMathType = "Add";
+                document.querySelector("input[value=Add]").checked = true;
+            }
+        }
+    
+        if ((strMathType === "Add") || (strMathType === null)) {
+            intAns = intNum1 + intNum2; //compute answer
             document.getElementById("number1").textContent = intNum1; //set top number in html div
             document.getElementById("number2").innerHTML = '&plus;  ' + intNum2; //set bottom number in html div
-      	} else if (strMathType === "Subtract") {
-      	  //add logic to determine if intNum1 > intNum2
-        	  if (blnNum1Greater === true) {
-        	    intAns = intNum1 - intNum2;
-              document.getElementById("number1").textContent = intNum1; //set top number in html div
-              document.getElementById("number2").innerHTML = '&minus;  ' + intNum2; //set bottom number in html div
-        	  } else {
-        	    intAns = intNum2 - intNum1;
-              document.getElementById("number1").textContent = intNum2; //set top number in html div
-              document.getElementById("number2").innerHTML = '&minus;  ' + intNum1; //set bottom number in html div
-      	    }
-      	} else if (strMathType === "Multiply") {
-      	    intAns = intNum1 * intNum2;
+        }
+        else if (strMathType === "Subtract") {
+            //add logic to determine if intNum1 > intNum2
+            if (blnNum1Greater === true) {
+                intAns = intNum1 - intNum2;
+                document.getElementById("number1").textContent = intNum1; //set top number in html div
+                document.getElementById("number2").innerHTML = '&minus;  ' + intNum2; //set bottom number in html div
+            }
+            else {
+                intAns = intNum2 - intNum1;
+                document.getElementById("number1").textContent = intNum2; //set top number in html div
+                document.getElementById("number2").innerHTML = '&minus;  ' + intNum1; //set bottom number in html div
+            }
+        }
+        else if (strMathType === "Multiply") {
+            intAns = intNum1 * intNum2;
             document.getElementById("number1").textContent = intNum1; //set top number in html div
             document.getElementById("number2").innerHTML = '&times;  ' + intNum2; //set bottom number in html div
-      	} else {
-        	  if (blnNum1Greater === true) {
-        	    intAns = intNum1 / intNum2;
-              document.getElementById("number1").textContent = intNum1; //set top number in html div
-              document.getElementById("number2").innerHTML = '&divide;  ' + intNum2; //set bottom number in html div
-        	  } else {
-        	    intAns = intNum2 / intNum1;
-              document.getElementById("number1").textContent = intNum2; //set top number in html div
-              document.getElementById("number2").innerHTML = '&divide;  ' + intNum1; //set bottom number in html div
-      	    }
-      	}
+        }
+        else {
+            //TODO:: make sure to only have division that returns a whole number
+            // if (intNum1 % intNum2 == 0) {} don't show decimals
+            if (blnNum1Greater === true) {
+                intAns = intNum1 / intNum2;
+                document.getElementById("number1").textContent = intNum1; //set top number in html div
+                document.getElementById("number2").innerHTML = '&divide;  ' + intNum2; //set bottom number in html div
+            }
+            else {
+                //if (intNum2 % intNum1 == 0) {} don't show decimals
+                intAns = intNum2 / intNum1;
+                document.getElementById("number1").textContent = intNum2; //set top number in html div
+                document.getElementById("number2").innerHTML = '&divide;  ' + intNum1; //set bottom number in html div
+            }
+        }
+    
+        //store answer in hidden
+        document.getElementById("correctAnswer").value = intAns;
+} //end math
+    
+    
+function triggerButtonClickOnEnter() {
+    // Get the input field
+    var input = document.getElementById("ans0");
 
-      	intRanBtn = Math.floor((Math.random() * 10)); //generate random number 0-10 for setting buttons
-        //generate random number 1-2 for setting wrong answer
-        if ((Math.floor((Math.random() * 2) + 1)) == 1) {
-          intWrgAns = intAns - 1;
-        } else {
-          intWrgAns = intAns + 1;
+    // Execute a function when the user releases a key on the keyboard
+    input.addEventListener("keyup", function(event) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Trigger the button element with a click
+            document.getElementById("checkAnswer").click();
         }
+    });
+}
 
-    		if(intRanBtn%2==0){
-    			document.getElementById("ans1").value = intAns; //if random is even then set button 1 to correct answer
-    			document.getElementById("ans2").value = intWrgAns //set button 2 to incorrect answer
-    			blnAns1 = true; //set flag to be used later by button click functions to display message
-    		}
-    		else {
-    			document.getElementById("ans2").value = intAns; //if random is odd then set button 2 to correct answer
-    			document.getElementById("ans1").value = intWrgAns; //set button 1 to incorrect answer
-    			blnAns2 = true; //set flag to be used later by button click functions to display mesage
-    		}
-    		document.getElementById("bdy").style.backgroundColor = "white";
-    	}
-    	
-    	//answer button click event handlers
-    	document.getElementById("ans1").onclick = function() {
-    		if(blnAns1 == true){
-    			document.getElementById("bdy").style.backgroundColor = "green";
-    			setTimeout(function(){myMath()}, 1000);
-    			//alert("Nice Job! :)"); //display correct message
-        }
-        else{
-        	document.getElementById("bdy").style.backgroundColor = "red";
-        			//alert("Try Again! :("); //display inccorect message
-        }
-    	}
-    	
-    	document.getElementById("ans2").onclick = function(){
-    		if(blnAns2 == true){
-    			document.getElementById("bdy").style.backgroundColor = "green";
-    			setTimeout(function(){myMath()}, 1000);
-    			//alert("Nice Job! :)"); //display correct message
-        }
-        else{
-        	document.getElementById("bdy").style.backgroundColor = "red";
-        			//alert("Try Again! :("); //display incorrect message
-        }
-    	}
+    
+   
+function checkAnswer() {
+    //check answer
+    document.getElementById("checkAnswer").addEventListener("click", function() {
+       if (document.getElementById("ans0").value == document.getElementById("correctAnswer").value) {
+    		document.getElementById("bdy").style.backgroundColor = "green";
+    		setTimeout(function(){myMath()}, 1000);
+       } else {
+           document.getElementById("bdy").style.backgroundColor = "red";
+           document.getElementById("ans0").focus();
+       }
+	});
+}
 
+function setUpModal() {
       //modal
       // Get the modal
-      var modal = document.getElementById('myModal');
+      let modal = document.getElementById('myModal');
       
       // Get the button that opens the modal
-      var btn = document.getElementById("myBtn");
+      let btn = document.getElementById("myBtn");
       
       // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close")[0];
+      let span = document.getElementsByClassName("close")[0];
       
       // When the user clicks the button, open the modal
       btn.onclick = function() {
@@ -536,9 +512,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       	    localStorage.setItem("mathType", "Add");
       	    document.querySelector("input[value=Add]").checked = true;
       	  }
-      	  //set min/max
-      	 // document.getElementById("minNum").value = localStorage.getItem("minNum");
-      	 // document.getElementById("maxNum").value = localStorage.getItem("maxNum");
+
       	  document.getElementById("topMinNum").value = localStorage.getItem("topMinNum");
       	  document.getElementById("topMaxNum").value = localStorage.getItem("topMaxNum");
       	  document.getElementById("bottomMinNum").value = localStorage.getItem("bottomMinNum");
@@ -565,8 +539,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
            
           if (storageAvailable('localStorage')) {
             //determine which radio button is checked
-            var mathType = document.getElementsByName("mathType");
-            var i;
+            let mathType = document.getElementsByName("mathType");
+            let i;
             for (i = 0; i < mathType.length; i++) {
               if (mathType[i].checked === true) {
                 localStorage.setItem("mathType", mathType[i].value);
@@ -575,26 +549,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             }
              
             //handle min/max
-            // var intMinNum;
-            // var intMaxNum;
-            var intTopMinNum;
-            var intTopMaxNum;
-            var intBottomMinNum;
-            var intBottomMaxNum;
+            let intTopMinNum;
+            let intTopMaxNum;
+            let intBottomMinNum;
+            let intBottomMaxNum;
             
-            // intMinNum = parseInt(document.getElementById("minNum").value);
-            // intMaxNum = parseInt(document.getElementById("maxNum").value);
             intTopMinNum = parseInt(document.getElementById("topMinNum").value);
             intTopMaxNum = parseInt(document.getElementById("topMaxNum").value);
             intBottomMinNum = parseInt(document.getElementById("bottomMinNum").value);
             intBottomMaxNum = parseInt(document.getElementById("bottomMaxNum").value);
-            // if ((intMinNum === "") || (isNaN(intMinNum))) {
-            //   intMinNum = 0;
-            // }
-            // if ((intMaxNum === "") || (isNaN(intMaxNum)))  {
-            //   intMaxNum = 10;
-            // }
-
+            
             if ((intTopMinNum === "") || (isNaN(intTopMinNum))) {
               intTopMinNum = 0;
             }
@@ -608,13 +572,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             if ((intBottomMaxNum === "") || (isNaN(intBottomMaxNum)))  {
               intBottomMaxNum = 10;
             }
-
-            // if (intMaxNum < intMinNum) {
-            //   alert('Maximum number must be greater than Minimum number!');
-            // } else {
-            //   localStorage.setItem("minNum", intMinNum);
-            //   localStorage.setItem("maxNum", intMaxNum);
-            // }
              
             if (intTopMaxNum < intTopMinNum) {
               alert('Top Maximum number must be greater than Top Minimum number!');
@@ -633,13 +590,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
           modal.style.display = "none";
           myMath();
       }
-      
-      window.onload = function(){
-        //call main method
-    	  myMath();
-      }
+}
+
+
+window.onload = function(){
+    setUpModal();
+    checkAnswer();
+    triggerButtonClickOnEnter();
+    //call main method
+    myMath();
+}
     	
-	</script>
+</script>
 
 </body>
 </html>
