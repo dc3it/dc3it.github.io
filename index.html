@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DC3IT – Enterprise CLM Solutions</title>
+
+  <style>
+    /* -----------------------------------
+       THEME VARIABLES
+    ----------------------------------- */
+    :root {
+      --primary: #0a2540;
+      --accent: #1e88e5;
+      --light-bg: #f5f7fa;
+      --light-card: #ffffff;
+      --light-text: #1a1a1a;
+
+      --dark-bg: #0b1118;
+      --dark-card: #111a24;
+      --dark-text: #e6e6e6;
+
+      --transition: 0.25s ease;
+      --max-width: 1200px;
+    }
+
+    /* Light mode (default) */
+    body {
+      background: var(--light-bg);
+      color: var(--light-text);
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    /* Dark mode override */
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    body.dark header,
+    body.dark .card {
+      background: var(--dark-card);
+      color: var(--dark-text);
+      border-color: #1f2a35;
+    }
+
+    body.dark .hero {
+      background: linear-gradient(135deg, #0a1a2a, #050a10);
+    }
+
+    body.dark .btn-outline {
+      border-color: var(--dark-text);
+      color: var(--dark-text);
+    }
+
+    body.dark .btn-outline:hover {
+      background: var(--dark-text);
+      color: var(--dark-bg);
+    }
+
+    /* -----------------------------------
+       GLOBAL ELEMENTS
+    ----------------------------------- */
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    /* -----------------------------------
+       NAVIGATION
+    ----------------------------------- */
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    body.dark header {
+      background: #111a24;
+      border-color: #1f2a35;
+    }
+
+    .nav-container {
+      max-width: var(--max-width);
+      margin: auto;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    body.dark .logo {
+      color: var(--dark-text);
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      font-weight: 500;
+    }
+
+    /* Mobile nav toggle */
+    .mobile-toggle {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: inherit;
+        padding: 1rem;
+        border-top: 1px solid #ddd;
+      }
+
+      nav ul.open {
+        display: flex;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: none;
+      transition: var(--transition);
+    }
+
+    body.dark .theme-toggle {
+      border-color: #444;
+      color: var(--dark-text);
+    }
+
+    /* -----------------------------------
+       HERO SECTION
+    ----------------------------------- */
+    .hero {
+      padding: 6rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      color: white;
+      background: linear-gradient(135deg, #0a2540, #1a3a60);
+      /* Light mode gradient */
+    }
+
+    body.dark .hero {
+      background: linear-gradient(135deg, #0a1a2a, #050a10);
+      /* Dark mode gradient */
+      color: white;
+    }
+
+
+
+    .hero h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: auto;
+      opacity: 0.9;
+    }
+
+    .hero-buttons {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.9rem 1.6rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1565c0;
+    }
+
+    .btn-outline {
+      border: 2px solid white;
+      color: white;
+    }
+
+    .btn-outline:hover {
+      background: white;
+      color: var(--primary);
+    }
+
+    /* -----------------------------------
+       SECTIONS
+    ----------------------------------- */
+    section {
+      max-width: var(--max-width);
+      margin: 4rem auto;
+      padding: 0 1rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    body.dark h2 {
+      color: var(--dark-text);
+    }
+
+    .grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .card {
+      background: var(--light-card);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    /* -----------------------------------
+       FOOTER
+    ----------------------------------- */
+    footer {
+      background: var(--primary);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      margin-top: 4rem;
+      transition: var(--transition);
+    }
+
+    body.dark footer {
+      background: #050a10;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <header>
+    <div class="nav-container">
+      <div class="logo">DC3IT</div>
+
+      <div class="mobile-toggle" onclick="toggleNav()">☰</div>
+
+      <nav>
+        <ul id="nav-menu">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#accelerators">Accelerators</a></li>
+          <li><a href="#why">Why DC3IT</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><button class="theme-toggle" onclick="toggleTheme()">🌓</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Enterprise‑Grade CLM Solutions & Integrations</h1>
+    <p>DC3IT delivers scalable, secure, and modern DocuSign CLM integrations, workflow automation, and AI‑powered
+      enhancements for legal, procurement, and operations teams.</p>
+
+    <div class="hero-buttons">
+      <a href="#accelerators" class="btn btn-primary">Explore CLM Accelerators</a>
+      <a href="#contact" class="btn btn-outline">Work With DC3IT</a>
+    </div>
+  </section>
+
+  <!-- WHAT WE DO -->
+  <section id="services">
+    <h2>What We Do</h2>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Custom CLM Add‑Ons</h3>
+        <p>Extend DocuSign CLM with Slack, Teams, Salesforce, Workday, Snowflake, and more.</p>
+      </div>
+      <div class="card">
+        <h3>AI Contract Intelligence</h3>
+        <p>Drafting, summarization, clause detection, and workflow automation using Local AI, OpenAI, or Claude.</p>
+      </div>
+      <div class="card">
+        <h3>Enterprise Workflow Design</h3>
+        <p>Architecture, implementation, and optimization of CLM processes for legal and procurement teams.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCELERATORS -->
+  <section id="accelerators">
+    <h2>Featured CLM Accelerators</h2>
+    <div class="grid grid-3">
+      
+      <div class="card">
+        <h3>Slack Integration</h3>
+        <p>Real-time contract notifications, approvals, and collaboration directly inside Slack.</p>
+      </div>
+
+      <div class="card">
+        <h3>Teams Integration</h3>
+        <p>Bring CLM workflows into Microsoft Teams with adaptive cards and actionable messages.</p>
+      </div>
+
+      <div class="card">
+        <h3>Document Relationship Picker</h3>
+        <p>Intuitive UI for linking related documents, amendments, and supporting files within CLM.</p>
+      </div>
+
+      <div class="card">
+        <h3>Legal Service Request</h3>
+        <p>Streamlined intake workflows for legal teams, with automated routing and CLM initiation.</p>
+      </div>
+
+      <div class="card">
+        <h3>AI Contract Intelligence</h3>
+        <p>Local AI, OpenAI, or Anthropic-powered drafting, summarization, clause detection, and workflow automation.</p>
+      </div>
+
+      <div class="card">
+        <h3>Workday Integration</h3>
+        <p>Trigger CLM workflows from HR, procurement, and financial events in Workday.</p>
+      </div>
+
+      <div class="card">
+        <h3>Snowflake Integration</h3>
+        <p>Contract metadata pipelines for analytics, reporting, and compliance dashboards.</p>
+      </div>
+
+      <div class="card">
+        <h3>Custom Error & Instruction Screens</h3>
+        <p>Enhanced user guidance with branded, context-aware messaging inside CLM workflows.</p>
+      </div>
+
+      <div class="card">
+        <h3>Company Signatory Picker</h3>
+        <p>Automated selection of authorized signatories based on rules, roles, and contract type.</p>
+      </div>
+
+      <div class="card">
+        <h3>Salesforce “At-a-Glance” History</h3>
+        <p>Full CLM lifecycle visibility inside Salesforce, including milestones and workflow status.</p>
+      </div>
+
+      <div class="card">
+        <h3>Salesforce Custom Object Tracking</h3>
+        <p>Complete historical tracking of CLM events using custom Salesforce objects.</p>
+      </div>
+
+      <div class="card">
+        <h3>CLM + Salesforce Integration Accelerator</h3>
+        <p>End-to-end accelerator connecting Salesforce and DocuSign CLM with robust data sync, workflow triggers, and
+          lifecycle visibility.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHY DC3IT -->
+  <section id="why">
+    <h2>Why DC3IT</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Enterprise‑Ready</h3>
+        <p>Solutions built with security, scalability, and maintainability at the core.</p>
+      </div>
+      <div class="card">
+        <h3>Deep CLM Expertise</h3>
+        <p>Years of hands‑on experience building custom CLM add‑ons, integrations, and workflow enhancements.</p>
+      </div>
+      <div class="card">
+        <h3>Rapid Delivery</h3>
+        <p>Accelerators and frameworks that reduce implementation time and cost.</p>
+      </div>
+      <div class="card">
+        <h3>Transparent & Collaborative</h3>
+        <p>Clean architecture, clear communication, and documentation that empowers your team.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Let’s build something powerful together. Reach out for CLM integrations, workflow design, or custom accelerators.
+    </p>
+    <p><strong>Email:</strong> info@dc3it.com</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 DC3IT — Enterprise CLM Solutions
+  </footer>
+
+  <script>
+    /* Mobile nav */
+    function toggleNav() {
+      document.getElementById("nav-menu").classList.toggle("open");
+    }
+
+    /* Theme toggle */
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    }
+
+    /* Load saved theme */
+    (function () {
+      const saved = localStorage.getItem("theme");
+      if (saved === "dark") {
+        document.body.classList.add("dark");
+      }
+    })();
+  </script>
+
+</body>
+
+</html>
