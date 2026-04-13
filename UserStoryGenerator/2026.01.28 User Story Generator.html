@@ -1020,8 +1020,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 dt();
                 toastMsg("New User Story Added!");
                 document.querySelector("#spinner").style.display = "none";
-                document.querySelector("#tokenUsage").innerHTML = `Context used: ${aiSession.inputUsage}/${aiSession.inputQuota}`;
-                console.log(`${aiSession.inputUsage}/${aiSession.inputQuota}`);
+                document.querySelector("#tokenUsage").innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
+                console.log(`${aiSession.contextUsage}/${aiSession.contextWindow}`);
             }
         });
         // #endregion
