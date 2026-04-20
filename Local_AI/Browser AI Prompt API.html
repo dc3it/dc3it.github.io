@@ -160,6 +160,7 @@
     const messagesEl = document.getElementById("messages");
     const inputPrompt = document.getElementById("input");
     const sendBtn = document.getElementById("send");
+    const toast = document.getElementById('toast');
     const controller = new AbortController();
     document.querySelector("#stop").onclick = () => controller.abort();
     // #endregion
@@ -170,7 +171,6 @@
     // Modified on:
     // ***
     const toastMsg = (msg) => {
-      const toast = document.getElementById('toast');
       toast.innerHTML = msg;
       toast.show(); // Non-modal display
       setTimeout(() => {
@@ -223,7 +223,8 @@
                 monitor(m) {
                   m.addEventListener('downloadprogress', (e) => {
                     console.log(`Local model ready for use ${e.loaded * 100}%`);
-                    toastMsg(`Local model initialization in progress. Please wait .... `)
+                    toast.innerHTML = `Local model ready for use ${e.loaded * 100}%`;
+                    toast.show();
                   });
                 },
               });
@@ -267,22 +268,27 @@
         const result = await aiSession.promptStreaming(promptText, {
           signal: controller.signal
         });
-        let divElement = document.createElement("div");
-        divElement.className = "dvSection";
-        output.append(divElement);
+        let hrElement = document.createElement("hr");
+        //hrElement.className = "dvSection";
+        output.append(hrElement);
         for await (const chunk of result) {
           console.log(chunk);
-          let divElement = document.createElement("div");
-          divElement.className = "dvSection";
+          // double chk if need to create w/in loop -short ans yes but verify
+          //let divElement = document.createElement("div");
+          //divElement.className = "dvSection";
           let divFollowElement = document.createElement("div");
           divFollowElement.className = "dvFollowSection";
+          let paraElement = document.createElement("p");
 
           if ((chunk == "   ") || (chunk == "**")) {
-            output.append(divElement);
+            output.append(paraElement);
           } else if (chunk == ":**") {
             output.append(divFollowElement);
+          //} else if (chunk == "\n") {
+          //  let brElement = document.createElement("br");
+          //  output.append(brElement);
           } else {
-            output.append(chunk.replaceAll("*", ""));
+            output.append(chunk.replaceAll('*', '').replaceAll('`', ''));
           }
         }
         modelStatusEl.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
