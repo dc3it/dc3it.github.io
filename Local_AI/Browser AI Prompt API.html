@@ -1,10 +1,51 @@
+<!--
+  Local LLM Browser AI API AskBot 🤖
+  Copyright (c) 2026 DC3IT
+  Licensed under the MIT License.
+
+  -------------------------------------------------------------------------
+  MIT LICENSE:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in 
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+  THE SOFTWARE.
+  -------------------------------------------------------------------------
+
+  This file includes code from 
+  - AI Streaming Parser Copyright 2025 Google LLC https://chrome.dev/web-ai-demos/ai-streaming-parser/
+  - Prompt API Playground 2024 Google LLC https://chrome.dev/web-ai-demos/prompt-api-playground/ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://apache.org
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Chat</title>
+  <title>WebAI AskBot🤖</title>
   <style>
     :root {
       --bg: #0f0f0f;
@@ -43,24 +84,6 @@
       padding: 1rem;
     }
 
-    .message {
-      max-width: 70%;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1rem;
-      border-radius: 12px;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    .message.user {
-      background: var(--user);
-      margin-left: auto;
-    }
-
-    .message.assistant {
-      background: var(--assistant);
-      margin-right: auto;
-    }
-
     footer {
       padding: 1rem;
       background: var(--panel);
@@ -89,26 +112,18 @@
       cursor: pointer;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    hr {
+      padding: .5em;
     }
 
-    .dvSection {
-      display: block;
-      padding: .25em;
-    }
-
-    .dvFollowSection {
-      display: block;
-      padding: 0px 0px .25em 0px;
+    h3 {
+      color: #4CAF50;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 12px 18px;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 15px;
     }
 
     dialog#toast {
@@ -122,6 +137,50 @@
       color: white;
       padding: 1rem;
       border-radius: 8px;
+    }
+
+    /* Flexible Google-style progress indicator https://lea.verou.me/blog/2013/11/flexible-google-style-loader-with-css/
+        another option https://lea.verou.me/blog/2013/11/cleanest-css-spinner-ever/ 
+    */
+    @keyframes progress {
+      50% {
+        border-width: .5em 0;
+      }
+
+      to {
+        border-width: .5em 0 0 0;
+      }
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(-270deg);
+      }
+    }
+
+    .progress {
+      display: inline-block;
+      font-size: 50px;
+      /* Size of the progress indicator */
+      width: 1em;
+      height: 1em;
+      border: solid white;
+      border-top-color: #ddd;
+      border-width: 0 0 .5em 0;
+      border-radius: 50%;
+      box-sizing: border-box;
+      margin: .1em .2em;
+      background: linear-gradient(white 50%, #ddd 50%);
+      background-origin: border-box;
+      transform: rotate(90deg);
+      animation: rotate 1s steps(4) infinite,
+        progress .25s linear infinite alternate;
+      text-indent: 99em;
+      overflow: hidden;
+    }
+
+    .progress.small {
+      font-size: 16px
     }
   </style>
 </head>
@@ -148,11 +207,11 @@
     </footer>
   </div>
 
-  <script>
+  <script type="module">
     // #region *** globals ***
     // Description: 
     // Created on: 2026.03.31
-    // Modified on: 
+    // Modified on: 2026.04.21
     // ***
     let aiAvailability;
     let aiSession;
@@ -163,10 +222,13 @@
     const toast = document.getElementById('toast');
     const controller = new AbortController();
     document.querySelector("#stop").onclick = () => controller.abort();
+    //import { marked } from "https://cdn.jsdelivr.net/npm/marked@13.0.3/lib/marked.esm.js"; //uncomment to use output option 2
+    import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3.4.1/dist/purify.es.mjs";
+    import * as smd from "https://cdn.jsdelivr.net/npm/streaming-markdown/smd.min.js";
     // #endregion
 
     // #region *** toast message ***
-    // Description: handles formatting toast message with sweetalert
+    // Description: handles formatting toast message with html dialog
     // Created on: 2026.04.20
     // Modified on:
     // ***
@@ -179,7 +241,7 @@
     };
     // #endregion
 
-    // #region ai event listeners ***
+    // #region *** ai event listeners ***
     // Description: handles dropdown selection
     // Created on: 2026.01.21
     // Modified on:
@@ -222,8 +284,12 @@
                 ],
                 monitor(m) {
                   m.addEventListener('downloadprogress', (e) => {
-                    console.log(`Local model ready for use ${e.loaded * 100}%`);
-                    toast.innerHTML = `Local model ready for use ${e.loaded * 100}%`;
+                    console.log(`Checking local model readiness ${e.loaded * 100}%`);
+                    if (e.loaded == 0) {
+                      toast.innerHTML = `Checking local model readiness <div class="small progress">Loading…</div>`;
+                    } else {
+                      toast.innerHTML = `Checking local model readiness ${e.loaded * 100}% <div class="small progress">Loading…</div>`;
+                    }
                     toast.show();
                   });
                 },
@@ -249,53 +315,129 @@
     }
     // #endregion
 
-
     // #region *** Send message ***
     // Description: hendles processing the message
     // Created on: 2026.03.16
-    // Modified on: 2026.04.20
+    // Modified on: 2026.04.21 added three variations for handling the output
     // ***
     const sendMessage = async () => {
       const output = document.querySelector('#output');
+      const renderer = smd.default_renderer(output);
+      const parser = smd.parser(renderer);
+
       let promptText = inputPrompt.value.trim();
 
       if (!promptText) {
         return;
       }
-
+      // reset
       inputPrompt.value = "";
+      // setup Q & A
+      const question = document.createElement("h3");
+      question.textContent = `Question: ${promptText}`;
+      output.append(question);
+      const answer = document.createElement("p");
+      output.append(answer);
+
       try {
         const result = await aiSession.promptStreaming(promptText, {
           signal: controller.signal
         });
-        let hrElement = document.createElement("hr");
-        //hrElement.className = "dvSection";
-        output.append(hrElement);
-        for await (const chunk of result) {
-          console.log(chunk);
-          // double chk if need to create w/in loop -short ans yes but verify
-          //let divElement = document.createElement("div");
-          //divElement.className = "dvSection";
-          let divFollowElement = document.createElement("div");
-          divFollowElement.className = "dvFollowSection";
-          let paraElement = document.createElement("p");
 
-          if ((chunk == "   ") || (chunk == "**")) {
-            output.append(paraElement);
-          } else if (chunk == ":**") {
-            output.append(divFollowElement);
-          //} else if (chunk == "\n") {
-          //  let brElement = document.createElement("br");
-          //  output.append(brElement);
-          } else {
-            output.append(chunk.replaceAll('*', '').replaceAll('`', ''));
-          }
+        // #region *** approach 1 using the DOM ***
+        // Description: following best practices https://developer.chrome.com/docs/ai/render-llm-responses
+        // the huge weakness of this is zero semantic html output unless wanting to use a buffering approach to clean the output
+        // or try to instruct the LLM via RAG / skills.md for the output
+        // need to retain what the prior chunk was and test it that way can format it better
+        // but still understand that you are not outputting semantic markup
+        // need to conceive of a way to dynamically inject containers within the output to afford the scrollable history
+        // or live with the innerHTML approach getting slower and slower - the other thought is 
+        // off to the side of the UI/UX offering to save each one, but here again lackluster in terms of scroll
+        // Created: 2026.04.21
+        // ***
+        //for await (const chunk of result) {
+        //  console.log(chunk);
+        //  // double chk if need to create w/in loop -short ans yes but verify - confirmed as of 2026.04.21
+        //  let brElement1 = document.createElement("br");
+        //  let brElement2 = document.createElement("br");
+        //  if ((chunk == "  ") || (chunk == "   ") || (chunk == "\n")) {
+        //    output.append(brElement1);
+        //  } else if ((chunk == "\n\n\n\n") || (chunk == "\n\n")) {
+        //    output.append(brElement1);
+        //    output.append(brElement2);
+        //  } else if (chunk == " **") {
+        //    output.append("     -- ");
+        //  } else {
+        //    output.append(chunk.replaceAll('*', '').replaceAll('`', ''));
+        //  }
+        //}
+        //let hrElement = document.createElement("hr");
+        //output.append(hrElement);
+        // #endregion
+
+        // #region *** approach 2 using innerHTML and marked markdown streamer ***
+        // Description: taken from https://chrome.dev/web-ai-demos/prompt-api-playground/script.js
+        // which came from here https://chrome.dev/web-ai-demos/prompt-api-playground/
+        // and when clicking on Prompt API playground here https://developer.chrome.com/docs/ai/prompt-api#performance_strategy
+        // everything gets wiped after each run - you'd have to store in local storage and read back in, but even then
+        // it could become daunting because the innerHTML performance would degrade - really only useful for one and dones
+        // Created: 2026.04.21
+        // ***       
+        //let stream = "";
+        //let previousChunk = "";
+        //for await (const chunk of result) {
+        //  console.log(chunk);
+        //  const newChunk = chunk.startsWith(previousChunk)
+        //    ? chunk.slice(previousChunk.length)
+        //    : chunk;
+        //  stream += newChunk;
+        //  output.innerHTML = DOMPurify.sanitize(marked.parse(stream));
+        //  //rawResponse.innerText = result;
+        //  previousChunk = chunk;
+        //}
+        // #endregion
+
+        // #region *** approach 3 using innerHTML and different markdown streamer ***
+        // Description: taken from https://chrome.dev/web-ai-demos/ai-streaming-parser/script.js
+        // which came from here https://chrome.dev/web-ai-demos/ai-streaming-parser/
+        // and when clicking on AI Streaming Parser here https://developer.chrome.com/docs/ai/render-llm-responses
+        // everything gets wiped after each run - you'd have to store in local storage and read back in, but even then
+        // it could become daunting because the innerHTML performance would degrade - really only useful for one and dones
+        // Created: 2026.04.21
+        // ***
+        const renderer = smd.default_renderer(answer);
+        const parser = smd.parser(renderer);
+
+        let chunks = '';
+        for await (const chunk of result) {
+          //console.log(chunk);
+          chunks += chunk;
+          // had to comment out DOMPurify because you have to whitelist any XML - 
+          //best practice is to uncomment if you are not working with markup languages
+          //DOMPurify.sanitize(chunks);
+          //if (DOMPurify.removed.length) {
+          //  // Immediately stop what you were doing.
+          //  smd.parser_end(parser);
+          //  const { from } = DOMPurify.removed[0];
+          //  alert(
+          //    'Insecure model output removed from <' +
+          //    from.nodeName.toLowerCase() +
+          //    '>.'
+          //  );
+          //  return;
+          smd.parser_write(parser, chunk);
         }
+        smd.parser_end(parser);
+        // #endregion
+
         modelStatusEl.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
       } catch (err) {
+        smd.parser_end(parser);
         messagesEl.innerHTML = "Error calling browser AI.";
       }
     }
+    // #endregion
+
 
     // #region *** send user messaage ***
     // Description: hendles user clicking send or enter key
