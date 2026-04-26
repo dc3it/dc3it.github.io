@@ -513,7 +513,7 @@
         modelStatusEl.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
       } catch (err) {
         smd.parser_end(parser);
-        messagesEl.innerHTML = "Error calling browser AI.";
+        messagesEl.innerHTML = "Error calling browser AI. Please refresh the browser tab and try again.";
       }
     }
     // #endregion
