@@ -278,10 +278,11 @@
   <div id="app">
     <header>
       <h1>AI Chat</h1>
-      <label for="useAI">Enable WebAI?&nbsp;</label>
-      <label class="switch">
-        <input type="checkbox" id="useAI" />
-        <span class="slider round"></span>
+      <label for="useAI">Enable WebAI?&nbsp;
+        <label class="switch">
+          <input type="checkbox" id="useAI" />
+          <span class="slider round"></span>
+        </label>
       </label>
       <span id="model-status"></span>
       <span id="model-status"></span>
@@ -516,7 +517,7 @@
         // ***
         const renderer = smd.default_renderer(answer);
         const parser = smd.parser(renderer);
-        
+
         let chunks = '';
         for await (const chunk of result) {
           //console.log(chunk);
