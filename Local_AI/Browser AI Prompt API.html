@@ -446,6 +446,7 @@
       output.append(question);
       const answer = document.createElement("div");
       output.append(answer);
+      scrollToBottom();
 
       try {
         const result = await aiSession.promptStreaming(promptText, {
