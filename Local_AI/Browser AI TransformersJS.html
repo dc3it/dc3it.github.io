@@ -1,0 +1,517 @@
+<!--
+  Local LLM Browser AI API AskBot 🤖
+  Copyright (c) 2026 DC3IT
+  Licensed under the MIT License.
+
+  -------------------------------------------------------------------------
+  MIT LICENSE:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in 
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+  THE SOFTWARE.
+  -------------------------------------------------------------------------
+
+  This file includes code from 
+  - AI Streaming Parser Copyright 2025 Google LLC https://chrome.dev/web-ai-demos/ai-streaming-parser/
+  - Prompt API Playground 2024 Google LLC https://chrome.dev/web-ai-demos/prompt-api-playground/ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://apache.org
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TransformersJS-AI AskBot🤖</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --panel: #1a1a1a;
+      --user: #3a3f7a;
+      --assistant: #2a2a2a;
+      --text: #e6e6e6;
+      --accent: #8ab4f8;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      padding: 1rem;
+      background: var(--panel);
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    footer {
+      padding: 1rem;
+      background: var(--panel);
+      border-top: 1px solid #333;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: none;
+      background: #111;
+      color: var(--text);
+    }
+
+    button {
+      padding: 0 1rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    hr {
+      padding: .5em;
+    }
+
+    .questionFormat {
+      color: #4CAF50;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 7px 7px;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      /* margin-bottom: 5px; */
+    }
+
+    dialog#toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      margin: 0;
+      /* Override default centering */
+      border: none;
+      background: #333;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    /* Flexible Google-style progress indicator https://lea.verou.me/blog/2013/11/flexible-google-style-loader-with-css/
+        another option https://lea.verou.me/blog/2013/11/cleanest-css-spinner-ever/ 
+    */
+    @keyframes progress {
+      50% {
+        border-width: .5em 0;
+      }
+
+      to {
+        border-width: .5em 0 0 0;
+      }
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(-270deg);
+      }
+    }
+
+    .progress {
+      display: inline-block;
+      font-size: 50px;
+      /* Size of the progress indicator */
+      width: 1em;
+      height: 1em;
+      border: solid white;
+      border-top-color: #ddd;
+      border-width: 0 0 .5em 0;
+      border-radius: 50%;
+      box-sizing: border-box;
+      margin: .1em .2em;
+      background: linear-gradient(white 50%, #ddd 50%);
+      background-origin: border-box;
+      transform: rotate(90deg);
+      animation: rotate 1s steps(4) infinite,
+        progress .25s linear infinite alternate;
+      text-indent: 99em;
+      overflow: hidden;
+    }
+
+    .progress.small {
+      font-size: 16px
+    }
+
+    /* end progress indicator */
+
+    /* output wrapper */
+    .wrapper {
+      overflow: auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap;
+      scroll-behavior: smooth;
+    }
+
+    /* This creates an invisible spacer that pushes content down */
+    .wrapper::after {
+      content: "";
+      display: block;
+      height: 1px;
+      margin-top: -1px;
+    }
+
+    /* The switch - the box around the slider */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 24px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+
+<body>
+  <dialog id="toast" role="status">
+  </dialog>
+
+  <div id="app">
+    <header>
+      <h1>AI Chat</h1>
+      <label for="useAI">Enable TransformersAI?&nbsp;
+        <label class="switch">
+          <input type="checkbox" id="useAI" />
+          <span class="slider round"></span>
+        </label>
+      </label>
+      <span id="model-status"></span>
+      <span id="model-status"></span>
+    </header>
+
+    <main id="messages">
+      <div id="output" class="wrapper"></div>
+    </main>
+
+    <footer>
+      <textarea id="input" placeholder="Type a message…"></textarea>
+      <button type="button" id="send">Send</button><button type="button" id="stop">Stop</button>
+    </footer>
+  </div>
+
+  <script type="module">
+    // #region *** globals ***
+    // Description: 
+    // Created on: 2026.03.31
+    // Modified on: 2026.04.21, 2026.05.14
+    // ***
+    // Optional: keep models remote from Hugging Face.
+    // For stricter enterprise control, self-host model files and set these:
+    // env.allowRemoteModels = false;
+    // env.allowLocalModels = true;
+    // env.localModelPath = "/models/";
+
+    let aiSession = null;
+    let generator = null;
+    let textBuffer = "";
+    let renderPending = false;
+    const messagesEl = document.getElementById("messages");
+    const toast = document.getElementById('toast');
+    const controller = new AbortController();
+    document.querySelector("#stop").onclick = () => controller.abort();
+    const MODEL_ID = "onnx-community/gemma-4-E2B-it-ONNX";
+    const modelStatusEl = document.getElementById("model-status");
+    const inputPrompt = document.getElementById("input");
+    const sendBtn = document.getElementById("send");
+    const stopBtn = document.getElementById("stop");
+    const output = document.getElementById("output");
+
+    //import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3.4.1/dist/purify.es.mjs";
+    import * as smd from "https://cdn.jsdelivr.net/npm/streaming-markdown/smd.min.js";
+    import { pipeline, env, TextStreamer } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@latest/dist/transformers.js";
+    // #endregion
+
+    // #region *** toast message ***
+    // Description: handles formatting toast message with html dialog
+    // Created on: 2026.04.20
+    // Modified on:
+    // ***
+    const toastMsg = (msg) => {
+      toast.innerHTML = msg;
+      toast.show(); // Non-modal display
+      setTimeout(() => {
+        toast.close();
+      }, 3000); // Closes after 3 seconds
+    };
+    // #endregion
+
+    // #region *** detect bottom location for stream output and scrolling ***
+    // Description: hendles keeping the output at the bottom of the screen
+    // Created on: 2026.04.27
+    // Modified on: 
+    // ***    
+    const scrollToBottom = () => {
+      const chatContainer = document.querySelector('.wrapper');
+      const threshold = 100; // pixels from bottom
+      const isNearBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < threshold;
+
+      if (isNearBottom) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }
+    // #endregion
+
+    // #region *** ai event listeners ***
+    // Description: handles dropdown selection
+    // Created on: 2026.01.21
+    // Modified on: 2026.05.14
+    // ***
+    //ai
+    document.querySelector("#useAI").addEventListener("click", () => {
+      localStorage.setItem("useAI", document.querySelector("#useAI").checked);
+      if ((document.querySelector("#useAI").checked == true)) {
+        //set up new session
+        checkLocalAI();
+      } else {
+        //clean up on aisle ai
+        if (aiSession) {
+          aiSession.destroy();
+          aiSession = null;
+          toastMsg("Local AI disabled");
+        }
+      }
+    });
+    // #endregion 
+
+    // #region *** check in browser AI ***
+    // Description: hendles determining if the browser and machine has the model already downloaded
+    // Created on: 2025.09.15
+    // Modified on: 2026.05.15
+    // ***
+    const checkLocalAI = async () => {
+      try {
+        toastMsg(`Loading Transformers.js model <div class="small progress">Loading…</div>`);
+
+        generator = await pipeline("text-generation", MODEL_ID, {
+          device: navigator.gpu ? "webgpu" : "wasm",
+          dtype: navigator.gpu ? "q4f16" : "q4",
+          progress_callback: (progress) => {
+            if (progress.status) {
+              const myPct = progress.progress ?? 0;
+              if (myPct.toFixed(1) != 0) {
+                toast.innerHTML = `${myPct.toFixed(1)}% ${progress.status} ${progress.file ?? ""} <div class="small progress">Loading…</div>`;
+              } else {
+                toast.innerHTML = `${progress.status} ${progress.file ?? ""} <div class="small progress">Loading…</div>`;
+              }
+              toast.show();
+            }
+          },
+        });
+
+        aiSession = {
+          destroy() {
+            generator?.dispose?.();
+            generator = null;
+          },
+        };
+
+        toastMsg("Local AI Ready!");
+        modelStatusEl.innerHTML = `Model: ${MODEL_ID} cached and ready to use`;
+        inputPrompt.focus();
+      } catch (error) {
+        console.error(error);
+        toastMsg("Error loading local Transformers.js model.");
+      }
+    };
+    // #endregion
+
+    // #region *** Send message ***
+    // Description: hendles processing the message
+    // Created on: 2026.03.16
+    // Modified on: 2026.05.14
+    // ***
+    const sendMessage = async () => {
+      const promptText = inputPrompt.value.trim();
+      if (!promptText || !generator) return;
+
+      inputPrompt.value = "";
+
+      const question = document.createElement("div");
+      question.className = "questionFormat";
+      question.textContent = `Question: ${promptText}`;
+      output.append(question);
+      const answer = document.createElement("div");
+      output.append(answer);
+
+      const renderer = smd.default_renderer(answer);
+      const parser = smd.parser(renderer);
+
+      try {
+        toastMsg(`Request received <div class="small progress">Processing…</div>`);
+
+        const messages = [
+          { role: "system", content: "You are a helpful local language model." },
+          { role: "user", content: promptText },
+        ];
+
+        const streamer = new TextStreamer(generator.tokenizer, {
+          skip_prompt: true,
+          skip_special_tokens: true,
+          callback_function: (chunk) => {
+            textBuffer += chunk;
+
+            if (!renderPending) {
+              renderPending = true;
+              // Batch rendering to the next animation frame to prevent layout thrashing
+              requestAnimationFrame(() => {
+                smd.parser_write(parser, textBuffer);
+                textBuffer = ""; // Clear buffer
+                scrollToBottom();
+                renderPending = false;
+              });
+            }
+          },
+        });
+
+        await generator(messages, {
+          max_new_tokens: 2048,
+          max_length: null, // Prevents max_length from overriding your token ceiling
+          temperature: 0.6,
+          top_p: 0.9,
+          do_sample: true,
+          streamer,
+          interrupt_signal: controller.signal,
+        });
+
+        smd.parser_end(parser);
+        toastMsg("Processing finished!");
+        inputPrompt.focus();
+      } catch (err) {
+        console.error(err);
+        smd.parser_end(parser);
+        toastMsg("Error running local model.");
+      } finally {
+        // Ensure the focus lands smoothly and resources clear out
+        inputPrompt.focus();
+        // If available in your environment scope, explicitly clean runtime artifacts
+        if (typeof gc === 'function') gc();
+      }
+    };
+    // #endregion
+
+    // #region *** send user messaage ***
+    // Description: hendles user clicking send or enter key
+    // Created on: 2026.03.16
+    // Modified on: 
+    // ***
+    sendBtn.addEventListener("click", sendMessage);
+    inputPrompt.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    // #endregion   
+  </script>
+</body>
+
+</html>
