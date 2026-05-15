@@ -1,5 +1,5 @@
 <!--
-  Local LLM Browser AI API AskBot 🤖
+  Local LLM TransformersJS AskBot 🤖
   Copyright (c) 2026 DC3IT
   Licensed under the MIT License.
 
@@ -23,21 +23,6 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
   THE SOFTWARE.
   -------------------------------------------------------------------------
-
-  This file includes code from 
-  - AI Streaming Parser Copyright 2025 Google LLC https://chrome.dev/web-ai-demos/ai-streaming-parser/
-  - Prompt API Playground 2024 Google LLC https://chrome.dev/web-ai-demos/prompt-api-playground/ 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://apache.org
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -314,7 +299,7 @@
     let generator = null;
     let textBuffer = "";
     let renderPending = false;
-    const messagesEl = document.getElementById("messages");
+    const targetMaxTokens = 2048;
     const toast = document.getElementById('toast');
     const controller = new AbortController();
     document.querySelector("#stop").onclick = () => controller.abort();
@@ -325,7 +310,6 @@
     const stopBtn = document.getElementById("stop");
     const output = document.getElementById("output");
 
-    //import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3.4.1/dist/purify.es.mjs";
     import * as smd from "https://cdn.jsdelivr.net/npm/streaming-markdown/smd.min.js";
     import { pipeline, env, TextStreamer } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@latest/dist/transformers.js";
     // #endregion
@@ -458,7 +442,6 @@
           skip_special_tokens: true,
           callback_function: (chunk) => {
             textBuffer += chunk;
-
             if (!renderPending) {
               renderPending = true;
               // Batch rendering to the next animation frame to prevent layout thrashing
@@ -472,18 +455,28 @@
           },
         });
 
-        await generator(messages, {
-          max_new_tokens: 2048,
+        const outputs = await generator(messages, {
+          max_new_tokens: targetMaxTokens,
           max_length: null, // Prevents max_length from overriding your token ceiling
           temperature: 0.6,
           top_p: 0.9,
           do_sample: true,
+          return_dict_in_generate: true,
           streamer,
           interrupt_signal: controller.signal,
         });
 
         smd.parser_end(parser);
-        toastMsg("Processing finished!");
+        // Calculate how many tokens were generated
+        // output_ids contains the token arrays for both prompt and generated text
+        const generatedTokensCount = outputs[0].output_ids.length;
+
+        // Check if the generated count hit your limit
+        if (generatedTokensCount >= targetMaxTokens) {
+          toastMsg("Processing finished! (Warning: Output was cut off because it hit the maximum token limit)");
+        } else {
+          toastMsg("Processing finished!");
+        }
         inputPrompt.focus();
       } catch (err) {
         console.error(err);
