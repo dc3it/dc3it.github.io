@@ -1,129 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8" />
-  <title>ESS Sample Exam</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SurveyJS for HTML/CSS/JS Applications - Multi-Page Survey</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://unpkg.com/survey-core/survey-core.min.css" type="text/css" rel="stylesheet">
 
-  <!-- SurveyJS CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/survey-core/defaultV2.min.css" />
-  <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
-  <script src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script>
-
-  <style>
-    body { font-family: system-ui; background: #f5f5f7; margin: 0; }
-    header { background: #111827; color: #fff; padding: 1rem 1.5rem; }
-    main { max-width: 800px; margin: 2rem auto; padding: 1.5rem; background: #fff;
-           border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    #results { margin-top: 2rem; padding: 1rem; background: #f3f4f6; border-radius: 8px; }
-  </style>
+    <script type="text/javascript" src="https://unpkg.com/survey-core/survey.core.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/survey-js-ui/survey-js-ui.min.js"></script>
 </head>
 
 <body>
-<header><h1>Sample Exam</h1></header>
+    <div id="surveyContainer"></div>
+    <script>
+        const surveyJson = {
+            title: "American History",
+            showProgressBar: true,
+            progressBarLocation: "bottom",
+            showTimer: true,
+            timeLimitPerPage: 10,
+            timeLimit: 25,
+            firstPageIsStartPage: true,
+            startSurveyText: "Start Quiz",
+            pages: [{
+                elements: [{
+                    type: "html",
+                    html: "You are about to start a quiz on American history. <br>You will have 10 seconds for every question and 25 seconds to end the quiz.<br>Enter your name below and click <b>Start Quiz</b> to begin."
+                }, {
+                    type: "text",
+                    name: "username",
+                    titleLocation: "hidden",
+                    isRequired: true
+                }]
+            }, {
+                elements: [{
+                    type: "radiogroup",
+                    name: "civilwar",
+                    title: "When was the American Civil War?",
+                    choices: [
+                        "1796-1803", "1810-1814", "1861-1865", "1939-1945"
+                    ],
+                    correctAnswer: "1861-1865"
+                }]
+            }, {
+                elements: [{
+                    type: "radiogroup",
+                    name: "libertyordeath",
+                    title: "Whose quote is this: \"Give me liberty, or give me death\"?",
+                    choicesOrder: "random",
+                    choices: [
+                        "John Hancock", "James Madison", "Patrick Henry", "Samuel Adams"
+                    ],
+                    correctAnswer: "Patrick Henry"
+                }]
+            }, {
+                elements: [{
+                    type: "radiogroup",
+                    name: "magnacarta",
+                    title: "What is Magna Carta?",
+                    choicesOrder: "random",
+                    choices: [
+                        "The foundation of the British parliamentary system",
+                        "The Great Seal of the monarchs of England",
+                        "The French Declaration of the Rights of Man",
+                        "The charter signed by the Pilgrims on the Mayflower"
+                    ],
+                    correctAnswer: "The foundation of the British parliamentary system"
+                }]
+            }],
+            completedHtml: "<h4>You got <b>{correctAnswers}</b> out of <b>{questionCount}</b> correct answers.</h4>",
+            completedHtmlOnCondition: [{
+                expression: "{correctAnswers} == 0",
+                html: "<h4>Unfortunately, none of your answers are correct. Please try again.</h4>"
+            }, {
+                expression: "{correctAnswers} == {questionCount}",
+                html: "<h4>Congratulations! You answered all the questions correctly!</h4>"
+            }]
+        };
 
-<main>
-  <p>Answer the questions below. Your progress is saved automatically.</p>
-  <div id="surveyContainer"></div>
-  <div id="results" style="display:none;"></div>
-</main>
+        const survey = new Survey.Model(surveyJson);
 
-<script>
-  /* ---------------------------
-     EXAM JSON (can be external)
-     --------------------------- */
-  const examJson = {
-    title: "Web Basics Exam",
-    showProgressBar: "top",
-    pages: [
-      {
-        elements: [
-          {
-            type: "radiogroup",
-            name: "q1_protocol",
-            title: "Which protocol does HTTPS use for encryption?",
-            isRequired: true,
-            choices: ["FTP", "SSH", "TLS", "SMTP"],
-            correctAnswer: "TLS"
-          },
-          {
-            type: "comment",
-            name: "q2_explain",
-            title: "Explain the difference between HTTP and HTTPS.",
-            isRequired: true,
-            rows: 5
-          }
-        ]
-      }
-    ]
-  };
-
-  /* ---------------------------
-     LOCAL STORAGE PERSISTENCE
-     --------------------------- */
-  const STORAGE_KEY = "my_exam_answers";
-
-  function saveProgress(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  function loadProgress() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : null;
-  }
-
-  /* ---------------------------
-     CREATE SURVEY MODEL
-     --------------------------- */
-  const survey = new Survey.Model(examJson);
-
-  // Load saved answers
-  const savedData = loadProgress();
-  if (savedData) survey.data = savedData;
-
-  // Save on every change
-  survey.onValueChanged.add((sender) => {
-    saveProgress(sender.data);
-  });
-
-  /* ---------------------------
-     SCORING FOR MULTIPLE CHOICE
-     --------------------------- */
-  function calculateScore(model) {
-    let score = 0;
-    model.getAllQuestions().forEach(q => {
-      if (q.correctAnswer !== undefined) {
-        if (model.data[q.name] === q.correctAnswer) score++;
-      }
-    });
-    return score;
-  }
-
-  /* ---------------------------
-     ON COMPLETE
-     --------------------------- */
-  survey.onComplete.add((sender) => {
-    const data = sender.data;
-    const score = calculateScore(sender);
-
-    // Clear saved progress
-    localStorage.removeItem(STORAGE_KEY);
-
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.style.display = "block";
-    resultsDiv.textContent =
-      "Your answers:\n\n" +
-      JSON.stringify(data, null, 2) +
-      "\n\nScore: " + score;
-  });
-
-  /* ---------------------------
-     RENDER SURVEY
-     --------------------------- */
-  document.addEventListener("DOMContentLoaded", () => {
-    SurveyJSUI.Survey.render("surveyContainer", { model: survey });
-  });
-</script>
-
+        document.addEventListener("DOMContentLoaded", function () {
+            survey.render(document.getElementById("surveyContainer"));
+        });
+    </script>
 </body>
+
 </html>
