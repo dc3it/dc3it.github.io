@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile Friendly Match Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            touch-action: manipulation;
+            /* Prevents double-tap zoom delay */
+        }
+
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .instructions {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-area {
+            display: flex;
+            flex-direction: row;
+            /* Desktop side-by-side */
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .answer-target {
+            min-height: 55px;
+            background: #e9ecef;
+            border: 2px dashed #ced4da;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .answer-target.drag-over {
+            background: #e1f5fe;
+            border-color: #0288d1;
+        }
+
+        .answer-box {
+            background: #007bff;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: grab;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Prevent accidental scrolling while dragging on mobile */
+        .answer-box.dragging {
+            opacity: 0.6;
+            cursor: grabbing;
+        }
+
+        .answer-box.mobile-dragging {
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            /* Allows elementFromPoint to see targets underneath */
+            width: 150px;
+            /* Constrain size while holding */
+            transform: translate(-50%, -50%);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        #submit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .correct {
+            color: #28a745;
+        }
+
+        .incorrect {
+            color: #dc3545;
+        }
+
+        /* Responsive break for Mobile Devices */
+        @media (max-width: 600px) {
+            .quiz-area {
+                flex-direction: column;
+                /* Stack columns vertically on mobile */
+            }
+
+            .answer-target {
+                min-height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Space Systems Match the Answers!</h1>
+        <p class="instructions">Drag the answers on the right into the empty boxes on the left.</p>
+
+        <div class="quiz-area">
+            <div class="column" id="questions-column">
+                <!-- Questions & drop zones go here -->
+            </div>
+            <div class="column" id="answers-column">
+                <!-- Draggable answers go here -->
+            </div>
+        </div>
+
+        <button id="submit-btn">Check Answers</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        const quizData = [
+            { id: "q1", question: "Explain two pieces of evidence that support the Big Bang theory and describe what each piece of evidence reveals about the early universe.  ", answer: " 1) CMBR is a uniform microwave signal from all directions, representing the cooled remnant radiation from the extremely hot, dense early universe approximately 13.8 billion years ago. 2) Redshift of distant galaxies shows that all galaxies are moving away from each other, and the farther away a galaxy is, the faster it recedes. This demonstrates that the universe is expanding, which when reversed points to an initial singularity.  " },
+            { id: "q2", question: "Using the H-R Diagram on ESRT page 4, compare the Sun and Betelgeuse in terms of temperature, luminosity, color, and size.  ", answer: " The Sun has a surface temperature of ~5,800 K, luminosity of 1 solar unit, yellow color, and a radius of ~ 1 solar radius. Betelgeuse has a surface temperature of ~3,500 K, luminosity of ~100,000 solar units, red color, and a radius of several hundred solar radii. Betelgeuse is cooler but vastly more luminous and larger than the Sun because it is a red supergiant.  " },
+            { id: "q3", question: "Describe the complete life cycle of a star with 15 solar masses, from formation to end state.  ", answer: " A 15-solar-masss star forms from a star-forming nebula as gravity compresses gas and dust. It enters the main sequence, fusing hydrogen thelium for millions of years. When hydrogen is exhausted, it expands into a red supergiant, fusing progressively heavier elements (He, C, O, Si) in concentric shells. When the core becomes iron, fusion stops, the core collapses, and a supernova occurs. The remaining core becomes either a neutron star or, if massive enough, a black hole.  " },
+            { id: "q4", question: "Why does iron cause the core of a massive star to collapse?  ", answer: " Iron is the heaviest element that can be produced by fusion in a stellar core. Unlike lighter elements, fusing iron does not release energy; it absorbs energy. When the core fills with iron, the energy source that supports the star against gravity is removed. Without outward pressure from fusion, gravity causes the core to collapse in a fraction of a second.  " },
+            { id: "q5", question: "Using the emission spectra on ESRT page 3, explain how an astronomer could determine that a star contains hydrogen and helium.  ", answer: " The astronomer would analyze the light from the star and look for spectral lines at specific wavelengths. If the observed lines match the positions of hydrogen's lines (e.g., lines in the violet, blue-green, and red portions) and helium's lines on the ESRT emission spectra chart, the presence of those elements is confirmed. Each element produces a unique pattern that acts as a fingerprint.  " },
+            { id: "q6", question: "Explain the difference between an emission spectrum and an absorption spectrum.  ", answer: " An emission spectrum consists of bright, colored lines on a dark background, produced when a hot gas emits light at specific wavelengths. An absorption spectrum consists of dark lines on a continuous (rainbow) background, produced when light passes through a cooler gas that absorbs specific wavelengths. Both show the same line positions for a given element, but emission shows bright lines and absorption shows dark lines.  " },
+            { id: "q7", question: "A star has a surface temperature of 10,000 K and a luminosity of 0.001 solar units. Identify its H-R Diagram classification and explain why it is so dim despite being hot.  ", answer: " This star is a white dwarf. Although its surface temperature is high (blue-white), its luminosity is extremely low because it is very small, roughly the size of Earth. Luminosity depends on both temperature and surface area. A white dwarf has a tiny surface area, so it radiates very little total light despite being hot.  " },
+            { id: "q8", question: "Using the ESRT nucleosynthesis chart (page 2), explain why the duration of each fusion stage decreases as heavier elements are fused.  ", answer: " Each heavier element requires higher temperatures and pressures to fuse and releases less energy per reaction. Because less energy is produced, the stage's fuel is consumed  15 faster relative to the star's energy needs. Hydrogen  fusion lasts millions of years, but silicon fusion lasts only one day because the energy yield diminishes rapidly with each successive stage.  " },
+            { id: "q9", question: "A distant galaxy's hydrogen emission lines are observed at wavelengths 15 nm longer than laboratory measurements. What does this indicate, and what scientific law relates this observation to the galaxy's distance?  ", answer: " The shift to longer wavelengths (redshift) indicates the galaxy is moving away from Earth due to the expansion of the universe. Hubble's Law (v = H x d) relates the galaxy's recession velocity to its distance: a greater redshift means a higher velocity, which corresponds to a greater distance from Earth. " },
+            { id: "q10", question: "Explain why all elements heavier than helium are sometimes called 'stardust.'  ", answer: " All elements heavier than helium were created inside stars through nucleosynthesis. Lighter elements (up to iron) formed through fusion in stellar cores. Elements heavier than iron formed during supernova explosions. When stars explode or shed their outer layers, these elements are dispersed into space, forming nebulae that eventually become new stars, planets, and the building blocks of life. " }
+        ];
+
+        const questionsColumn = document.getElementById('questions-column');
+        const answersColumn = document.getElementById('answers-column');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultDiv = document.getElementById('result');
+
+        function initQuiz() {
+            const shuffledAnswers = quizData.map(item => item.answer).sort(() => Math.random() - 0.5);
+
+            quizData.forEach((data, index) => {
+                // Create an outer container item for each question block
+                const quizItem = document.createElement('div');
+                quizItem.classList.add('quiz-item');
+
+                const qText = document.createElement('div');
+                qText.classList.add('question-text');
+                qText.textContent = `${index + 1}. ${data.question}`;
+
+                const target = document.createElement('div');
+                target.classList.add('answer-target');
+                target.setAttribute('data-correct-answer', data.answer);
+
+                quizItem.appendChild(qText);
+                quizItem.appendChild(target);
+                questionsColumn.appendChild(quizItem);
+            });
+
+            shuffledAnswers.forEach(ans => {
+                const ansBox = document.createElement('div');
+                ansBox.classList.add('answer-box');
+                ansBox.setAttribute('draggable', 'true');
+                ansBox.setAttribute('data-answer', ans);
+                ansBox.textContent = ans;
+                answersColumn.appendChild(ansBox);
+            });
+
+            setupDesktopDrag();
+            setupMobileTouch();
+        }
+
+        // --- DESKTOP MOUSE IMPLEMENTATION ---
+        function setupDesktopDrag() {
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            const answerTargets = document.querySelectorAll('.answer-target');
+
+            answerBoxes.forEach(box => {
+                box.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.getAttribute('data-answer'));
+                    e.target.classList.add('dragging');
+                });
+                box.addEventListener('dragend', (e) => e.target.classList.remove('dragging'));
+            });
+
+            answerTargets.forEach(target => {
+                target.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    target.classList.add('drag-over');
+                });
+                target.addEventListener('dragleave', () => target.classList.remove('drag-over'));
+                target.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    target.classList.remove('drag-over');
+                    const answerValue = e.dataTransfer.getData('text/plain');
+                    const draggedElement = document.querySelector(`.answer-box[data-answer="${answerValue}"]`);
+                    handleDropPlacement(target, draggedElement);
+                });
+            });
+        }
+
+        // --- MOBILE TOUCH IMPLEMENTATION ---
+        function setupMobileTouch() {
+            const answerBoxes = document.querySelectorAll('.answer-box');
+            let activeDragElement = null;
+            let currentHoverTarget = null;
+
+            answerBoxes.forEach(box => {
+                box.addEventListener('touchstart', (e) => {
+                    activeDragElement = box;
+                    box.classList.add('mobile-dragging');
+
+                    // Instantly position element under touch finger
+                    moveElementAtTouch(box, e.touches[0]);
+                }, { passive: true });
+
+                box.addEventListener('touchmove', (e) => {
+                    if (!activeDragElement) return;
+                    e.preventDefault(); // Stop page scrolling while moving item
+
+                    const touch = e.touches[0];
+                    moveElementAtTouch(activeDragElement, touch);
+
+                    // Find what element is currently under the finger
+                    const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (!elementUnderFinger) return;
+
+                    const targetZone = elementUnderFinger.closest('.answer-target');
+
+                    // Manage visual hovering highlights
+                    if (currentHoverTarget && currentHoverTarget !== targetZone) {
+                        currentHoverTarget.classList.remove('drag-over');
+                    }
+                    if (targetZone) {
+                        targetZone.classList.add('drag-over');
+                        currentHoverTarget = targetZone;
+                    } else {
+                        currentHoverTarget = null;
+                    }
+                }, { passive: false });
+
+                box.addEventListener('touchend', (e) => {
+                    if (!activeDragElement) return;
+                    activeDragElement.classList.remove('mobile-dragging');
+                    activeDragElement.style.position = '';
+                    activeDragElement.style.top = '';
+                    activeDragElement.style.left = '';
+
+                    if (currentHoverTarget) {
+                        currentHoverTarget.classList.remove('drag-over');
+                        handleDropPlacement(currentHoverTarget, activeDragElement);
+                    } else {
+                        // If dropped nowhere, return it to the answers bank column
+                        answersColumn.appendChild(activeDragElement);
+                    }
+
+                    activeDragElement = null;
+                    currentHoverTarget = null;
+                });
+            });
+        }
+
+        function moveElementAtTouch(element, touch) {
+            element.style.position = 'fixed';
+            element.style.left = touch.clientX + 'px';
+            element.style.top = touch.clientY + 'px';
+        }
+
+        // Logic handles bumping existing blocks back to the bank column
+        function handleDropPlacement(target, element) {
+            if (target.children.length > 0) {
+                const existingElement = target.firstChild;
+                answersColumn.appendChild(existingElement);
+            }
+            target.appendChild(element);
+        }
+
+        // --- SCORE SUBMISSION ---
+        submitBtn.addEventListener('click', () => {
+            const targets = document.querySelectorAll('.answer-target');
+            let correctCount = 0;
+
+            targets.forEach(target => {
+                const correctAns = target.getAttribute('data-correct-answer');
+                const droppedBox = target.querySelector('.answer-box');
+
+                if (droppedBox && droppedBox.getAttribute('data-answer') === correctAns) {
+                    correctCount++;
+                }
+            });
+
+            if (correctCount === quizData.length) {
+                resultDiv.textContent = `Perfect Match! You got ${correctCount}/${quizData.length} correct!`;
+                resultDiv.className = 'correct';
+            } else {
+                resultDiv.textContent = `You scored ${correctCount}/${quizData.length}. Give it another try!`;
+                resultDiv.className = 'incorrect';
+            }
+        });
+
+        window.onload = initQuiz;
+
+    </script>
+</body>
+
+</html>
