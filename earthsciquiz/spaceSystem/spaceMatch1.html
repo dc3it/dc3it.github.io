@@ -168,28 +168,37 @@
         <div id="result"></div>
     </div>
     <script>
-        const quizData = [
+        const quizData0 = [
             { id: "q1", question: "Explain two pieces of evidence that support the Big Bang theory and describe what each piece of evidence reveals about the early universe.  ", answer: " 1) CMBR is a uniform microwave signal from all directions, representing the cooled remnant radiation from the extremely hot, dense early universe approximately 13.8 billion years ago. 2) Redshift of distant galaxies shows that all galaxies are moving away from each other, and the farther away a galaxy is, the faster it recedes. This demonstrates that the universe is expanding, which when reversed points to an initial singularity.  " },
-            { id: "q2", question: "Using the H-R Diagram on ESRT page 4, compare the Sun and Betelgeuse in terms of temperature, luminosity, color, and size.  ", answer: " The Sun has a surface temperature of ~5,800 K, luminosity of 1 solar unit, yellow color, and a radius of ~ 1 solar radius. Betelgeuse has a surface temperature of ~3,500 K, luminosity of ~100,000 solar units, red color, and a radius of several hundred solar radii. Betelgeuse is cooler but vastly more luminous and larger than the Sun because it is a red supergiant.  " },
+            { id: "q2", question: "Using the H-R Diagram on ESRT page 4, compare the Sun and Betelgeuse in terms of temperature, luminosity, color, and size.  ", answer: " The Sun has a surface temperature of ~5,800 K, luminosity of 1 solar unit, yellow color, and a radius of ~ 1 solar radius. Betelgeuse has a surface temperature of ~3,500 K, luminosity of ~100,000 solar units, red color, and a radius of several hundred solar radii. Betelgeuse is cooler but vastly more luminous and larger than the Sun because it is a red supergiant.  " }
+        ];
+        const quizData1 = [
             { id: "q3", question: "Describe the complete life cycle of a star with 15 solar masses, from formation to end state.  ", answer: " A 15-solar-masss star forms from a star-forming nebula as gravity compresses gas and dust. It enters the main sequence, fusing hydrogen thelium for millions of years. When hydrogen is exhausted, it expands into a red supergiant, fusing progressively heavier elements (He, C, O, Si) in concentric shells. When the core becomes iron, fusion stops, the core collapses, and a supernova occurs. The remaining core becomes either a neutron star or, if massive enough, a black hole.  " },
-            { id: "q4", question: "Why does iron cause the core of a massive star to collapse?  ", answer: " Iron is the heaviest element that can be produced by fusion in a stellar core. Unlike lighter elements, fusing iron does not release energy; it absorbs energy. When the core fills with iron, the energy source that supports the star against gravity is removed. Without outward pressure from fusion, gravity causes the core to collapse in a fraction of a second.  " },
+            { id: "q4", question: "Why does iron cause the core of a massive star to collapse?  ", answer: " Iron is the heaviest element that can be produced by fusion in a stellar core. Unlike lighter elements, fusing iron does not release energy; it absorbs energy. When the core fills with iron, the energy source that supports the star against gravity is removed. Without outward pressure from fusion, gravity causes the core to collapse in a fraction of a second.  " }
+        ];
+        const quizData2 = [
             { id: "q5", question: "Using the emission spectra on ESRT page 3, explain how an astronomer could determine that a star contains hydrogen and helium.  ", answer: " The astronomer would analyze the light from the star and look for spectral lines at specific wavelengths. If the observed lines match the positions of hydrogen's lines (e.g., lines in the violet, blue-green, and red portions) and helium's lines on the ESRT emission spectra chart, the presence of those elements is confirmed. Each element produces a unique pattern that acts as a fingerprint.  " },
-            { id: "q6", question: "Explain the difference between an emission spectrum and an absorption spectrum.  ", answer: " An emission spectrum consists of bright, colored lines on a dark background, produced when a hot gas emits light at specific wavelengths. An absorption spectrum consists of dark lines on a continuous (rainbow) background, produced when light passes through a cooler gas that absorbs specific wavelengths. Both show the same line positions for a given element, but emission shows bright lines and absorption shows dark lines.  " },
+            { id: "q6", question: "Explain the difference between an emission spectrum and an absorption spectrum.  ", answer: " An emission spectrum consists of bright, colored lines on a dark background, produced when a hot gas emits light at specific wavelengths. An absorption spectrum consists of dark lines on a continuous (rainbow) background, produced when light passes through a cooler gas that absorbs specific wavelengths. Both show the same line positions for a given element, but emission shows bright lines and absorption shows dark lines.  " }
+        ];
+        const quizData3 = [
             { id: "q7", question: "A star has a surface temperature of 10,000 K and a luminosity of 0.001 solar units. Identify its H-R Diagram classification and explain why it is so dim despite being hot.  ", answer: " This star is a white dwarf. Although its surface temperature is high (blue-white), its luminosity is extremely low because it is very small, roughly the size of Earth. Luminosity depends on both temperature and surface area. A white dwarf has a tiny surface area, so it radiates very little total light despite being hot.  " },
-            { id: "q8", question: "Using the ESRT nucleosynthesis chart (page 2), explain why the duration of each fusion stage decreases as heavier elements are fused.  ", answer: " Each heavier element requires higher temperatures and pressures to fuse and releases less energy per reaction. Because less energy is produced, the stage's fuel is consumed  15 faster relative to the star's energy needs. Hydrogen  fusion lasts millions of years, but silicon fusion lasts only one day because the energy yield diminishes rapidly with each successive stage.  " },
+            { id: "q8", question: "Using the ESRT nucleosynthesis chart (page 2), explain why the duration of each fusion stage decreases as heavier elements are fused.  ", answer: " Each heavier element requires higher temperatures and pressures to fuse and releases less energy per reaction. Because less energy is produced, the stage's fuel is consumed  15 faster relative to the star's energy needs. Hydrogen  fusion lasts millions of years, but silicon fusion lasts only one day because the energy yield diminishes rapidly with each successive stage.  " }
+        ];
+        const quizData4 = [
             { id: "q9", question: "A distant galaxy's hydrogen emission lines are observed at wavelengths 15 nm longer than laboratory measurements. What does this indicate, and what scientific law relates this observation to the galaxy's distance?  ", answer: " The shift to longer wavelengths (redshift) indicates the galaxy is moving away from Earth due to the expansion of the universe. Hubble's Law (v = H x d) relates the galaxy's recession velocity to its distance: a greater redshift means a higher velocity, which corresponds to a greater distance from Earth. " },
             { id: "q10", question: "Explain why all elements heavier than helium are sometimes called 'stardust.'  ", answer: " All elements heavier than helium were created inside stars through nucleosynthesis. Lighter elements (up to iron) formed through fusion in stellar cores. Elements heavier than iron formed during supernova explosions. When stars explode or shed their outer layers, these elements are dispersed into space, forming nebulae that eventually become new stars, planets, and the building blocks of life. " }
         ];
+        const quizDataList = [quizData0, quizData1, quizData2, quizData3, quizData4];
 
         const questionsColumn = document.getElementById('questions-column');
         const answersColumn = document.getElementById('answers-column');
         const submitBtn = document.getElementById('submit-btn');
         const resultDiv = document.getElementById('result');
 
-        function initQuiz() {
-            const shuffledAnswers = quizData.map(item => item.answer).sort(() => Math.random() - 0.5);
+        function initQuiz(quizBlock) {
+            const shuffledAnswers = quizBlock.map(item => item.answer).sort(() => Math.random() - 0.5);
 
-            quizData.forEach((data, index) => {
+            quizBlock.forEach((data, index) => {
                 // Create an outer container item for each question block
                 const quizItem = document.createElement('div');
                 quizItem.classList.add('quiz-item');
@@ -327,29 +336,57 @@
 
         // --- SCORE SUBMISSION ---
         submitBtn.addEventListener('click', () => {
+            let examCompleted = false;
+            //check to see where things are with the questions
+            let quizBlockNoPresented = localStorage.getItem("quizBlockNo");
+            if (quizBlockNoPresented.split(',').length < quizDataList.length) {
+                do {
+                    quizBlockNo = Math.floor(Math.random() * 5);
+                } while (quizBlockNoPresented.indexOf(quizBlockNo) != -1);
+            } else {
+                //exam completed
+                examCompleted = true;
+            }
+
+
             const targets = document.querySelectorAll('.answer-target');
             let correctCount = 0;
-
             targets.forEach(target => {
                 const correctAns = target.getAttribute('data-correct-answer');
                 const droppedBox = target.querySelector('.answer-box');
-
+                // check to see if answer matches answer key
                 if (droppedBox && droppedBox.getAttribute('data-answer') === correctAns) {
                     correctCount++;
                 }
             });
 
-            if (correctCount === quizData.length) {
-                resultDiv.textContent = `Perfect Match! You got ${correctCount}/${quizData.length} correct!`;
+            if (correctCount === quizDataList[quizBlockNo].length) {
+                resultDiv.textContent = `Perfect Match! You got ${correctCount}/${quizDataList[quizBlockNo].length} correct!`;
                 resultDiv.className = 'correct';
+                if (examCompleted == true) {
+                    alert("Exam Completed. Please refresh the page to go through them again!");  
+                    return false;                  
+                }
+                let quizBlockList = localStorage.getItem("quizBlockNo");
+                quizBlockList += `,${quizBlockNo}`;
+                localStorage.setItem("quizBlockNo", quizBlockList);
+                correctCount = 0; // reset
+                document.querySelector("#questions-column").innerHTML = "";
+                document.querySelector("#answers-column").innerHTML = "";
+                resultDiv.textContent = "";
+                initQuiz(quizDataList[quizBlockNo]);
             } else {
-                resultDiv.textContent = `You scored ${correctCount}/${quizData.length}. Give it another try!`;
+                resultDiv.textContent = `You scored ${correctCount}/${quizDataList[quizBlockNo].length}. Give it another try!`;
                 resultDiv.className = 'incorrect';
             }
         });
 
-        window.onload = initQuiz;
-
+        // #region *** page load ***
+        localStorage.setItem("quizBlockNo", "");
+        let quizBlockNo = Math.floor(Math.random() * 5);
+        localStorage.setItem("quizBlockNo", quizBlockNo);
+        window.onload = initQuiz(quizDataList[quizBlockNo]);
+        // #endregion
     </script>
 </body>
 
