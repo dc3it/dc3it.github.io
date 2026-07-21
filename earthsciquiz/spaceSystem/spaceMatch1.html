@@ -364,8 +364,9 @@
                 resultDiv.textContent = `Perfect Match! You got ${correctCount}/${quizDataList[quizBlockNo].length} correct!`;
                 resultDiv.className = 'correct';
                 if (examCompleted == true) {
-                    resultDiv.textContent = "Exam Completed. Please refresh the page to go through them again!";  
-                    return false;                  
+                    resultDiv.textContent = `Match Completed. Please refresh the page to match them again!`;
+                    alert("Match Completed. Please refresh the page to match them again!");
+                    return false;
                 }
                 let quizBlockList = localStorage.getItem("quizBlockNo");
                 quizBlockList += `,${quizBlockNo}`;
@@ -373,7 +374,9 @@
                 correctCount = 0; // reset
                 document.querySelector("#questions-column").innerHTML = "";
                 document.querySelector("#answers-column").innerHTML = "";
-                resultDiv.textContent = "";
+                setTimeout(function () {
+                   resultDiv.textContent = "";
+                }, 1000);                
                 initQuiz(quizDataList[quizBlockNo]);
             } else {
                 resultDiv.textContent = `You scored ${correctCount}/${quizDataList[quizBlockNo].length}. Give it another try!`;
