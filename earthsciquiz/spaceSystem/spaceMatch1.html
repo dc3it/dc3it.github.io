@@ -364,7 +364,7 @@
                 resultDiv.textContent = `Perfect Match! You got ${correctCount}/${quizDataList[quizBlockNo].length} correct!`;
                 resultDiv.className = 'correct';
                 if (examCompleted == true) {
-                    alert("Exam Completed. Please refresh the page to go through them again!");  
+                    resultDiv.textContent = "Exam Completed. Please refresh the page to go through them again!";  
                     return false;                  
                 }
                 let quizBlockList = localStorage.getItem("quizBlockNo");
