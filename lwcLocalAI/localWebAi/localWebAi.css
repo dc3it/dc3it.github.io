@@ -1,0 +1,133 @@
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* PROMPT CONTAINER */
+.prompt-container {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 100%;
+    /*max-width: 700px;*/
+    box-sizing: border-box;
+}
+
+.promptBorder {
+    padding: 0px;
+}
+
+.prompt-input {
+    flex-grow: 1;
+    border: none;
+    resize: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    line-height: 1.5;
+    outline: none;
+    min-height: 40px;
+    max-height: 200px;
+    /* Limit height to prevent excessive expansion */
+    overflow-y: auto;
+    /* Enable scrolling if content exceeds max-height */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.prompt-input::placeholder {
+    color: #a0a0a0;
+}
+
+.prompt-input:focus {
+    background-color: #e8f0fe;
+}
+
+.prompt-input1 {
+    flex-grow: 1;
+    border: none;
+    resize: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    line-height: 1.5;
+    outline: none;
+    min-height: 40px;
+    max-height: 200px;
+    /* Limit height to prevent excessive expansion */
+    overflow-y: auto;
+    /* Enable scrolling if content exceeds max-height */
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.prompt-input1::placeholder {
+    color: #a0a0a0;
+}
+
+.prompt-input1:focus {
+    background-color: #e8f0fe;
+}

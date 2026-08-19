@@ -1,0 +1,53 @@
+<template>
+    <lightning-card icon-name="standard:question_best" variant="base">
+        <div slot="title">
+            <label for="useAI">Enable WebAI?&NonBreakingSpace;</label>
+            <label class="switch">
+                <input type="checkbox" id="useAI" onchange={enableAI} />
+                <span class="slider round"></span>
+            </label>
+            <span id="model-status"></span>
+        </div>
+        <div class="app">
+            <div id="messages">
+                <div lwc:dom="manual" class="wrapper"></div>
+                   <!--  if you add the {recordId} or {objectApiName} to the page you may have 
+                     to go back into the edit page for the data to pull through the first time
+                     and click on it and then save - it's a bug -->
+                   Record ID: {recordId} <br/>
+                   text: {bodyText} <br/>
+                   Object API Name: {objectApiName} <br/>
+                   <!-- User ID: {userId} <br/> -->
+                   <!-- First: {firstName} <br/> -->
+                   <!-- Last: {lastName} <br/> -->
+                   <!-- Email: {email} <br/>                 -->
+            </div>
+            <div class="promptBorder">
+                <div class="prompt-container">
+                    <textarea id="promptInput" oninput={handleInput} class="prompt-input1" placeholder="Type your prompt here..."></textarea>
+                    <button type="button" class="slds-button slds-button_brand" onclick={sendMessage}>Send</button>&NonBreakingSpace;<button
+                        type="button" class="slds-button slds-button_brand" onclick={stopLLM}>Stop</button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+<!-- <p>hidden iFrame using static HTML page</p>
+<iframe 
+    src="/resource/AI_Bridge_HTML" 
+    style="display:none;" 
+    allow="LanguageModel"
+    lwc:ref="aiBridge">
+</iframe> -->
+<p>hiddien iFrame using Visualforce Page</p>
+<iframe 
+    src="/apex/AIBridgePage" 
+    style="display:none;" 
+    allow="language-model"
+    lwc:ref="aiBridge">
+</iframe>
+
+    <lightning-textarea label="Prompt" class="prompt-input"></lightning-textarea>
+    <lightning-button label="Send" onclick={handleAiSend}></lightning-button>
+
+    <div class="output-display">{streamingText}</div>
+</template>
