@@ -304,13 +304,13 @@
     // Created on: 2026.03.31
     // Modified on: 2026.04.21
     // ***
-    let aiAvailability;
-    let aiSession;
-    let modelStatusEl = document.querySelector("#model-status");
-    const messagesEl = document.getElementById("messages");
-    const inputPrompt = document.getElementById("input");
-    const sendBtn = document.getElementById("send");
-    const toast = document.getElementById('toast');
+    //  let aiAvailability;
+    let aiSession = null;
+    let modelStatus = document.querySelector("#model-status");
+    const messagesEl = document.querySelector("#messages");
+    const inputPrompt = document.querySelector("#input");
+    const sendBtn = document.querySelector("#send");
+    const toast = document.querySelector('#toast');
     const controller = new AbortController();
     document.querySelector("#stop").onclick = () => controller.abort();
     //import { marked } from "https://cdn.jsdelivr.net/npm/marked@13.0.3/lib/marked.esm.js"; //uncomment to use output option 2
@@ -328,7 +328,7 @@
       toast.show(); // Non-modal display
       setTimeout(() => {
         toast.close();
-      }, 3000); // Closes after 3 seconds
+      }, 2000); // Closes after 2 seconds
     };
     // #endregion
 
@@ -363,6 +363,8 @@
         //clean up on aisle ai
         if (aiSession) {
           aiSession.destroy();
+          aiSession = null;
+          console.log("AI Session destroyed.");
         }
       }
     });
@@ -374,52 +376,77 @@
     // Modified on: 
     // ***
     const checkLocalAI = async () => {
-      if ("LanguageModel" in self) {
-        if (!aiSession) {
-          //set up AI
-          try {
-            aiAvailability = await LanguageModel.availability();
-            if (aiAvailability == "downloadable" || aiAvailability == "available") {
-              aiSession = await LanguageModel.create({
-                expectedInputs: [{ type: "text", languages: ["en", "en"] }],
-                expectedOutputs: [{ type: "text", languages: ["en"] }],
-                initialPrompts: [
-                  {
-                    role: 'system',
-                    content: 'You are a helpful local language model.'
-                  }
-                ],
-                monitor(m) {
-                  m.addEventListener('downloadprogress', (e) => {
-                    console.log(`Checking local model readiness ${e.loaded * 100}%`);
-                    if (e.loaded == 0) {
-                      toast.innerHTML = `Checking local model readiness <div class="small progress">Loading…</div>`;
-                    } else {
-                      toast.innerHTML = `Checking local model readiness ${e.loaded * 100}% <div class="small progress">Loading…</div>`;
-                    }
-                    toast.show();
-                  });
-                },
-              });
-              //console.log(`Gemini Nano language model parameters: ${await LanguageModel.params()}`);              
-              toastMsg("AI Session Created");
-              toastMsg("Local AI Ready!");
-              inputPrompt.focus();
-
-            } else {
-              toastMsg(`Error attempting to access Local AI.`, "toastError");
-            }
-          } catch (error) {
-            toastMsg(`Error attempting to access Local AI. Please try again.`, "toastError");
-          }
-        } else {
-          toastMsg("AI Session Already Created");
-        }
-      } else {
+      let downloadMonitor = false;
+      if (!("LanguageModel" in self)) {
         toastMsg(`Local AI Not Available for this computer.`, "toastError");
+        return;
       }
-      modelStatusEl.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
+
+      if (aiSession) {
+        toastMsg("AI Session Already Created.");
+        return;
+      }
+
+      //set up AI https://developer.chrome.com/docs/ai/prompt-api
+      //Caution: Always pass the same options to the availability() function that you use in prompt() 
+      //or promptStreaming(). This is critical, as some models may not support certain modalities or languages.
+      try {
+        const options = {
+          expectedInputs: [{ type: "text", languages: ["en", "en"] }],
+          expectedOutputs: [{ type: "text", languages: ["en"] }],
+          initialPrompts: [
+            {
+              role: 'system',
+              content: 'You are a helpful local language model.'
+            }
+          ]
+        };
+        const aiAvailability = await LanguageModel.availability(options);
+
+        if (aiAvailability === ("downloadable" || "downloading")) {
+          downloadMonitor = true;
+          options.monitor = (m) => {
+            m.addEventListener('downloadprogress', (e) => {
+              console.log(`Checking local model readiness ${e.loaded}%`);
+              //const percent = e.total ? Math.round((e.loaded / e.total) * 100) : 0;
+              let percent = 0;
+              if (e.total) {
+                percent = Math.round((e.loaded / e.total) * 100);
+              }
+              console.log(`Downloading model ${percent}%`);
+              toast.innerHTML = `Downloading model ${percent}% &nbsp; <div class="small progress">Loading…</div>`;
+            });
+          }
+          console.log("Model needs to be downloaded.");
+        } else {
+          if (aiAvailability === "available") {
+            //model already cached and needs to load it into memory - warm up
+            toast.innerHTML = `Initializing AI Model...Warming up <div class="small progress">Loading…</div>`;
+            console.log("Model already downloaded.");
+          } else {
+            toast.innerHTML = `AI Model Not Available at this time. Please refresh to try again`;
+            console.log("Model not available at this time.");
+          }
+        }
+        toast.show();
+
+        aiSession = await LanguageModel.create(options);
+        
+        //console.log(`Gemini Nano language model parameters: ${await LanguageModel.params()}`);              
+        //toastMsg("AI Session Created");
+        toastMsg("Local AI Ready!");
+        inputPrompt.focus();
+
+        if (modelStatus) {
+          modelStatus.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
+        } else {
+          toastMsg(`Local AI unavailable (Status: ${aiAvailability}).`, "toastError");
+        }
+      } catch (error) {
+        toastMsg(`${error.message}. Please try again.`, "toastError");
+      }
     }
+
     // #endregion
 
     // #region *** Send message ***
@@ -430,9 +457,6 @@
     const sendMessage = async () => {
       toastMsg(`Request received <div class="small progress">Processing…</div>`);
       const output = document.querySelector('#output');
-      const renderer = smd.default_renderer(output);
-      const parser = smd.parser(renderer);
-
       let promptText = inputPrompt.value.trim();
 
       if (!promptText) {
@@ -544,7 +568,7 @@
         smd.parser_end(parser);
         // #endregion
 
-        modelStatusEl.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
+        modelStatus.innerHTML = `Context used: ${aiSession.contextUsage}/${aiSession.contextWindow}`;
       } catch (err) {
         smd.parser_end(parser);
         messagesEl.innerHTML = "Error calling browser AI. Please refresh the browser tab and try again.";
