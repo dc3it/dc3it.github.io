@@ -373,10 +373,10 @@
     // #region *** check in browser AI ***
     // Description: hendles determining if the browser and machine support AI APIs
     // Created on: 2025.09.15
-    // Modified on: 
+    // Modified on: 2026.08.24 broke out monitor as model already downloaded and it is warming up the AI vs waiting on download
+    // there's no way yet to determine when the warm up is completed but for end of create
     // ***
     const checkLocalAI = async () => {
-      let downloadMonitor = false;
       if (!("LanguageModel" in self)) {
         toastMsg(`Local AI Not Available for this computer.`, "toastError");
         return;
@@ -404,7 +404,6 @@
         const aiAvailability = await LanguageModel.availability(options);
 
         if (aiAvailability === ("downloadable" || "downloading")) {
-          downloadMonitor = true;
           options.monitor = (m) => {
             m.addEventListener('downloadprogress', (e) => {
               console.log(`Checking local model readiness ${e.loaded}%`);
@@ -421,7 +420,7 @@
         } else {
           if (aiAvailability === "available") {
             //model already cached and needs to load it into memory - warm up
-            toast.innerHTML = `Initializing AI Model...Warming up <div class="small progress">Loading…</div>`;
+            toast.innerHTML = `Creating AI Session... <div class="small progress">Loading…</div>`;
             console.log("Model already downloaded.");
           } else {
             toast.innerHTML = `AI Model Not Available at this time. Please refresh to try again`;
@@ -431,7 +430,9 @@
         toast.show();
 
         aiSession = await LanguageModel.create(options);
-        
+        console.log(aiAvailability);
+        console.log(aiSession);
+
         //console.log(`Gemini Nano language model parameters: ${await LanguageModel.params()}`);              
         //toastMsg("AI Session Created");
         toastMsg("Local AI Ready!");
@@ -453,8 +454,17 @@
     // Description: hendles processing the message
     // Created on: 2026.03.16
     // Modified on: 2026.04.21 added three variations for handling the output
+    // 2026.08.30 added check for when it times out
     // ***
     const sendMessage = async () => {
+
+      // add an additional check to see if the session is active 
+      // and if not then need to get it spun up
+      if (!aiSession) {
+        console.log("Message sent and having to call checkLocalAI()");
+        checkLocalAI();
+      }
+
       toastMsg(`Request received <div class="small progress">Processing…</div>`);
       const output = document.querySelector('#output');
       let promptText = inputPrompt.value.trim();
@@ -474,9 +484,14 @@
       scrollToBottom();
 
       try {
+        //toast.innerHTML = `Local AI Processing <div class="small progress">Processing…</div>`;
+        //toast.show();
+        console.log(`Local AI Processing`);
         const result = await aiSession.promptStreaming(promptText, {
           signal: controller.signal
         });
+        console.log(`Local AI Ready`);
+        //toast.close();
 
         // #region *** approach 1 using the DOM ***
         // Description: following best practices https://developer.chrome.com/docs/ai/render-llm-responses
@@ -543,8 +558,11 @@
         const parser = smd.parser(renderer);
 
         let chunks = '';
+        console.log("start chunking");
+        inputPrompt.value = `Local AI Processing ...`;
+        inputPrompt.disabled = true;
         for await (const chunk of result) {
-          //console.log(chunk);
+          console.log("chunk ready to render");
           chunks += chunk;
           // had to comment out DOMPurify because you have to whitelist any XML - 
           //best practice is to uncomment if you are not working with markup languages
@@ -564,6 +582,8 @@
           scrollToBottom();
         }
         toastMsg(`Processing finished!`);
+        inputPrompt.disabled = false;
+        inputPrompt.value = "";
         inputPrompt.focus();
         smd.parser_end(parser);
         // #endregion
@@ -579,9 +599,15 @@
     // #region *** send user messaage ***
     // Description: hendles user clicking send or enter key
     // Created on: 2026.03.16
-    // Modified on: 
+    // Modified on: 2026.08.24 need to see about checking whether the AI remains awake after inactivity
     // ***
-    sendBtn.addEventListener("click", sendMessage);
+    sendBtn.addEventListener("click", () => {
+      if (aiSession) {
+        sendMessage();
+      } else {
+        checkLocalAI();
+      }
+    });
     inputPrompt.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
